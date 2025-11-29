@@ -21,26 +21,18 @@ export function ProductValueSection() {
         className="grid lg:grid-cols-2 gap-8 lg:gap-10 items-center rounded-[30px] sm:rounded-[40px] border border-white/8 bg-white/[0.02] p-6 sm:p-8 lg:p-12 shadow-[0_35px_100px_rgba(0,0,0,0.55)]"
       >
         <div className="rounded-[24px] sm:rounded-[32px] overflow-hidden border border-white/10 bg-black/40 w-full">
-          <picture>
-            <source 
-              srcSet="/media/product_blueprint-480w.avif 480w, /media/product_blueprint-768w.avif 768w, /media/product_blueprint-1024w.avif 1024w"
-              type="image/avif"
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 500px"
-            />
-            <source 
-              srcSet="/media/product_blueprint-480w.webp 480w, /media/product_blueprint-768w.webp 768w, /media/product_blueprint-1024w.webp 1024w"
-              type="image/webp"
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 500px"
-            />
           <img
             src="/media/product_blueprint.jpg"
             alt="Blueprint do produto Maxxing"
             className="w-full h-full object-cover"
-              loading="lazy"
-              width="500"
-              height="667"
+            loading="lazy"
+            width="500"
+            height="667"
+            onError={(e) => {
+              const target = e.currentTarget;
+              target.src = '/media/scan_male.jpg';
+            }}
           />
-          </picture>
         </div>
 
         <div>

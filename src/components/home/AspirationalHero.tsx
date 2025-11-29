@@ -44,35 +44,26 @@ export function AspirationalHero() {
             style={{ willChange: 'opacity' }}
           >
             <div className="relative aspect-[4/5] sm:aspect-[3/4] lg:aspect-[4/5] overflow-hidden">
-              {/* Usar imagem existente - social_proof_after */}
-              <picture>
-                <source 
-                  srcSet="/media/social_proof_after-480w.avif 480w, /media/social_proof_after-768w.avif 768w, /media/social_proof_after-1024w.avif 1024w"
-                  type="image/avif"
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 600px"
-                />
-                <source 
-                  srcSet="/media/social_proof_after-480w.webp 480w, /media/social_proof_after-768w.webp 768w, /media/social_proof_after-1024w.webp 1024w"
-                  type="image/webp"
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 600px"
-                />
               <img
                 src="/media/social_proof_after.png"
                 alt="Versão mais atraente de você"
                 className="w-full h-full object-cover object-top"
-                  loading="lazy"
-                  decoding="async"
-                  width="600"
-                  height="750"
-                  style={{ 
-                    contentVisibility: 'auto',
-                    containIntrinsicSize: '600px 750px',
-                    transform: 'translateZ(0)',
-                    backfaceVisibility: 'hidden',
-                    willChange: 'opacity'
-                  }}
+                loading="lazy"
+                decoding="async"
+                width="600"
+                height="750"
+                onError={(e) => {
+                  const target = e.currentTarget;
+                  target.src = '/media/scan_male.jpg';
+                }}
+                style={{ 
+                  contentVisibility: 'auto',
+                  containIntrinsicSize: '600px 750px',
+                  transform: 'translateZ(0)',
+                  backfaceVisibility: 'hidden',
+                  willChange: 'opacity'
+                }}
               />
-              </picture>
               {/* Gradient overlay for seamless blend */}
               <div className="absolute inset-0 bg-gradient-to-l from-transparent via-transparent to-[#0F0A0A]/95 lg:block hidden" />
               <div className="absolute inset-0 bg-gradient-to-t from-[#0F0A0A] via-transparent to-transparent lg:hidden" />

@@ -43,28 +43,19 @@ export function SocialProofSection() {
           <div className="w-full lg:flex-1 flex items-center gap-4 sm:gap-3 grid grid-cols-2">
             {/* Before */}
             <div className="relative rounded-xl sm:rounded-2xl overflow-hidden border border-white/10 bg-black">
-              <picture>
-                <source 
-                  srcSet="/media/social_proof_before-480w.avif 480w, /media/social_proof_before-768w.avif 768w, /media/social_proof_before-960w.avif 960w"
-                  type="image/avif"
-                  sizes="(max-width: 640px) 50vw, 300px"
-                />
-                <source 
-                  srcSet="/media/social_proof_before-480w.webp 480w, /media/social_proof_before-768w.webp 768w, /media/social_proof_before-960w.webp 960w"
-                  type="image/webp"
-                  sizes="(max-width: 640px) 50vw, 300px"
-                />
-                <img
-                  src="/media/social_proof_before.png"
-                  srcSet="/media/social_proof_before.png 1x, /media/social_proof_before@2x.png 2x"
-                  alt="Foto de antes da transformação - Score facial 52"
-                  className="w-full h-full object-cover aspect-[3/4]"
-                  loading="lazy"
-                  width="400"
-                  height="533"
-                  style={{ imageRendering: '-webkit-optimize-contrast' }}
-                />
-              </picture>
+              <img
+                src="/media/social_proof_before.png"
+                alt="Foto de antes da transformação - Score facial 52"
+                className="w-full h-full object-cover aspect-[3/4]"
+                loading="lazy"
+                width="400"
+                height="533"
+                onError={(e) => {
+                  const target = e.currentTarget;
+                  target.src = '/media/scan_male.jpg';
+                }}
+                style={{ imageRendering: '-webkit-optimize-contrast' }}
+              />
               <div className="absolute top-2 left-2 sm:top-3 sm:left-3 px-2 py-1 sm:px-3 sm:py-1.5 rounded-full bg-red-500/90 text-white text-[10px] sm:text-xs font-bold uppercase tracking-wide">
                 Antes
               </div>
@@ -75,28 +66,19 @@ export function SocialProofSection() {
 
             {/* After */}
             <div className="relative rounded-xl sm:rounded-2xl overflow-hidden border border-primary/30 bg-black shadow-[0_0_20px_rgba(255,77,77,0.15)]">
-              <picture>
-                <source 
-                  srcSet="/media/social_proof_after-480w.avif 480w, /media/social_proof_after-768w.avif 768w, /media/social_proof_after-960w.avif 960w"
-                  type="image/avif"
-                  sizes="(max-width: 640px) 50vw, 300px"
-                />
-                <source 
-                  srcSet="/media/social_proof_after-480w.webp 480w, /media/social_proof_after-768w.webp 768w, /media/social_proof_after-960w.webp 960w"
-                  type="image/webp"
-                  sizes="(max-width: 640px) 50vw, 300px"
-                />
-                <img
-                  src="/media/social_proof_after.png"
-                  srcSet="/media/social_proof_after.png 1x, /media/social_proof_after@2x.png 2x"
-                  alt="Foto de depois da transformação - Score facial 78, aumento de 26 pontos"
-                  className="w-full h-full object-cover aspect-[3/4]"
-                  loading="lazy"
-                  width="400"
-                  height="533"
-                  style={{ imageRendering: '-webkit-optimize-contrast' }}
-                />
-              </picture>
+              <img
+                src="/media/social_proof_after.png"
+                alt="Foto de depois da transformação - Score facial 78, aumento de 26 pontos"
+                className="w-full h-full object-cover aspect-[3/4]"
+                loading="lazy"
+                width="400"
+                height="533"
+                onError={(e) => {
+                  const target = e.currentTarget;
+                  target.src = '/media/scan_male.jpg';
+                }}
+                style={{ imageRendering: '-webkit-optimize-contrast' }}
+              />
               <div className="absolute top-2 left-2 sm:top-3 sm:left-3 px-2 py-1 sm:px-3 sm:py-1.5 rounded-full bg-green-500/90 text-white text-[10px] sm:text-xs font-bold uppercase tracking-wide">
                 Depois
               </div>
@@ -121,28 +103,19 @@ export function SocialProofSection() {
 
               {/* Author */}
               <div className="flex items-center gap-3 sm:gap-4">
-                <picture>
-                  <source 
-                    srcSet="/media/testimonial_avatar-100w.avif 100w"
-                    type="image/avif"
-                    sizes="56px"
-                  />
-                  <source 
-                    srcSet="/media/testimonial_avatar-100w.webp 100w"
-                    type="image/webp"
-                    sizes="56px"
-                  />
-                  <img
-                    src="/media/testimonial_avatar.jpg"
-                    srcSet="/media/testimonial_avatar.jpg 1x, /media/testimonial_avatar@2x.jpg 2x"
-                    alt="Avatar de Felipe Andrade - Depoimento de transformação"
-                    className="w-11 h-11 sm:w-14 sm:h-14 rounded-full object-cover border-2 border-primary/30 overflow-hidden"
-                    loading="lazy"
-                    width="200"
-                    height="200"
-                    style={{ imageRendering: '-webkit-optimize-contrast' }}
-                  />
-                </picture>
+                <img
+                  src="/media/testimonial_avatar.jpg"
+                  alt="Avatar de Felipe Andrade - Depoimento de transformação"
+                  className="w-11 h-11 sm:w-14 sm:h-14 rounded-full object-cover border-2 border-primary/30 overflow-hidden"
+                  loading="lazy"
+                  width="200"
+                  height="200"
+                  onError={(e) => {
+                    const target = e.currentTarget;
+                    target.src = '/media/scan_male.jpg';
+                  }}
+                  style={{ imageRendering: '-webkit-optimize-contrast' }}
+                />
                 <div>
                   <p className="text-white font-semibold text-sm sm:text-base">Felipe Andrade</p>
                   <p className="text-xs sm:text-sm text-white/60">26 anos • São Paulo</p>

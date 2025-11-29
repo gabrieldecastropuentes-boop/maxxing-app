@@ -110,39 +110,23 @@ export function HowItWorksSection() {
               <div className="grid grid-cols-2 gap-0.5 sm:gap-1 bg-black/50">
                 {/* Before Image */}
                 <div className="relative aspect-[3/4] overflow-hidden">
-                  <picture>
-                    <source 
-                      srcSet={
-                        activeGender === 'male' 
-                          ? "/media/scan_male-480w.avif 480w, /media/scan_male-768w.avif 768w"
-                          : "/media/scan_female-480w.avif 480w, /media/scan_female-768w.avif 768w"
-                      }
-                      type="image/avif"
-                      sizes="(max-width: 640px) 50vw, 400px"
-                    />
-                    <source 
-                      srcSet={
-                        activeGender === 'male' 
-                          ? "/media/scan_male-480w.webp 480w, /media/scan_male-768w.webp 768w"
-                          : "/media/scan_female-480w.webp 480w, /media/scan_female-768w.webp 768w"
-                      }
-                      type="image/webp"
-                      sizes="(max-width: 640px) 50vw, 400px"
-                    />
                   <img
                     src={activeGender === 'male' ? '/media/scan_male.jpg' : '/media/scan_female.jpg'}
                     alt="Análise facial - antes"
                     className="w-full h-full object-cover transition-opacity duration-500"
                     loading="lazy"
-                      width="400"
-                      height="533"
-                      style={{
-                        transform: 'translateZ(0)',
-                        backfaceVisibility: 'hidden',
-                        willChange: 'opacity'
-                      }}
+                    width="400"
+                    height="533"
+                    onError={(e) => {
+                      const target = e.currentTarget;
+                      target.src = '/media/scan_male.jpg';
+                    }}
+                    style={{
+                      transform: 'translateZ(0)',
+                      backfaceVisibility: 'hidden',
+                      willChange: 'opacity'
+                    }}
                   />
-                  </picture>
                   {/* Scan Line Effect */}
                   <div className="absolute inset-0 overflow-hidden pointer-events-none">
                     <div className="scan-line-effect" />
@@ -160,40 +144,24 @@ export function HowItWorksSection() {
 
                 {/* After Image (Potential) */}
                 <div className="relative aspect-[3/4] overflow-hidden">
-                  <picture>
-                    <source 
-                      srcSet={
-                        activeGender === 'male' 
-                          ? "/media/scan_male-480w.avif 480w, /media/scan_male-768w.avif 768w"
-                          : "/media/scan_female-480w.avif 480w, /media/scan_female-768w.avif 768w"
-                      }
-                      type="image/avif"
-                      sizes="(max-width: 640px) 50vw, 400px"
-                    />
-                    <source 
-                      srcSet={
-                        activeGender === 'male' 
-                          ? "/media/scan_male-480w.webp 480w, /media/scan_male-768w.webp 768w"
-                          : "/media/scan_female-480w.webp 480w, /media/scan_female-768w.webp 768w"
-                      }
-                      type="image/webp"
-                      sizes="(max-width: 640px) 50vw, 400px"
-                    />
                   <img
                     src={activeGender === 'male' ? '/media/scan_male.jpg' : '/media/scan_female.jpg'}
                     alt="Análise facial - potencial"
                     className="w-full h-full object-cover transition-opacity duration-500"
-                      style={{ 
-                        filter: 'brightness(1.1) contrast(1.05)',
-                        transform: 'translateZ(0)',
-                        backfaceVisibility: 'hidden',
-                        willChange: 'opacity'
-                      }}
+                    onError={(e) => {
+                      const target = e.currentTarget;
+                      target.src = '/media/scan_male.jpg';
+                    }}
+                    style={{ 
+                      filter: 'brightness(1.1) contrast(1.05)',
+                      transform: 'translateZ(0)',
+                      backfaceVisibility: 'hidden',
+                      willChange: 'opacity'
+                    }}
                     loading="lazy"
-                      width="400"
-                      height="533"
+                    width="400"
+                    height="533"
                   />
-                  </picture>
                   <div className="absolute inset-0 bg-gradient-to-t from-green-500/10 to-transparent" />
                 </div>
               </div>
@@ -214,39 +182,23 @@ export function HowItWorksSection() {
                     i <= 5 ? 'border-primary/50 shadow-[0_0_10px_rgba(255,77,77,0.25)]' : 'border-white/10'
                   )}
                 >
-                  <picture>
-                    <source 
-                      srcSet={
-                        i % 2 === 0 
-                          ? "/media/scan_female-100w.avif 100w"
-                          : "/media/scan_male-100w.avif 100w"
-                      }
-                      type="image/avif"
-                      sizes="100px"
-                    />
-                    <source 
-                      srcSet={
-                        i % 2 === 0 
-                          ? "/media/scan_female-100w.webp 100w"
-                          : "/media/scan_male-100w.webp 100w"
-                      }
-                      type="image/webp"
-                      sizes="100px"
-                    />
                   <img
                     src={i % 2 === 0 ? '/media/scan_female.jpg' : '/media/scan_male.jpg'}
                     alt={`Análise ${i}`}
                     className="w-full h-full object-cover"
+                    onError={(e) => {
+                      const target = e.currentTarget;
+                      target.src = '/media/scan_male.jpg';
+                    }}
                     style={{
                       filter: i <= 5 ? 'none' : 'grayscale(50%) brightness(0.7)',
-                        transform: 'translateZ(0)',
-                        backfaceVisibility: 'hidden'
+                      transform: 'translateZ(0)',
+                      backfaceVisibility: 'hidden'
                     }}
                     loading="lazy"
-                      width="100"
-                      height="100"
+                    width="100"
+                    height="100"
                   />
-                  </picture>
                 </div>
               ))}
             </div>

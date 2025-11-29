@@ -26,26 +26,18 @@ export function HaircutValueBlock() {
               
               {/* Container da imagem */}
               <div className="relative rounded-xl sm:rounded-2xl overflow-hidden bg-black border border-white/10">
-                <picture>
-                  <source 
-                    srcSet="/media/cortecabelo-480w.avif 480w, /media/cortecabelo-768w.avif 768w, /media/cortecabelo-1024w.avif 1024w"
-                    type="image/avif"
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 480px"
-                  />
-                  <source 
-                    srcSet="/media/cortecabelo-480w.webp 480w, /media/cortecabelo-768w.webp 768w, /media/cortecabelo-1024w.webp 1024w"
-                    type="image/webp"
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 480px"
-                  />
-                  <img
-                    src="/media/cortecabelo.jpg"
-                    alt="Exemplo de como um corte de cabelo adequado transforma a harmonia do rosto"
-                    className="w-full h-auto object-cover"
-                    loading="lazy"
-                    width="480"
-                    height="640"
-                  />
-                </picture>
+                <img
+                  src="/media/cortecabelo.jpg"
+                  alt="Exemplo de como um corte de cabelo adequado transforma a harmonia do rosto"
+                  className="w-full h-auto object-cover"
+                  loading="lazy"
+                  width="480"
+                  height="640"
+                  onError={(e) => {
+                    const target = e.currentTarget;
+                    target.src = '/media/scan_male.jpg';
+                  }}
+                />
               </div>
             </div>
             
