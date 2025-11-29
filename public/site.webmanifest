@@ -1,0 +1,17 @@
+{
+  "name": "GlowMax - Análise Facial",
+  "short_name": "GlowMax",
+  "description": "Análise facial com IA para looksmaxing",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0A0A0A",
+  "theme_color": "#FF4D4D",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
+

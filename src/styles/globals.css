@@ -1,0 +1,1729 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply box-border;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
+     SISTEMA DE DIFERENCIAÇÃO POR GÊNERO
+     ═══════════════════════════════════════════════════════════════ */
+  
+  /* Modo Masculino (padrão) */
+  body.male-mode {
+    /* Paleta padrão vermelho → laranja */
+    --gender-accent: #FF4D4D;
+    --gender-accent-light: #FF6B35;
+    --gender-accent-dark: #FF8C42;
+    --gender-glow: rgba(255, 77, 77, 0.3);
+  }
+
+  /* Modo Feminino */
+  body.female-mode {
+    /* Paleta rosa/rose para feminino */
+    --gender-accent: #EC4899;
+    --gender-accent-light: #F472B6;
+    --gender-accent-dark: #F9A8D4;
+    --gender-glow: rgba(236, 72, 153, 0.3);
+  }
+
+  /* Aplicar cores de gênero em elementos específicos */
+  body.female-mode .btn-primary,
+  body.female-mode .btn-cta-vibrant {
+    background: linear-gradient(135deg, #EC4899 0%, #F472B6 50%, #EC4899 100%);
+    box-shadow: 
+      0 8px 20px rgba(0, 0, 0, 0.55),
+      0 0 0 1px rgba(255, 255, 255, 0.04),
+      0 0 18px rgba(236, 72, 153, 0.18),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  }
+
+  body.female-mode .text-primary {
+    color: #EC4899;
+  }
+
+  body.female-mode .border-primary {
+    border-color: #EC4899;
+  }
+
+  body.female-mode .bg-primary {
+    background-color: #EC4899;
+  }
+
+  body.female-mode .bg-primary\/20 {
+    background-color: rgba(236, 72, 153, 0.2);
+  }
+  
+  html {
+    /* CORREÇÃO: scroll-smooth apenas em links específicos, não globalmente */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    position: relative;
+    /* FIX SAFARI iOS: Usar -webkit-fill-available para altura correta */
+    min-height: 100vh;
+    min-height: -webkit-fill-available; /* Fix para Safari iOS */
+    /* Force GPU acceleration for smoother scrolling */
+    -webkit-overflow-scrolling: touch;
+    /* FIX SAFARI iOS: Prevenir problemas com scroll */
+    overflow-x: hidden;
+    width: 100%;
+  }
+  
+  body {
+    @apply bg-background text-text-primary font-sans antialiased;
+    background:
+      radial-gradient(circle at 12% -10%, rgba(255, 77, 77, 0.25), transparent 55%),
+      radial-gradient(circle at 88% 5%, rgba(255, 140, 66, 0.22), transparent 55%),
+      radial-gradient(ellipse at 50% 120%, rgba(255, 77, 77, 0.18), rgba(0, 0, 0, 0)),
+      radial-gradient(circle at 45% 20%, rgba(255, 255, 255, 0.05), transparent 60%),
+      linear-gradient(135deg, #080707 0%, #030202 40%, #090405 100%);
+    /* FIX SAFARI iOS: Usar -webkit-fill-available para evitar problemas com viewport */
+    min-height: 100vh;
+    min-height: -webkit-fill-available; /* Fix para Safari iOS */
+    min-height: 100dvh; /* Dynamic viewport height para browsers modernos */
+    position: relative;
+    overflow-x: hidden;
+    width: 100%;
+    max-width: 100vw;
+    /* FIX SAFARI iOS: Remover transition de background que pode causar bugs */
+    transition: none;
+  }
+  
+  /* Prevenir overflow horizontal em todos os elementos - OTIMIZADO */
+  * {
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+  
+  /* Exceções para elementos que precisam de largura específica */
+  img, picture, video, iframe, svg {
+    max-width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  ::selection {
+    @apply bg-primary/30 text-white;
+  }
+
+  /* Prevent zoom on input focus for iOS */
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+
+  @media (min-width: 768px) {
+    input, select, textarea {
+      font-size: inherit !important;
+    }
+  }
+
+  /* Mobile touch improvements */
+  button, a {
+    touch-action: manipulation;
+    /* Garantir hitbox mínimo de 44x44px para acessibilidade */
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* CORREÇÃO: Scroll suave apenas em links de âncora */
+  a[href^="#"] {
+    scroll-behavior: smooth;
+  }
+  
+  /* Exceção para botões inline pequenos (ícones) */
+  button[aria-label],
+  button:has(svg:only-child) {
+    min-width: 44px;
+    min-height: 44px;
+  }
+  
+  /* Improve image rendering performance */
+  img {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 500px;
+    /* Prevent flickering on load */
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+    /* GPU acceleration */
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    /* Reduzir reflows */
+    will-change: auto;
+  }
+  
+  /* CORREÇÃO: Font-size mínimo e line-height adequado */
+  .stat-description,
+  .small-text,
+  p.text-sm,
+  p.text-xs {
+    font-size: clamp(14px, 3.5vw, 16px);
+    line-height: 1.6;
+  }
+  
+  @media (min-width: 768px) {
+    .stat-description,
+    .small-text {
+      font-size: 16px;
+    }
+  }
+  
+  /* CORREÇÃO: Line-height para parágrafos */
+  p, .body-text {
+    line-height: 1.6;
+  }
+
+  /* Otimização para imagens lazy-loaded */
+  img[loading="lazy"] {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 400px;
+  }
+
+  /* Imagens críticas (above the fold) */
+  img[loading="eager"],
+  img[fetchpriority="high"] {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 600px;
+  }
+  
+  /* Prevent layout shifts during image load - Placeholder */
+  img[loading="lazy"] {
+    background-color: rgba(0, 0, 0, 0.3);
+    background-image: linear-gradient(90deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.05) 100%);
+    background-size: 200% 100%;
+    animation: skeleton-shimmer 1.5s ease-in-out infinite;
+  }
+  
+  /* Skeleton loading para imagens carregando */
+  img:not([src]),
+  img[src=""],
+  img[src="undefined"] {
+    background: linear-gradient(90deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.05) 100%);
+    background-size: 200% 100%;
+    animation: skeleton-shimmer 1.5s ease-in-out infinite;
+  }
+}
+
+/* Mobile optimizations - reduce animations */
+@media (max-width: 768px) {
+  /* Disable expensive animations on mobile */
+  .animate-pulse,
+  .animate-pulse-glow {
+    animation-duration: 2s !important;
+  }
+  
+  /* Reduce blur effects on mobile */
+  [class*="blur-"] {
+    filter: blur(20px) !important;
+  }
+  
+  /* Simplify motion animations */
+  [class*="motion"] {
+    transition-duration: 0.3s !important;
+  }
+  
+  /* Disable backdrop-blur on mobile (very expensive) */
+  [class*="backdrop-blur"] {
+    backdrop-filter: none !important;
+    background-color: rgba(10, 10, 15, 0.9) !important;
+  }
+  
+  /* Optimize images */
+  img {
+    will-change: auto !important;
+  }
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  
+  .animate-pulse,
+  .animate-pulse-glow,
+  .scan-line-effect,
+  .animate-scan-progress {
+    animation: none !important;
+  }
+  
+  html {
+    scroll-behavior: auto !important;
+  }
+}
+
+/* =====================================================
+   FEMALE FLOW STYLES - UI Levemente Mais Suave
+   ===================================================== */
+.female-flow {
+  /* Bordas mais arredondadas */
+  --border-radius-base: 1.25rem;
+  --border-radius-lg: 1.75rem;
+}
+
+.female-flow .btn-primary,
+.female-flow .card,
+.female-flow .quiz-option {
+  border-radius: var(--border-radius-lg);
+}
+
+/* Animações mais suaves para o fluxo feminino */
+.female-flow * {
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Glow rosa sutil nos elementos interativos */
+.female-flow .btn-primary:not(.bg-gradient-to-r) {
+  background: linear-gradient(135deg, #EC4899 0%, #F43F5E 50%, #EC4899 100%);
+  box-shadow: 
+    0 8px 20px rgba(0, 0, 0, 0.45),
+    0 0 0 1px rgba(255, 255, 255, 0.04),
+    0 0 18px rgba(236, 72, 153, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.female-flow .btn-primary:not(.bg-gradient-to-r):hover {
+  box-shadow: 
+    0 12px 30px rgba(0, 0, 0, 0.55),
+    0 0 0 1px rgba(255, 255, 255, 0.06),
+    0 0 24px rgba(236, 72, 153, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14);
+}
+
+/* Cards com borda rosa sutil */
+.female-flow .card {
+  border-color: rgba(236, 72, 153, 0.1);
+}
+
+.female-flow .card:hover {
+  border-color: rgba(236, 72, 153, 0.2);
+}
+
+/* Quiz options com feedback feminino */
+.female-flow .quiz-option.selected {
+  border-color: rgba(236, 72, 153, 0.5);
+  box-shadow: 0 0 20px rgba(236, 72, 153, 0.2);
+}
+
+/* Progress bar rosa */
+.female-flow .bg-gradient-to-r.from-primary {
+  background: linear-gradient(to right, #EC4899, #F43F5E) !important;
+}
+
+/* Accent color override */
+.female-flow .text-primary {
+  color: #EC4899;
+}
+
+.female-flow .bg-primary {
+  background-color: #EC4899;
+}
+
+.female-flow .border-primary {
+  border-color: #EC4899;
+}
+
+/* Animated fluid background layers */
+body::before,
+body::after,
+html::before {
+  content: '';
+  position: fixed;
+  pointer-events: none;
+  z-index: -1;
+  /* GPU acceleration for smooth animations */
+  will-change: transform, opacity;
+  transform: translateZ(0);
+}
+
+/* =====================================================
+   SOLUÇÃO AGRESSIVA PARA SAFARI iOS
+   Desabilita TUDO que pode causar problemas
+   ===================================================== */
+
+/* Detectar Safari iOS especificamente */
+@supports (-webkit-touch-callout: none) {
+  @media (max-width: 768px) {
+    /* 1. REMOVER COMPLETAMENTE TODOS OS PSEUDO-ELEMENTOS */
+    *::before,
+    *::after,
+    body::before,
+    html::before,
+    body::after,
+    html::after {
+      display: none !important;
+      content: none !important;
+      visibility: hidden !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+    }
+    
+    /* 2. FUNDO ULTRA SIMPLIFICADO - APENAS COR SÓLIDA */
+    html,
+    body {
+      background: #080707 !important;
+      background-image: none !important;
+      background-attachment: scroll !important;
+      background-size: auto !important;
+      background-repeat: repeat !important;
+      background-position: 0 0 !important;
+      /* Remover TODAS as propriedades problemáticas */
+      filter: none !important;
+      transform: none !important;
+      -webkit-transform: none !important;
+      will-change: auto !important;
+      transition: none !important;
+      animation: none !important;
+      mix-blend-mode: normal !important;
+      backdrop-filter: none !important;
+      /* Fix altura Safari */
+      min-height: -webkit-fill-available !important;
+      height: -webkit-fill-available !important;
+      position: relative !important;
+    }
+    
+    /* 3. REMOVER TODAS AS ANIMAÇÕES */
+    *,
+    *::before,
+    *::after {
+      animation: none !important;
+      transition: none !important;
+      transform: none !important;
+      -webkit-transform: none !important;
+      will-change: auto !important;
+      filter: none !important;
+      backdrop-filter: none !important;
+    }
+    
+    /* 4. SIMPLIFICAR MAIN E CONTAINERS */
+    main,
+    #root,
+    [class*="container"],
+    [class*="section"] {
+      filter: none !important;
+      transform: none !important;
+      -webkit-transform: none !important;
+      will-change: auto !important;
+      backdrop-filter: none !important;
+      isolation: auto !important;
+      position: relative !important;
+    }
+    
+    /* 5. DESABILITAR TODAS AS CLASSES DE ANIMAÇÃO */
+    .animate-pulse,
+    .animate-ping,
+    .animate-pulse-glow,
+    .animate-gradient-x,
+    [class*="animate-"],
+    [class*="motion"] {
+      animation: none !important;
+      opacity: 1 !important;
+    }
+    
+    /* 6. REMOVER BLUR E BACKDROP-FILTER */
+    [class*="blur-"],
+    [class*="backdrop-blur"] {
+      filter: none !important;
+      backdrop-filter: none !important;
+    }
+    
+    /* 7. SIMPLIFICAR IMAGENS */
+    img {
+      transform: none !important;
+      -webkit-transform: none !important;
+      will-change: auto !important;
+      filter: none !important;
+      animation: none !important;
+    }
+  }
+}
+
+/* Fallback para outros mobile browsers */
+@media (max-width: 768px) {
+  /* 1. REMOVER COMPLETAMENTE pseudo-elementos animados */
+  body::before,
+  html::before,
+  body::after {
+    display: none !important;
+    animation: none !important;
+    will-change: auto !important;
+    transform: none !important;
+    filter: none !important;
+    mix-blend-mode: normal !important;
+  }
+  
+  /* 2. FUNDO ESTÁTICO SIMPLIFICADO */
+  body {
+    transition: none !important;
+    filter: none !important;
+    background: linear-gradient(135deg, #080707 0%, #030202 45%, #090405 100%) !important;
+    background-attachment: scroll !important;
+    background-size: 100% 100% !important;
+    background-repeat: no-repeat !important;
+    min-height: -webkit-fill-available !important;
+    transform: none !important;
+    will-change: auto !important;
+  }
+  
+  /* 3. GARANTIR QUE MAIN NÃO HERDE PROPRIEDADES PROBLEMÁTICAS */
+  main {
+    filter: none !important;
+    transform: none !important;
+    will-change: auto !important;
+    isolation: isolate;
+    position: relative;
+  }
+  
+  /* 4. DESABILITAR ANIMAÇÕES PESADAS EM MOBILE */
+  .animate-pulse,
+  .animate-ping,
+  .animate-pulse-glow {
+    animation: none !important;
+    opacity: 1 !important;
+  }
+}
+
+body::before {
+  inset: auto;
+  width: 55vw;
+  height: 55vw;
+  max-width: 640px;
+  max-height: 640px;
+  top: -25vh;
+  left: -15vw;
+  background: radial-gradient(circle at 30% 30%, rgba(255, 77, 77, 0.9), rgba(255, 107, 53, 0.5) 45%, transparent 70%);
+  filter: blur(90px);
+  opacity: 0.45;
+  mix-blend-mode: screen;
+  animation: orbFloatA 22s ease-in-out infinite alternate, orbColorShiftA 9s ease-in-out infinite;
+  /* GPU acceleration para eliminar tremulação */
+  will-change: transform, opacity;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  -webkit-transform: translateZ(0);
+}
+
+html::before {
+  width: 50vw;
+  height: 50vw;
+  max-width: 520px;
+  max-height: 520px;
+  top: -10vh;
+  right: -18vw;
+  background: radial-gradient(circle at 70% 30%, rgba(255, 140, 66, 0.9), rgba(255, 77, 77, 0.45) 50%, transparent 70%);
+  filter: blur(80px);
+  opacity: 0.4;
+  mix-blend-mode: screen;
+  animation: orbFloatB 26s ease-in-out infinite alternate, orbColorShiftB 11s ease-in-out infinite;
+  /* GPU acceleration para eliminar tremulação */
+  will-change: transform, opacity;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  -webkit-transform: translateZ(0);
+}
+
+body::after {
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 20% 20%, rgba(255, 77, 77, 0.12), transparent 55%),
+    radial-gradient(circle at 80% 80%, rgba(255, 107, 53, 0.12), transparent 60%),
+    linear-gradient(120deg, rgba(255, 77, 77, 0.04), rgba(0, 0, 0, 0)),
+    linear-gradient(300deg, rgba(255, 140, 66, 0.04), rgba(0, 0, 0, 0)),
+    linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size:
+    400px 400px,
+    500px 500px,
+    100% 100%,
+    100% 100%,
+    180px 180px,
+    180px 180px;
+  opacity: 0.22;
+  z-index: -2;
+  mix-blend-mode: screen;
+  animation: gridGlow 12s linear infinite;
+  /* CORREÇÃO: Remover will-change: background-position que causa repinturas constantes */
+  /* Usar apenas transform para GPU acceleration sem forçar repinturas */
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  -webkit-transform: translateZ(0);
+}
+
+@keyframes orbFloatA {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(12vw, 10vh, 0) scale(1.08);
+  }
+  100% {
+    transform: translate3d(5vw, 5vh, 0) scale(0.95);
+  }
+}
+
+@keyframes orbFloatB {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(-10vw, -8vh, 0) scale(1.06);
+  }
+  100% {
+    transform: translate3d(-4vw, -4vh, 0) scale(0.97);
+  }
+}
+
+@keyframes orbColorShiftA {
+  0%, 100% {
+    background: radial-gradient(circle at 30% 30%, rgba(255, 77, 77, 0.9), rgba(255, 107, 53, 0.5) 45%, transparent 70%);
+  }
+  50% {
+    background: radial-gradient(circle at 35% 40%, rgba(255, 107, 53, 0.95), rgba(255, 77, 77, 0.45) 45%, transparent 70%);
+  }
+}
+
+@keyframes orbColorShiftB {
+  0%, 100% {
+    background: radial-gradient(circle at 70% 30%, rgba(255, 140, 66, 0.9), rgba(255, 77, 77, 0.45) 50%, transparent 70%);
+  }
+  50% {
+    background: radial-gradient(circle at 65% 35%, rgba(255, 77, 77, 0.95), rgba(255, 107, 53, 0.45) 50%, transparent 70%);
+  }
+}
+
+@keyframes gridGlow {
+  0% {
+    background-position:
+      0 0,
+      0 0,
+      0 0,
+      0 0,
+      0 0,
+      0 0;
+  }
+  100% {
+    background-position:
+      100px 120px,
+      -120px -100px,
+      30px 60px,
+      -40px -80px,
+      180px 0,
+      0 180px;
+  }
+}
+
+@layer components {
+  .section-container {
+    @apply w-full max-w-5xl mx-auto;
+    /* CORREÇÃO: Padding mínimo de 20px em mobile */
+    padding-left: max(20px, env(safe-area-inset-left));
+    padding-right: max(20px, env(safe-area-inset-right));
+    /* Prevenir overflow horizontal e reflows */
+    box-sizing: border-box;
+    overflow-x: hidden;
+    width: 100%;
+    max-width: 100%;
+    /* Otimização de performance - reduzir reflows */
+    contain: layout style;
+    will-change: auto;
+  }
+  
+  /* Desktop: padding maior */
+  @media (min-width: 640px) {
+    .section-container {
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
+  }
+  
+  @media (min-width: 1024px) {
+    .section-container {
+      padding-left: 3rem;
+      padding-right: 3rem;
+    }
+  }
+
+  .stack-y {
+    @apply flex flex-col gap-4;
+  }
+
+  .btn-full-mobile {
+    @apply w-full sm:w-auto;
+  }
+
+  /* Classe reutilizável para isolamento de seções - OTIMIZADO */
+  .isolation-section {
+    isolation: isolate;
+    position: relative;
+    contain: layout style;
+    will-change: auto;
+    /* CORREÇÃO: Espaçamento padronizado entre seções */
+    margin-bottom: 48px;
+  }
+  
+  @media (min-width: 768px) {
+    .isolation-section {
+      margin-bottom: 80px;
+    }
+  }
+  
+  /* CORREÇÃO: Container de câmera sem CSS conflitantes */
+  .camera-container,
+  [class*="camera"],
+  input[type="file"] {
+    transform: none !important;
+    filter: none !important;
+    will-change: auto !important;
+    overflow: visible !important;
+  }
+  
+  /* Input file otimizado para mobile */
+  input[type="file"] {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* Professional CTA Button - OTIMIZADO PARA TOUCH (56px mínimo) + GLOW EFFECT */
+  .btn-primary {
+    @apply relative overflow-hidden px-6 sm:px-8 py-4 sm:py-5 rounded-2xl font-bold text-white inline-flex items-center gap-2;
+    @apply text-base sm:text-lg md:text-xl w-full sm:w-auto justify-center;
+    @apply min-h-[56px] min-w-[44px]; /* Touch-friendly: 56px altura mínima */
+    background: linear-gradient(135deg, #FF4D4D 0%, #FF6B35 50%, #FF4D4D 100%);
+    background-size: 200% 200%;
+    animation: gradientShift 3s ease infinite, ctaGlow 2s ease-in-out infinite;
+    @apply transform transition-[transform,box-shadow,background] duration-300 ease-out;
+    @apply hover:shadow-xl;
+    @apply active:scale-[0.98];
+    @apply disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100;
+    box-shadow: 
+      0 8px 20px rgba(0, 0, 0, 0.55),
+      0 0 0 1px rgba(255, 255, 255, 0.04),
+      0 0 18px rgba(255, 77, 77, 0.18),
+      0 0 30px rgba(255, 77, 77, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  }
+  
+  /* CORREÇÃO: Focus-visible states para acessibilidade */
+  .btn-primary:focus-visible,
+  button:focus-visible,
+  a:focus-visible {
+    outline: 3px solid #FF4D4D;
+    outline-offset: 2px;
+    border-radius: 0.5rem;
+  }
+
+  /* Efeito de glow sutil nos CTAs */
+  @keyframes ctaGlow {
+    0%, 100% {
+      box-shadow: 
+        0 8px 20px rgba(0, 0, 0, 0.55),
+        0 0 0 1px rgba(255, 255, 255, 0.04),
+        0 0 18px rgba(255, 77, 77, 0.18),
+        0 0 30px rgba(255, 77, 77, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    }
+    50% {
+      box-shadow: 
+        0 8px 20px rgba(0, 0, 0, 0.55),
+        0 0 0 1px rgba(255, 255, 255, 0.04),
+        0 0 24px rgba(255, 77, 77, 0.25),
+        0 0 40px rgba(255, 77, 77, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    }
+  }
+
+  @keyframes gradientShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+
+  /* CORREÇÃO: Hover apenas em dispositivos com mouse */
+  @media (hover: hover) {
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 
+        0 12px 30px rgba(0, 0, 0, 0.65),
+        0 0 0 1px rgba(255, 255, 255, 0.06),
+        0 0 24px rgba(255, 107, 53, 0.28),
+        inset 0 1px 0 rgba(255, 255, 255, 0.14);
+    }
+
+    .btn-primary:hover::after {
+      @apply bg-white/10;
+    }
+  }
+
+  .btn-primary::after {
+    content: '';
+    @apply absolute inset-0 bg-white/0 transition-all duration-300;
+  }
+  
+  /* REFORÇO VISUAL PARA MOBILE: Botões mais vibrantes */
+  @media (max-width: 768px) {
+    .btn-primary {
+      /* Aumentar intensidade do efeito RGB/Neon em mobile */
+      box-shadow: 
+        0 10px 30px rgba(0, 0, 0, 0.6),
+        0 0 0 2px rgba(255, 255, 255, 0.08),
+        0 0 30px rgba(255, 77, 77, 0.4),
+        0 0 50px rgba(255, 107, 53, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15) !important;
+      /* Manter animação de gradiente para destaque */
+      animation: gradientShift 3s ease infinite !important;
+    }
+    
+    .btn-primary:hover,
+    .btn-primary:active {
+      box-shadow: 
+        0 14px 40px rgba(0, 0, 0, 0.7),
+        0 0 0 2px rgba(255, 255, 255, 0.12),
+        0 0 40px rgba(255, 77, 77, 0.5),
+        0 0 60px rgba(255, 107, 53, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+    }
+  }
+
+  /* Secondary Button */
+  .btn-secondary {
+    @apply px-6 py-3 rounded-xl font-semibold text-white;
+    @apply bg-white/5 border border-white/10;
+    @apply hover:bg-white/10 hover:border-white/20;
+    @apply transform transition-all duration-200;
+    @apply active:scale-[0.98];
+    @apply min-h-[44px] min-w-[44px]; /* Hitbox mínimo para acessibilidade */
+    backdrop-filter: blur(10px);
+  }
+  
+  /* CORREÇÃO: Focus-visible para btn-secondary */
+  .btn-secondary:focus-visible {
+    outline: 3px solid #FF4D4D;
+    outline-offset: 2px;
+    border-radius: 0.75rem;
+  }
+  
+  /* CORREÇÃO: Focus-visible para inputs */
+  .input-field:focus-visible {
+    outline: 3px solid #FF4D4D;
+    outline-offset: 2px;
+    border-radius: 0.75rem;
+  }
+
+  /* Professional Card */
+  .card {
+    @apply bg-white/[0.03] rounded-2xl md:rounded-3xl;
+    @apply border border-white/[0.06];
+    backdrop-filter: blur(14px);
+    box-shadow: 
+      0 10px 28px rgba(0, 0, 0, 0.6),
+      0 0 0 1px rgba(255, 255, 255, 0.02),
+      0 0 18px rgba(255, 77, 77, 0.08),
+      inset 0 1px 0 rgba(255, 255, 255, 0.03);
+    @apply transition-[transform,box-shadow,background] duration-300 ease-out;
+  }
+
+  .card-elevated {
+    @apply bg-white/[0.05] rounded-2xl md:rounded-3xl;
+    @apply border border-white/[0.08];
+    backdrop-filter: blur(30px);
+    box-shadow: 
+      0 18px 55px rgba(0, 0, 0, 0.85),
+      0 0 0 1px rgba(255, 255, 255, 0.05),
+      0 0 70px rgba(255, 77, 77, 0.18),
+      inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    @apply transition-[transform,box-shadow,background] duration-300 ease-out;
+  }
+  
+  /* REFORÇO VISUAL PARA MOBILE: Cards mais destacados */
+  @media (max-width: 768px) {
+    .card {
+      /* Aumentar intensidade de sombra e brilho em mobile */
+      box-shadow: 
+        0 12px 35px rgba(0, 0, 0, 0.7),
+        0 0 0 1px rgba(255, 255, 255, 0.05),
+        0 0 25px rgba(255, 77, 77, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+      /* Remover backdrop-filter em mobile para evitar blur */
+      backdrop-filter: none !important;
+    }
+    
+    .card-elevated {
+      box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.9),
+        0 0 0 1px rgba(255, 255, 255, 0.08),
+        0 0 80px rgba(255, 77, 77, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+      backdrop-filter: none !important;
+    }
+  }
+
+  /* Quiz Option - Touch Optimized */
+  .quiz-option {
+    @apply relative w-full p-4 md:p-5 rounded-xl md:rounded-2xl text-left;
+    @apply bg-white/[0.03] border border-white/[0.08];
+    @apply hover:border-primary/40 hover:bg-white/[0.06];
+    @apply transform transition-all duration-200 ease-out;
+    @apply cursor-pointer select-none;
+    @apply min-h-[60px] md:min-h-[72px]; /* Touch-friendly height */
+    backdrop-filter: blur(10px);
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  .quiz-option.selected {
+    @apply border-primary bg-primary/10;
+    box-shadow: 
+      0 0 0 1px rgba(255, 77, 77, 0.3),
+      0 4px 20px rgba(255, 77, 77, 0.15),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  }
+
+  .quiz-option:hover {
+    transform: translateX(4px);
+  }
+
+  .quiz-option:active {
+    transform: scale(0.99);
+  }
+
+  /* Progress Bar */
+  .progress-bar {
+    @apply h-1.5 md:h-2 bg-white/[0.06] rounded-full overflow-hidden;
+  }
+
+  .progress-bar-fill {
+    @apply h-full rounded-full;
+    background: linear-gradient(90deg, #FF4D4D 0%, #FF6B35 100%);
+    box-shadow: 0 0 20px rgba(255, 77, 77, 0.5);
+  }
+
+  /* Input Field - Mobile Optimized */
+  .input-field {
+    @apply w-full px-4 md:px-5 py-4 rounded-xl md:rounded-2xl;
+    @apply bg-white/[0.05] border border-white/[0.1];
+    @apply text-white placeholder-white/30;
+    @apply focus:outline-none focus:border-primary/50 focus:ring-2 focus:ring-primary/20;
+    @apply transition-all duration-200;
+    @apply text-base; /* Prevents zoom on iOS */
+    backdrop-filter: blur(10px);
+  }
+
+  /* Gradient Text with Animation - Clean Version */
+  .glow-text {
+    @apply text-transparent bg-clip-text;
+    background: linear-gradient(90deg, #FF4D4D, #FF6B35, #FF8C42, #FF6B35, #FF4D4D);
+    background-size: 300% 100%;
+    animation: glowTextShift 4s ease-in-out infinite;
+  }
+
+  @keyframes glowTextShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+
+  /* Neon Glow Text for Headlines - Subtle Version */
+  .neon-glow {
+    @apply text-transparent bg-clip-text;
+    background: linear-gradient(90deg, #FF4D4D, #FF6B35, #FF8C42, #FF6B35, #FF4D4D);
+    background-size: 400% 100%;
+    animation: neonShift 5s ease-in-out infinite;
+  }
+
+  @keyframes neonShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+
+  /* Badge */
+  .badge {
+    @apply inline-flex items-center gap-2 px-3 md:px-4 py-1.5 md:py-2 rounded-full;
+    @apply text-xs md:text-sm font-medium;
+    @apply bg-white/[0.05] border border-white/[0.1];
+    backdrop-filter: blur(10px);
+  }
+
+  .badge-primary {
+    @apply bg-primary/10 border-primary/20 text-primary;
+  }
+
+  .badge-success {
+    @apply bg-green-500/10 border-green-500/20 text-green-400;
+  }
+
+  /* Pulse Animation for CTA - Full RGB Neon Effect */
+  .animate-pulse-glow {
+    animation: pulseGlowRGB 3s ease-in-out infinite, gradientShift 3s ease infinite;
+    position: relative;
+  }
+
+  .animate-pulse-glow::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    background: linear-gradient(90deg, #FF4D4D, #FF6B35, #9B59B6, #FF6B35, #FF4D4D);
+    background-size: 400% 100%;
+    border-radius: inherit;
+    z-index: -1;
+    opacity: 0.35;
+    animation: rgbBorderPulse 3s ease-in-out infinite;
+    filter: blur(6px);
+  }
+
+  @keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 0 rgba(255, 77, 77, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(255, 77, 77, 0.6);
+  }
+}
+
+@keyframes pulseGlowRGB {
+    0%,
+    100% {
+      box-shadow: 
+        0 6px 20px rgba(255, 77, 77, 0.35),
+        0 0 30px rgba(255, 77, 77, 0.2),
+        0 0 0 1px rgba(255, 77, 77, 0.18),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      transform: scale(1);
+    }
+    33% {
+      box-shadow: 
+        0 8px 26px rgba(255, 107, 53, 0.4),
+        0 0 35px rgba(255, 107, 53, 0.22),
+        0 0 0 1px rgba(255, 107, 53, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.12);
+      transform: scale(1.01);
+    }
+    66% {
+      box-shadow: 
+        0 9px 28px rgba(155, 89, 182, 0.35),
+        0 0 36px rgba(155, 89, 182, 0.2),
+        0 0 0 1px rgba(155, 89, 182, 0.18),
+        inset 0 1px 0 rgba(255, 255, 255, 0.14);
+      transform: scale(1.015);
+    }
+  }
+
+  @keyframes rgbBorderPulse {
+    0% {
+      opacity: 0.4;
+      background-position: 0% 50%;
+    }
+    33% {
+      opacity: 0.6;
+      background-position: 33% 50%;
+    }
+    66% {
+      opacity: 0.5;
+      background-position: 66% 50%;
+    }
+    100% {
+      opacity: 0.4;
+      background-position: 100% 50%;
+    }
+  }
+
+  /* Extra vibrant CTA for high conversion - OTIMIZADO PARA TOUCH */
+  .btn-cta-vibrant {
+    @apply relative overflow-hidden px-8 sm:px-10 lg:px-12 py-4 sm:py-5 rounded-2xl font-bold text-white;
+    @apply text-base sm:text-lg lg:text-xl;
+    @apply min-h-[56px] w-full sm:w-auto;
+    background: linear-gradient(135deg, #FF4D4D 0%, #FF6B35 25%, #FF8C42 50%, #9B59B6 75%, #FF4D4D 100%);
+    background-size: 400% 400%;
+    animation: vibrantGradient 5s ease infinite, ctaBreathing 3s ease-in-out infinite;
+    box-shadow: 
+      0 10px 40px rgba(255, 77, 77, 0.5),
+      0 0 60px rgba(255, 107, 53, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    @apply active:scale-[0.98] transition-all duration-200;
+  }
+  
+  /* REFORÇO VISUAL PARA MOBILE: CTA ainda mais vibrante */
+  @media (max-width: 768px) {
+    .btn-cta-vibrant {
+      /* Aumentar intensidade do efeito pulsante RGB/Neon */
+      box-shadow: 
+        0 12px 50px rgba(255, 77, 77, 0.6),
+        0 0 80px rgba(255, 107, 53, 0.4),
+        0 0 100px rgba(155, 89, 182, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+      /* Manter animações para máximo destaque */
+      animation: vibrantGradient 5s ease infinite, ctaBreathing 3s ease-in-out infinite !important;
+      /* Garantir full-width em mobile */
+      width: 100% !important;
+    }
+  }
+
+  @keyframes vibrantGradient {
+    0%, 100% { background-position: 0% 50%; }
+    25% { background-position: 50% 100%; }
+    50% { background-position: 100% 50%; }
+    75% { background-position: 50% 0%; }
+  }
+
+  @keyframes ctaBreathing {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.018); }
+  }
+
+  /* Floating Elements */
+  .floating {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+
+  /* Animated Gradient Text */
+  .animate-gradient-x {
+    background-size: 200% 100%;
+    animation: gradientX 3s ease-in-out infinite;
+  }
+
+  @keyframes gradientX {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+
+  /* Facial Scan Line Effect */
+  .scan-line-effect {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, #FF4D4D, #FF6B35, #FF4D4D, transparent);
+    box-shadow: 0 0 20px rgba(255, 77, 77, 0.8), 0 0 40px rgba(255, 107, 53, 0.6), 0 0 60px rgba(255, 77, 77, 0.4);
+    animation: scanLine 3s ease-in-out infinite;
+  }
+
+  @keyframes scanLine {
+    0% {
+      top: 0%;
+      opacity: 0;
+    }
+    10% {
+      opacity: 1;
+    }
+    90% {
+      opacity: 1;
+    }
+    100% {
+      top: 100%;
+      opacity: 0;
+    }
+  }
+
+  /* Scan Progress Bar */
+  .animate-scan-progress {
+    animation: scanProgress 3s ease-in-out infinite;
+  }
+
+  @keyframes scanProgress {
+    0% {
+      width: 0%;
+    }
+    100% {
+      width: 100%;
+    }
+  }
+
+  /* Intersection Observer animations */
+  .animate-on-scroll {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  }
+
+  .animate-on-scroll.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .animate-on-scroll-left {
+    opacity: 0;
+    transform: translateX(-30px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  }
+
+  .animate-on-scroll-left.is-visible {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .animate-on-scroll-right {
+    opacity: 0;
+    transform: translateX(30px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  }
+
+  .animate-on-scroll-right.is-visible {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .animate-on-scroll-scale {
+    opacity: 0;
+    transform: scale(0.9);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  }
+
+  .animate-on-scroll-scale.is-visible {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  /* Stagger delay utilities */
+  .delay-100 { transition-delay: 100ms; }
+  .delay-200 { transition-delay: 200ms; }
+  .delay-300 { transition-delay: 300ms; }
+  .delay-400 { transition-delay: 400ms; }
+  .delay-500 { transition-delay: 500ms; }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Safe area padding for notched devices */
+  /* FIX SAFARI iOS: Adicionar fallback para env() */
+  .safe-top {
+    padding-top: constant(safe-area-inset-top); /* iOS 11.0-11.2 */
+    padding-top: env(safe-area-inset-top); /* iOS 11.2+ */
+  }
+
+  .safe-bottom {
+    padding-bottom: constant(safe-area-inset-bottom); /* iOS 11.0-11.2 */
+    padding-bottom: env(safe-area-inset-bottom); /* iOS 11.2+ */
+  }
+
+  .safe-x {
+    padding-left: constant(safe-area-inset-left); /* iOS 11.0-11.2 */
+    padding-left: env(safe-area-inset-left); /* iOS 11.2+ */
+    padding-right: constant(safe-area-inset-right); /* iOS 11.0-11.2 */
+    padding-right: env(safe-area-inset-right); /* iOS 11.2+ */
+  }
+
+  /* Smooth scroll snap for mobile */
+  .snap-container {
+    scroll-snap-type: y mandatory;
+    overflow-y: scroll;
+  }
+
+  .snap-section {
+    scroll-snap-align: start;
+  }
+}
+
+/* Custom scrollbar - subtle */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-white/10 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-white/20;
+}
+
+/* Hide scrollbar on mobile for cleaner look */
+@media (max-width: 768px) {
+  ::-webkit-scrollbar {
+    display: none;
+  }
+  
+  body {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   OTIMIZAÇÃO MÁXIMA PARA MOBILE
+   Zero overflow, zero distorção, hitbox 44px mínimo
+   Compatível: iPhone SE/8/11-16, Galaxy, Xiaomi
+   Breakpoints: 320px, 375px, 414px, 480px, 768px
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Prevenir overflow horizontal em todos os dispositivos */
+html, body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
+/* Container seguro para todos os conteúdos */
+.safe-container {
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}
+
+/* Hitbox mínimo de 44px para todos os elementos clicáveis */
+button, 
+a, 
+[role="button"],
+input[type="submit"],
+input[type="button"],
+.clickable {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* Exceto badges e elementos decorativos */
+.badge, .tag, [data-no-hitbox] {
+  min-height: unset;
+  min-width: unset;
+}
+
+/* Imagens responsivas sem distorção */
+img {
+  max-width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+/* Aspect ratio automático para containers de imagem */
+.img-container {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+.img-container img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   BREAKPOINTS ESPECÍFICOS
+   ═══════════════════════════════════════════════════════════════ */
+
+/* iPhone SE, iPhone 5/5S (320px) */
+@media (max-width: 320px) {
+  html {
+    font-size: 14px;
+  }
+  
+  .section-padding {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+  
+  .text-responsive-xl {
+    font-size: 1.5rem;
+  }
+  
+  .text-responsive-lg {
+    font-size: 1.25rem;
+  }
+}
+
+/* iPhone 6/7/8, iPhone X/XS/11 Pro (375px) */
+@media (min-width: 321px) and (max-width: 375px) {
+  html {
+    font-size: 15px;
+  }
+  
+  .section-padding {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}
+
+/* iPhone 6/7/8 Plus, iPhone XR/11/12/13/14 (414px) */
+@media (min-width: 376px) and (max-width: 414px) {
+  html {
+    font-size: 16px;
+  }
+  
+  .section-padding {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+}
+
+/* iPhone 12/13/14 Pro Max, Large phones (430px+) */
+@media (min-width: 415px) and (max-width: 480px) {
+  html {
+    font-size: 16px;
+  }
+  
+  .section-padding {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+}
+
+/* Tablets pequenos (481px - 768px) */
+@media (min-width: 481px) and (max-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+  
+  .section-padding {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   OTIMIZAÇÃO DE PERFORMANCE
+   ═══════════════════════════════════════════════════════════════ */
+
+/* GPU acceleration para elementos animados */
+.gpu-accelerated {
+  transform: translateZ(0);
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+}
+
+/* Content visibility para lazy rendering */
+.lazy-render {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 300px;
+}
+
+/* Otimização de imagens */
+img[loading="lazy"] {
+  content-visibility: auto;
+}
+
+/* Prevenir layout shift em imagens */
+img[width][height] {
+  aspect-ratio: attr(width) / attr(height);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   MICRO ANIMAÇÕES DE CONVERSÃO (0.15-0.25s)
+   ═══════════════════════════════════════════════════════════════ */
+
+.animate-tap {
+  transition: transform 0.15s ease-out;
+}
+
+.animate-tap:active {
+  transform: scale(0.98);
+}
+
+.animate-hover {
+  transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+}
+
+.animate-hover:hover {
+  transform: scale(1.02);
+}
+
+/* Shine effect para CTAs */
+.cta-shine {
+  position: relative;
+  overflow: hidden;
+}
+
+.cta-shine::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  animation: cta-shine-sweep 3s ease-in-out infinite;
+}
+
+@keyframes cta-shine-sweep {
+  0%, 100% {
+    left: -100%;
+  }
+  50% {
+    left: 100%;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   BADGES E ELEMENTOS DE CONVERSÃO
+   ═══════════════════════════════════════════════════════════════ */
+
+.badge-ai {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, rgba(255, 77, 77, 0.15), rgba(255, 140, 66, 0.15));
+  border: 1px solid rgba(255, 77, 77, 0.3);
+  font-size: 10px;
+  font-weight: 500;
+  color: #FF4D4D;
+}
+
+.badge-ai::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #FF4D4D;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.badge-premium {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, rgba(234, 179, 8, 0.15), rgba(245, 158, 11, 0.15));
+  border: 1px solid rgba(234, 179, 8, 0.3);
+  font-size: 10px;
+  font-weight: 600;
+  color: #FBBF24;
+}
+
+.badge-verified {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.2);
+  font-size: 10px;
+  font-weight: 500;
+  color: #22C55E;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SAFE AREA PARA NOTCH E HOME INDICATOR
+   ═══════════════════════════════════════════════════════════════ */
+
+.safe-top {
+  padding-top: constant(safe-area-inset-top); /* iOS 11.0-11.2 */
+  padding-top: env(safe-area-inset-top); /* iOS 11.2+ */
+}
+
+.safe-bottom {
+  padding-bottom: constant(safe-area-inset-bottom); /* iOS 11.0-11.2 */
+  padding-bottom: max(env(safe-area-inset-bottom), 20px); /* iOS 11.2+ */
+}
+
+.safe-left {
+  padding-left: constant(safe-area-inset-left); /* iOS 11.0-11.2 */
+  padding-left: env(safe-area-inset-left); /* iOS 11.2+ */
+}
+
+.safe-right {
+  padding-right: constant(safe-area-inset-right); /* iOS 11.0-11.2 */
+  padding-right: env(safe-area-inset-right); /* iOS 11.2+ */
+}
+
+/* Sticky elements com safe area */
+.sticky-bottom {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding-bottom: max(env(safe-area-inset-bottom), 16px);
+  z-index: 50;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   FIX PARA TECLADO VIRTUAL EM MOBILE
+   ═══════════════════════════════════════════════════════════════ */
+
+@supports (height: 100dvh) {
+  .min-h-screen-safe {
+    min-height: 100dvh;
+  }
+  
+  .h-screen-safe {
+    height: 100dvh;
+  }
+}
+
+/* Fallback para browsers antigos */
+@supports not (height: 100dvh) {
+  .min-h-screen-safe {
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+  }
+  
+  .h-screen-safe {
+    height: 100vh;
+    height: -webkit-fill-available;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   LOADING STATES E SKELETONS
+   ═══════════════════════════════════════════════════════════════ */
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.05) 25%,
+    rgba(255, 255, 255, 0.1) 50%,
+    rgba(255, 255, 255, 0.05) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s ease-in-out infinite;
+}
+
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   UTILITÁRIOS DE TEXTO RESPONSIVO
+   ═══════════════════════════════════════════════════════════════ */
+
+.text-balance {
+  text-wrap: balance;
+}
+
+.text-pretty {
+  text-wrap: pretty;
+}
+
+/* Clamp de texto com elipsis */
+.line-clamp-1 {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   OTIMIZAÇÕES ESPECÍFICAS PARA MOBILE - REDUZIR GLITCHES
+   ═══════════════════════════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+  /* Desabilitar animações pesadas que causam glitches */
+  .animate-pulse-glow,
+  .animate-pulse-glow::before {
+    animation: none !important;
+    box-shadow: 0 0 20px rgba(255, 77, 77, 0.3) !important;
+  }
+  
+  /* Simplificar animações de gradiente */
+  .animate-gradient-x {
+    animation-duration: 4s !important;
+  }
+  
+  /* Reduzir animações de scan */
+  .scan-line-effect {
+    animation-duration: 4s !important;
+    opacity: 0.7;
+  }
+  
+  /* Otimizar motion components */
+  [data-framer-component] {
+    will-change: auto !important;
+  }
+  
+  /* Prevenir flickering em imagens */
+  img {
+    image-rendering: -webkit-optimize-contrast;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    transform: translateZ(0);
+  }
+  
+  /* Reduzir transições complexas */
+  * {
+    transition-duration: 0.2s !important;
+  }
+  
+  /* Desabilitar hover effects em mobile */
+  .group-hover\:scale-\[1\.04\] {
+    transform: scale(1) !important;
+  }
+  
+  /* Simplificar shadows pesadas */
+  [class*="shadow-"] {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+  }
+  
+  /* Otimizar backdrop blur - reduzir ou remover no mobile */
+  [class*="backdrop-blur"] {
+    backdrop-filter: none !important;
+  }
+  
+  /* Reduzir blur effects - remover blur decorativo no mobile */
+  [class*="blur-\["] {
+    filter: none !important;
+    opacity: 0.3 !important;
+  }
+  
+  /* Remover blur de elementos decorativos */
+  .blur-\[40px\],
+  .blur-\[80px\],
+  .blur-\[100px\],
+  .blur-\[120px\] {
+    filter: none !important;
+    opacity: 0.2 !important;
+  }
+}

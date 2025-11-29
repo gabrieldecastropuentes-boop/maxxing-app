@@ -1,0 +1,176 @@
+// ═══════════════════════════════════════════════════════════════
+// Prisma Schema - Maxxing Quiz Database
+// ═══════════════════════════════════════════════════════════════
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ═══════════════════════════════════════════════════════════════
+// MODEL: Lead
+// Captura de leads do quiz, paywall e landing pages
+// ═══════════════════════════════════════════════════════════════
+model Lead {
+  id          String   @id @default(cuid())
+  name        String?
+  email       String
+  phone       String?
+  userId      String    @map("user_id")
+  quizId      String?   @map("quiz_id")
+  source      String    // 'quiz' | 'paywall' | 'landing' | 'popup'
+  utmSource   String?   @map("utm_source")
+  utmMedium   String?   @map("utm_medium")
+  utmCampaign String?   @map("utm_campaign")
+  utmContent  String?   @map("utm_content")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  // Relacionamentos
+  quizResults QuizResult[]
+  purchases   Purchase[]
+
+  @@index([email])
+  @@index([userId])
+  @@index([source])
+  @@index([createdAt])
+  @@map("leads")
+}
+
+// ═══════════════════════════════════════════════════════════════
+// MODEL: QuizResult
+// Resultados e respostas do quiz
+// ═══════════════════════════════════════════════════════════════
+model QuizResult {
+  id              String   @id @default(cuid())
+  userId          String   @map("user_id")
+  quizId          String   @map("quiz_id")
+  score           Int
+  gender          String   // 'male' | 'female'
+  recommendedPlan String   @map("recommended_plan") // 'basic' | 'standard' | 'premium'
+  imageReference  String?  @map("image_reference")
+  answers         Json     // Array de respostas
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  // Relacionamentos
+  leadId          String?  @map("lead_id")
+  lead            Lead?    @relation(fields: [leadId], references: [id], onDelete: SetNull)
+  photoScores    PhotoScore[]
+
+  @@index([userId])
+  @@index([quizId])
+  @@index([score])
+  @@index([createdAt])
+  @@map("quiz_results")
+}
+
+// ═══════════════════════════════════════════════════════════════
+// MODEL: PhotoScore
+// Análise facial e scores de fotos
+// ═══════════════════════════════════════════════════════════════
+model PhotoScore {
+  id              String   @id @default(cuid())
+  userId          String?  @map("user_id")
+  quizResultId    String?  @map("quiz_result_id")
+  overallScore    Int      @map("overall_score")
+  symmetry        Int
+  skinQuality     Int      @map("skin_quality")
+  facialStructure Int      @map("facial_structure")
+  eyeArea         Int      @map("eye_area")
+  jawline         Int
+  analysis        String?  @db.Text
+  imageReference  String?  @map("image_reference")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  // Relacionamentos
+  quizResult      QuizResult? @relation(fields: [quizResultId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([quizResultId])
+  @@index([overallScore])
+  @@index([createdAt])
+  @@map("photo_scores")
+}
+
+// ═══════════════════════════════════════════════════════════════
+// MODEL: Event
+// Eventos de tracking e analytics
+// ═══════════════════════════════════════════════════════════════
+model Event {
+  id          String   @id @default(cuid())
+  userId      String?  @map("user_id")
+  eventName   String   @map("event_name")
+  eventData   Json?    @map("event_data")
+  source      String?
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@index([userId])
+  @@index([eventName])
+  @@index([createdAt])
+  @@map("events")
+}
+
+// ═══════════════════════════════════════════════════════════════
+// MODEL: Purchase
+// Compras recebidas via webhook (PerfectPay, etc.)
+// ═══════════════════════════════════════════════════════════════
+model Purchase {
+  id                  String   @id @default(cuid())
+  
+  // Identificadores externos
+  externalId          String   @unique @map("external_id") // ID da transação no gateway
+  gateway             String   @default("perfectpay") // perfectpay, hotmart, etc.
+  
+  // Status da compra
+  status              String   // approved, refused, refunded, chargeback, pending, canceled
+  paymentMethod       String?  @map("payment_method") // pix, credit_card, boleto
+  
+  // Dados do cliente
+  customerEmail       String   @map("customer_email")
+  customerName        String?  @map("customer_name")
+  customerPhone       String?  @map("customer_phone")
+  customerDocument    String?  @map("customer_document") // CPF/CNPJ
+  
+  // Dados do produto
+  productId           String?  @map("product_id")
+  productName         String?  @map("product_name")
+  planName            String?  @map("plan_name")
+  
+  // Valores
+  amount              Float    // Valor da compra em centavos ou reais
+  currency            String   @default("BRL")
+  
+  // UTM e tracking
+  utmSource           String?  @map("utm_source")
+  utmMedium           String?  @map("utm_medium")
+  utmCampaign         String?  @map("utm_campaign")
+  utmContent          String?  @map("utm_content")
+  
+  // Dados brutos do webhook
+  rawPayload          Json?    @map("raw_payload")
+  
+  // Timestamps
+  paidAt              DateTime? @map("paid_at")
+  refundedAt          DateTime? @map("refunded_at")
+  createdAt           DateTime @default(now()) @map("created_at")
+  updatedAt           DateTime @updatedAt @map("updated_at")
+
+  // Relacionamentos
+  leadId              String?  @map("lead_id")
+  lead                Lead?    @relation(fields: [leadId], references: [id], onDelete: SetNull)
+
+  @@index([externalId])
+  @@index([customerEmail])
+  @@index([status])
+  @@index([gateway])
+  @@index([createdAt])
+  @@index([paidAt])
+  @@map("purchases")
+}
+

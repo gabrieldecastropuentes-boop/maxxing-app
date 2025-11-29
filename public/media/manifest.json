@@ -1,0 +1,130 @@
+{
+  "version": "1.0.0",
+  "generated": "2024-11-27",
+  "assets": {
+    "quiz": {
+      "muscular.jpg": {
+        "type": "image/jpeg",
+        "size": 53736,
+        "purpose": "Body type option - muscular"
+      },
+      "skinny.jpg": {
+        "type": "image/jpeg",
+        "size": 47374,
+        "purpose": "Body type option - skinny"
+      },
+      "average.jpg": {
+        "type": "image/jpeg",
+        "size": 54343,
+        "purpose": "Body type option - average"
+      },
+      "overweight.jpg": {
+        "type": "image/jpeg",
+        "size": 59340,
+        "purpose": "Body type option - overweight"
+      },
+      "frontal-1.png": {
+        "type": "image/png",
+        "size": 815199,
+        "purpose": "Upload reference - frontal view"
+      },
+      "side-1.png": {
+        "type": "image/png",
+        "size": 863770,
+        "purpose": "Upload reference - side view"
+      },
+      "female_front_reference.jpg": {
+        "type": "image/jpeg",
+        "size": 1871873,
+        "purpose": "Female upload reference - frontal"
+      },
+      "female_side_reference.jpg": {
+        "type": "image/jpeg",
+        "size": 1571964,
+        "purpose": "Female upload reference - side"
+      }
+    },
+    "scanner": {
+      "face-scan.mp4": {
+        "type": "video/mp4",
+        "size": 1415980,
+        "purpose": "Intro animation"
+      },
+      "scan_male.jpg": {
+        "type": "image/jpeg",
+        "size": 29339,
+        "purpose": "Scanner visual - male"
+      },
+      "scan_female.jpg": {
+        "type": "image/jpeg",
+        "size": 23830,
+        "purpose": "Scanner visual - female"
+      }
+    },
+    "social_proof": {
+      "social_proof_before.png": {
+        "type": "image/png",
+        "size": 840317,
+        "purpose": "Before transformation"
+      },
+      "social_proof_after.png": {
+        "type": "image/png",
+        "size": 918157,
+        "purpose": "After transformation"
+      },
+      "before-photo.png": {
+        "type": "image/png",
+        "size": 52882,
+        "purpose": "Paywall before comparison"
+      },
+      "after-photo.png": {
+        "type": "image/png",
+        "size": 69184,
+        "purpose": "Paywall after comparison"
+      },
+      "1-m-progress-male.webp": {
+        "type": "image/webp",
+        "size": 16740,
+        "purpose": "8-week progress testimonial"
+      },
+      "testimonial_avatar.jpg": {
+        "type": "image/jpeg",
+        "size": 179890,
+        "purpose": "Testimonial avatar"
+      }
+    },
+    "products": {
+      "product_blueprint.jpg": {
+        "type": "image/jpeg",
+        "size": 290265,
+        "purpose": "Product blueprint image"
+      },
+      "before_after_composite.jpg": {
+        "type": "image/jpeg",
+        "size": 701557,
+        "purpose": "Before/after composite"
+      },
+      "cortecabelo.jpg": {
+        "type": "image/jpeg",
+        "size": 25772,
+        "purpose": "Haircut transformation example"
+      }
+    },
+    "home": {
+      "antes do maxxing.png": {
+        "type": "image/png",
+        "size": 1110919,
+        "purpose": "Home page before"
+      },
+      "depois do maxxing.png": {
+        "type": "image/png",
+        "size": 1809922,
+        "purpose": "Home page after"
+      }
+    }
+  },
+  "totalAssets": 23,
+  "totalSizeBytes": 12379662,
+  "totalSizeMB": 11.81
+}
+

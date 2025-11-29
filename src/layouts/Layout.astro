@@ -1,0 +1,283 @@
+---
+import '../styles/globals.css';
+
+interface Props {
+  title: string;
+  description?: string;
+  canonicalUrl?: string;
+  ogImage?: string;
+}
+
+const { 
+  title, 
+  description = "Algoritmo Exclusivo de Análise Facial com IA. Descubra seu score científico de atratividade e desbloqueie seu potencial máximo de Maxxing.",
+  canonicalUrl = Astro.url.href,
+  ogImage = "/og-image.png"
+} = Astro.props;
+
+// ═══════════════════════════════════════════════════════════════
+// CONFIGURAÇÕES - Substitua pelos seus valores
+// ═══════════════════════════════════════════════════════════════
+const SITE_URL = "https://glowmax.app"; // Altere para seu domínio
+const FB_PIXEL_ID = ""; // Adicione seu Pixel ID do Facebook
+const GA_MEASUREMENT_ID = ""; // Adicione seu GA4 Measurement ID (ex: G-XXXXXXXXXX)
+const TAWK_PROPERTY_ID = ""; // Adicione seu Tawk.to Property ID
+const TAWK_WIDGET_ID = ""; // Adicione seu Tawk.to Widget ID
+---
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#0A0A0A" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="robots" content="index, follow" />
+    <meta name="author" content="GlowMax" />
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href={canonicalUrl} />
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    
+    <meta name="generator" content={Astro.generator} />
+    
+    <!-- Preconnect to external resources -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://www.googletagmanager.com" />
+    <link rel="preconnect" href="https://connect.facebook.net" />
+    
+    <!-- Preload critical fonts -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" as="style" />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={`${SITE_URL}${ogImage}`} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:site_name" content="GlowMax" />
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content={canonicalUrl} />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={`${SITE_URL}${ogImage}`} />
+    
+    <title>{title}</title>
+    
+    <!-- Google Analytics 4 -->
+    {GA_MEASUREMENT_ID && (
+      <>
+        <script async src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}></script>
+        <script is:inline define:vars={{ GA_MEASUREMENT_ID }}>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', GA_MEASUREMENT_ID, {
+            page_title: document.title,
+            page_location: window.location.href,
+          });
+          
+          // Custom events helper
+          window.trackGA4Event = function(eventName, params) {
+            gtag('event', eventName, params);
+          };
+        </script>
+      </>
+    )}
+    
+    <!-- Facebook Pixel Code -->
+    <script is:inline define:vars={{ FB_PIXEL_ID }}>
+      !function(f,b,e,v,n,t,s)
+      {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+      n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+      n.queue=[];t=b.createElement(e);t.async=!0;
+      t.src=v;s=b.getElementsByTagName(e)[0];
+      s.parentNode.insertBefore(t,s)}(window, document,'script',
+      'https://connect.facebook.net/en_US/fbevents.js');
+      
+      if (FB_PIXEL_ID) {
+        fbq('init', FB_PIXEL_ID);
+        fbq('track', 'PageView');
+      }
+    </script>
+    {FB_PIXEL_ID && (
+      <noscript>
+        <img height="1" width="1" style="display:none" 
+          src={`https://www.facebook.com/tr?id=${FB_PIXEL_ID}&ev=PageView&noscript=1`}/>
+      </noscript>
+    )}
+    <!-- End Facebook Pixel Code -->
+
+    <style is:inline>
+      /* Critical CSS for faster paint */
+      body {
+        margin: 0;
+        padding: 0;
+        background-color: #0A0A0A;
+        color: #FFFFFF;
+        /* Garantir que body não herde filtros/transformações problemáticas */
+        filter: none !important;
+        transform: none !important;
+        will-change: auto !important;
+        /* FIX SAFARI iOS: Usar -webkit-fill-available para altura correta */
+        min-height: -webkit-fill-available;
+      }
+      
+      /* Prevent FOUC - Show immediately but prevent flash */
+      html {
+        visibility: visible;
+        opacity: 1;
+        /* Garantir que html não herde propriedades problemáticas */
+        filter: none !important;
+        transform: none !important;
+        /* FIX SAFARI iOS: Usar -webkit-fill-available para altura correta */
+        min-height: -webkit-fill-available;
+        height: -webkit-fill-available;
+      }
+      
+      /* Prevent layout shift during image load */
+      img {
+        background-color: rgba(0, 0, 0, 0.3);
+        /* Otimização de renderização */
+        content-visibility: auto;
+        contain-intrinsic-size: auto 500px;
+      }
+
+      /* Preload critical images */
+      picture img[loading="eager"] {
+        fetchpriority: high;
+      }
+      
+      /* Smooth transitions */
+      * {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+      
+      /* Garantir que main não herde propriedades problemáticas */
+      main {
+        filter: none !important;
+        transform: none !important;
+        will-change: auto !important;
+        isolation: isolate;
+        position: relative;
+      }
+      
+      /* FIX SAFARI iOS: Solução agressiva - desabilitar tudo */
+      @supports (-webkit-touch-callout: none) {
+        @media (max-width: 768px) {
+          * {
+            animation: none !important;
+            transition: none !important;
+            transform: none !important;
+            -webkit-transform: none !important;
+            will-change: auto !important;
+            filter: none !important;
+            backdrop-filter: none !important;
+          }
+          
+          html, body {
+            background: #080707 !important;
+            background-image: none !important;
+            min-height: -webkit-fill-available !important;
+            height: -webkit-fill-available !important;
+          }
+          
+          *::before,
+          *::after {
+            display: none !important;
+            content: none !important;
+          }
+        }
+      }
+    </style>
+  </head>
+  <body class="min-h-screen min-h-[100dvh] overflow-x-hidden safe-top safe-bottom">
+    <slot />
+
+    <!-- Smooth scroll polyfill for older browsers -->
+    <script is:inline>
+      if (!('scrollBehavior' in document.documentElement.style)) {
+        import('https://unpkg.com/smoothscroll-polyfill@0.4.4/dist/smoothscroll.min.js').then(() => {
+          window.__forceSmoothScrollPolyfill__ = true;
+        });
+      }
+    </script>
+
+    <!-- Tawk.to Chat Widget (Lazy Load) -->
+    <script is:inline define:vars={{ TAWK_PROPERTY_ID, TAWK_WIDGET_ID }}>
+      if (TAWK_PROPERTY_ID && TAWK_WIDGET_ID) {
+        // Lazy load chat after page is interactive
+        window.addEventListener('load', function() {
+          setTimeout(function() {
+            var Tawk_API = Tawk_API || {};
+            var Tawk_LoadStart = new Date();
+            var s1 = document.createElement("script");
+            var s0 = document.getElementsByTagName("script")[0];
+            s1.async = true;
+            s1.src = 'https://embed.tawk.to/' + TAWK_PROPERTY_ID + '/' + TAWK_WIDGET_ID;
+            s1.charset = 'UTF-8';
+            s1.setAttribute('crossorigin', '*');
+            s0.parentNode.insertBefore(s1, s0);
+          }, 3000); // Load after 3 seconds for better performance
+        });
+      }
+    </script>
+
+    <!-- Global Event Tracking Helper -->
+    <script is:inline>
+      // Unified tracking function
+      window.trackEvent = function(eventName, params) {
+        params = params || {};
+        params.timestamp = Date.now();
+        
+        // Console log for debugging
+        console.log('[Track]', eventName, params);
+        
+        // Google Analytics 4
+        if (typeof gtag !== 'undefined') {
+          gtag('event', eventName, params);
+        }
+        
+        // Facebook Pixel
+        if (typeof fbq !== 'undefined') {
+          fbq('trackCustom', eventName, params);
+        }
+        
+        // Server-side tracking (optional)
+        if (navigator.sendBeacon) {
+          navigator.sendBeacon('/api/track/event', JSON.stringify({
+            event: eventName,
+            ...params
+          }));
+        }
+      };
+      
+      // Track page visibility changes (for bounce rate)
+      document.addEventListener('visibilitychange', function() {
+        if (document.visibilityState === 'hidden') {
+          window.trackEvent('PageHidden', { 
+            timeOnPage: Math.round((Date.now() - performance.timing.navigationStart) / 1000)
+          });
+        }
+      });
+    </script>
+  </body>
+</html>
