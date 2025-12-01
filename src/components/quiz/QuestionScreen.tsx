@@ -104,43 +104,29 @@ export function QuestionScreen({
             >
               <div className="aspect-[3/4] w-full relative overflow-hidden bg-gradient-to-b from-[#1F1C1A] to-[#0F0F13]">
                 {option.image && (
-                  <picture>
-                    <source 
-                      srcSet={`${option.image.replace(/\.(jpg|jpeg|png)$/i, '-480w.avif')} 480w, ${option.image.replace(/\.(jpg|jpeg|png)$/i, '-768w.avif')} 768w`}
-                      type="image/avif"
-                      sizes="(max-width: 640px) 50vw, 300px"
-                    />
-                    <source 
-                      srcSet={`${option.image.replace(/\.(jpg|jpeg|png)$/i, '-480w.webp')} 480w, ${option.image.replace(/\.(jpg|jpeg|png)$/i, '-768w.webp')} 768w`}
-                      type="image/webp"
-                      sizes="(max-width: 640px) 50vw, 300px"
-                    />
                   <img
                     src={option.image}
                     alt={option.text}
-                      className="w-full h-full object-cover object-center sm:group-hover:scale-[1.04] transition-transform duration-300"
+                    className="w-full h-full object-cover object-center sm:group-hover:scale-[1.04] transition-transform duration-300"
                     style={{ 
                       display: 'block',
                       width: '100%',
                       height: '100%',
                       objectFit: 'cover',
-                        objectPosition: 'center',
-                        contentVisibility: 'auto',
-                        transform: 'translateZ(0)',
-                        backfaceVisibility: 'hidden'
+                      objectPosition: 'center',
+                      contentVisibility: 'auto',
+                      transform: 'translateZ(0)',
+                      backfaceVisibility: 'hidden'
                     }}
-                      loading="lazy"
-                      decoding="async"
+                    loading="lazy"
+                    decoding="async"
                     onError={(e) => {
-                        console.error('[QuestionScreen] Image load error:', option.image);
-                        // Fallback para imagem original se WebP/AVIF falhar
-                        const target = e.currentTarget;
-                        if (target.src !== option.image) {
-                          target.src = option.image;
-                        }
+                      console.error('[QuestionScreen] Image load error:', option.image);
+                      // Mostrar placeholder em caso de erro
+                      const target = e.currentTarget;
+                      target.style.display = 'none';
                     }}
                   />
-                  </picture>
                 )}
               </div>
               <div className="px-4 py-3 flex items-center justify-between">
