@@ -281,185 +281,113 @@ export function SelfieUploadScreen({ onComplete, gender = 'male' }: SelfieUpload
         )}
 
         {step === 'front' && (
-          <motion.div
+          <CameraCapture
             key="front"
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -50 }}
-            className="flex-1 flex flex-col items-center justify-center text-center"
-          >
-            <h2 className="text-2xl font-bold mb-2">
-              {isFemale ? 'Selfie Frontal' : 'Selfie Frontal'}
-            </h2>
-            <p className="text-text-secondary mb-4">
-              {isCompressing ? 'Comprimindo imagem...' : isFemale ? 'Olhe diretamente para a câmera, rosto neutro' : 'Olhe diretamente para a câmera'}
-            </p>
-            
-            {isCompressing && (
-              <div className="mb-4 flex items-center justify-center gap-2 text-sm text-text-secondary">
-                <svg className="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                </svg>
-                <span>Otimizando foto...</span>
-              </div>
-            )}
-
-            <div className="w-full max-w-sm">
-              <CameraCapture
-                onCapture={(imageData) => {
-                  setFrontImage(imageData);
-                  setStep('side');
-                }}
-                onCancel={() => setStep('intro')}
-                onFallbackToUpload={() => {
-                  currentUpload.current = 'front';
-                  fileInputRef.current?.click();
-                }}
-              />
-            </div>
-
-            <div className="mt-4 flex items-center gap-2 text-sm text-text-muted">
-              <div className={cn(
-                "w-8 h-8 rounded-full flex items-center justify-center text-white font-bold",
-                isFemale ? "bg-pink-500" : "bg-primary"
-              )}>1</div>
-              <span>de 2 fotos</span>
-            </div>
-
-            <button
-              type="button"
-              onClick={() => {
-                currentUpload.current = 'front';
-                fileInputRef.current?.click();
-              }}
-              className="mt-3 text-xs md:text-sm text-text-muted hover:text-white underline underline-offset-4"
-            >
-              {isFemale ? 'Ou escolher da galeria' : 'Ou enviar suas melhores fotos da galeria'}
-            </button>
-          </motion.div>
+            title="Selfie Frontal"
+            instruction="Olhe diretamente para a câmera"
+            onCapture={(imageData) => {
+              setFrontImage(imageData);
+              setStep('side');
+            }}
+            onCancel={() => setStep('intro')}
+            onFallbackToUpload={() => {
+              currentUpload.current = 'front';
+              fileInputRef.current?.click();
+            }}
+          />
         )}
 
         {step === 'side' && (
-          <motion.div
+          <CameraCapture
             key="side"
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -50 }}
-            className="flex-1 flex flex-col items-center justify-center text-center"
-          >
-            <h2 className="text-2xl font-bold mb-2">
-              {isFemale ? 'Selfie Lateral' : 'Selfie Lateral'}
-            </h2>
-            <p className="text-text-secondary mb-4">
-              {isCompressing ? 'Comprimindo imagem...' : isFemale ? 'Vire o rosto levemente para o lado (perfil)' : 'Vire o rosto levemente para o lado'}
-            </p>
-            
-            {isCompressing && (
-              <div className="mb-4 flex items-center justify-center gap-2 text-sm text-text-secondary">
-                <svg className="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                </svg>
-                <span>Otimizando foto...</span>
-              </div>
-            )}
-            
-            <div className="w-full max-w-sm">
-              <CameraCapture
-                onCapture={(imageData) => {
-                  setSideImage(imageData);
-                  setStep('confirm');
-                }}
-                onCancel={() => setStep('front')}
-                onFallbackToUpload={() => {
-                  currentUpload.current = 'side';
-                  fileInputRef.current?.click();
-                }}
-              />
-            </div>
-
-            <button
-              onClick={handleSkipSide}
-              className="mt-4 text-text-muted text-sm hover:text-white transition-colors"
-            >
-              Pular esta foto →
-            </button>
-          </motion.div>
+            title="Selfie Lateral"
+            instruction="Vire o rosto levemente para o lado"
+            onCapture={(imageData) => {
+              setSideImage(imageData);
+              setStep('confirm');
+            }}
+            onCancel={() => setStep('front')}
+            onFallbackToUpload={() => {
+              currentUpload.current = 'side';
+              fileInputRef.current?.click();
+            }}
+          />
         )}
 
         {step === 'confirm' && (
           <motion.div
             key="confirm"
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -50 }}
-            className="flex-1 flex flex-col items-center justify-center text-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="flex-1 flex flex-col items-center justify-center px-5 text-center min-h-[100dvh]"
           >
-            {/* Photo previews */}
-            <div className="relative mb-8">
-              <div className="flex items-center">
+            {/* Photo previews - Sobrepostas e inclinadas como no print */}
+            <div className="relative mb-12 mt-8">
+              <div className="flex items-center justify-center">
                 {frontImage && (
                   <motion.div
-                    initial={{ rotate: -10, x: 20 }}
-                    animate={{ rotate: -10, x: 0 }}
+                    initial={{ rotate: -8, x: 0, opacity: 0 }}
+                    animate={{ rotate: -8, x: 0, opacity: 1 }}
+                    transition={{ delay: 0.2 }}
                     className="relative z-10"
                   >
                     <img
                       src={frontImage}
                       alt="Front"
-                      className={cn(
-                        "w-40 h-52 md:w-48 md:h-64 rounded-2xl object-cover border-4 shadow-2xl",
-                        isFemale ? "border-pink-400/30" : "border-white/20"
-                      )}
+                      className="w-36 h-48 md:w-44 md:h-56 rounded-2xl object-cover shadow-2xl"
                     />
                   </motion.div>
                 )}
-                <motion.div
-                  initial={{ rotate: 10, x: -20 }}
-                  animate={{ rotate: 10, x: 0 }}
-                  className={cn(
-                    "w-40 h-52 md:w-48 md:h-64 rounded-2xl border-4 -ml-8",
-                    isFemale ? "border-pink-400/30" : "border-white/20",
-                    sideImage ? "" : "bg-white/[0.06] flex items-center justify-center"
-                  )}
-                >
-                  {sideImage ? (
+                {sideImage && (
+                  <motion.div
+                    initial={{ rotate: 8, x: -20, opacity: 0 }}
+                    animate={{ rotate: 8, x: -20, opacity: 1 }}
+                    transition={{ delay: 0.3 }}
+                    className="relative -ml-6 z-0"
+                  >
                     <img
                       src={sideImage}
                       alt="Side"
-                      className="w-full h-full rounded-xl object-cover"
+                      className="w-36 h-48 md:w-44 md:h-56 rounded-2xl object-cover shadow-2xl"
                     />
-                  ) : (
-                    <span className="text-text-muted text-sm">Opcional</span>
-                  )}
-                </motion.div>
+                  </motion.div>
+                )}
               </div>
             </div>
 
-            <h2 className="text-xl md:text-2xl font-bold mb-2">
-              {isFemale 
-                ? 'Sua análise facial feminina vai começar'
-                : 'Sua análise facial vai levar alguns minutos'}
-            </h2>
+            {/* Título principal */}
+            <motion.h2
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.4 }}
+              className="text-2xl md:text-3xl font-bold mb-4 text-white max-w-md"
+            >
+              Sua análise facial vai levar alguns minutos
+            </motion.h2>
 
-            <p className="text-sm text-text-secondary mb-8 max-w-sm">
-              {isFemale 
-                ? <>Ao continuar, você consente que analisemos suas fotos para avaliar sua harmonia facial feminina e fornecer recomendações personalizadas para mulheres, conforme descrito em nossa{' '}<a href="#" className="text-pink-400 underline">Política de Privacidade</a>.</>
-                : <>Ao continuar, você consente que analisemos suas fotos ('Dados Faciais') para avaliar sua aparência e fornecer recomendações personalizadas, conforme descrito em nossa{' '}<a href="#" className="text-primary underline">Política de Privacidade</a>.</>
-              }
-            </p>
+            {/* Texto de consentimento */}
+            <motion.p
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.5 }}
+              className="text-sm md:text-base text-white/70 mb-8 max-w-md leading-relaxed"
+            >
+              Ao continuar, você consente que analisemos suas fotos ('Dados Faciais') para avaliar sua aparência e fornecer recomendações personalizadas, conforme descrito em nossa{' '}
+              <a href="#" className="underline text-white/90 hover:text-white transition-colors">
+                Política de Privacidade
+              </a>.
+            </motion.p>
 
+            {/* Botão Continuar */}
             <motion.button
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.6 }}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={handleConfirm}
-              className={cn(
-                "w-full max-w-sm py-4 text-lg font-semibold rounded-2xl",
-                isFemale 
-                  ? "bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-[0_0_30px_rgba(236,72,153,0.3)]"
-                  : "btn-primary"
-              )}
+              className="w-full max-w-sm py-4 md:py-5 text-lg font-semibold rounded-2xl bg-gradient-to-r from-[#FF9553] via-[#FF4D4D] to-[#FF9553] text-white shadow-lg hover:shadow-xl transition-shadow"
             >
               Continuar
             </motion.button>
