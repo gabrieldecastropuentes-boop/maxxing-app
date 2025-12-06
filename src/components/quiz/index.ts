@@ -8,6 +8,7 @@ export { TestimonialScreen } from './TestimonialScreen';
 export { LandingScreen } from './LandingScreen';
 export { QuestionScreen } from './QuestionScreen';
 export { TransitionScreen } from './TransitionScreen';
+export { SocialProofTransitionScreen } from './SocialProofTransitionScreen';
 export { DataCollectionScreen } from './DataCollectionScreen';
 export { PhotoUploadScreen } from './PhotoUploadScreen';
 export { SelfieUploadScreen } from './SelfieUploadScreen';

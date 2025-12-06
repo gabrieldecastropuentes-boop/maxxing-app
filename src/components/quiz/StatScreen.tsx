@@ -152,30 +152,73 @@ export function StatScreen({ type, gender = 'male', onContinue }: StatScreenProp
 
       case 'mission':
         return (
-          <div className="flex flex-col items-center justify-center min-h-[100dvh] px-6 text-center">
+          <div className="flex flex-col items-center justify-center min-h-[100dvh] px-6 text-center safe-top safe-bottom">
+            {/* Badge */}
             <motion.div
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               className={cn(
-                "inline-block px-4 py-2 rounded-full border mb-8",
+                "inline-block px-4 py-2 rounded-full border mb-6 sm:mb-8",
                 isFemale 
                   ? "bg-pink-500/10 border-pink-500/30" 
                   : "bg-white/[0.1] border-white/[0.2]"
               )}
             >
-              <span className="text-sm font-semibold text-text-secondary uppercase tracking-wider">
+              <span className="text-xs sm:text-sm font-semibold text-text-secondary uppercase tracking-wider">
                 NOSSA MISSÃO
               </span>
             </motion.div>
 
+            {/* Imagem de referência visual que gera confiança */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.1, duration: 0.5 }}
+              className="mb-6 sm:mb-8 md:mb-10"
+            >
+              <div className="relative w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 mx-auto">
+                <div className={cn(
+                  "absolute inset-0 rounded-full",
+                  isFemale 
+                    ? "bg-gradient-to-br from-pink-400/20 to-rose-600/20" 
+                    : "bg-gradient-to-br from-primary/20 to-accent/20"
+                )} />
+                <div className={cn(
+                  "absolute inset-2 rounded-full border-2 flex items-center justify-center",
+                  isFemale 
+                    ? "border-pink-500/30 bg-pink-500/10" 
+                    : "border-primary/30 bg-primary/10"
+                )}>
+                  {/* Ícone de confiança/profissionalismo */}
+                  <svg 
+                    className={cn(
+                      "w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24",
+                      isFemale ? "text-pink-400" : "text-primary"
+                    )}
+                    fill="none" 
+                    viewBox="0 0 24 24" 
+                    stroke="currentColor"
+                  >
+                    <path 
+                      strokeLinecap="round" 
+                      strokeLinejoin="round" 
+                      strokeWidth={1.5} 
+                      d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" 
+                    />
+                  </svg>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Título - Melhorado */}
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-              className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight"
+              transition={{ delay: 0.2 }}
+              className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold leading-tight mb-4 sm:mb-6 px-2"
             >
               <span className="text-white">Ajudar </span>
-              <span className={isFemale ? "text-pink-500" : "text-primary"}>
+              <span className={isFemale ? "text-pink-400" : "text-primary"}>
                 {isFemale ? 'mulheres como você' : 'pessoas como você'}
               </span>
               <br />
@@ -184,13 +227,26 @@ export function StatScreen({ type, gender = 'male', onContinue }: StatScreenProp
                   ? 'a descobrir e realçar sua beleza natural, ' 
                   : 'a se tornar o mais atraente possível, '}
               </span>
-              <span className={isFemale ? "text-pink-500" : "text-primary"}>
+              <span className={isFemale ? "text-pink-400" : "text-primary"}>
                 {isFemale 
                   ? 'revelando todo seu potencial feminino' 
                   : 'tanto física quanto mentalmente'}
               </span>
             </motion.h1>
 
+            {/* Texto adicional de confiança */}
+            <motion.p
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="text-sm sm:text-base md:text-lg text-white/70 mb-8 sm:mb-10 max-w-2xl px-4 leading-relaxed"
+            >
+              {isFemale 
+                ? 'Com metodologia científica comprovada, oferecemos resultados reais e duradouros.' 
+                : 'Com base em ciência e dados comprovados, oferecemos resultados reais e duradouros.'}
+            </motion.p>
+
+            {/* CTA Button */}
             <motion.button
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -199,10 +255,10 @@ export function StatScreen({ type, gender = 'male', onContinue }: StatScreenProp
               whileTap={{ scale: 0.98 }}
               onClick={onContinue}
               className={cn(
-                "w-full max-w-sm py-4 text-lg font-semibold mt-auto mb-8 safe-bottom rounded-2xl",
+                "w-full max-w-sm py-4 text-lg font-semibold mb-4 safe-bottom rounded-2xl shadow-lg",
                 isFemale 
-                  ? "bg-gradient-to-r from-pink-500 to-rose-500 text-white" 
-                  : "btn-primary"
+                  ? "bg-gradient-to-r from-pink-500 to-rose-500 text-white hover:shadow-xl" 
+                  : "btn-primary hover:shadow-xl"
               )}
             >
               Continuar

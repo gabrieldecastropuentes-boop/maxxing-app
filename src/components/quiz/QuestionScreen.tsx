@@ -20,8 +20,12 @@ export function QuestionScreen({
   const [isTransitioning, setIsTransitioning] = useState(false);
 
   const handleOptionClick = (optionId: number, score: number) => {
-    if (isTransitioning) return;
+    if (isTransitioning) {
+      console.log('[QuestionScreen] Already transitioning, ignoring click');
+      return;
+    }
     
+    console.log('[QuestionScreen] Option clicked:', { optionId, score });
     setSelectedOption(optionId);
     setIsTransitioning(true);
     
@@ -32,6 +36,7 @@ export function QuestionScreen({
     
     // Delay to show selection animation
     setTimeout(() => {
+      console.log('[QuestionScreen] Calling onAnswer after delay:', { optionId, score });
       onAnswer(optionId, score);
       setSelectedOption(null);
       setIsTransitioning(false);

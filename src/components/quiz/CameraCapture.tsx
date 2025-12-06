@@ -104,10 +104,7 @@ export function CameraCapture({ onCapture, onCancel, isLoading = false, onFallba
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
 
-      // Flip horizontally for front camera (selfie mirror effect)
-      ctx.translate(canvas.width, 0);
-      ctx.scale(-1, 1);
-
+      // Draw video directly (no flip needed since video is already correct)
       ctx.drawImage(video, 0, 0);
 
       // Converter canvas para Blob primeiro
@@ -267,7 +264,7 @@ export function CameraCapture({ onCapture, onCancel, isLoading = false, onFallba
               autoPlay
               playsInline
               muted
-              className="w-full h-full object-cover scale-x-[-1]"
+              className="w-full h-full object-cover"
             />
 
             {/* Loading overlay */}
@@ -299,43 +296,41 @@ export function CameraCapture({ onCapture, onCancel, isLoading = false, onFallba
           </div>
 
           {/* Bottom Navigation Bar - Baseado no print */}
-          <div className="absolute bottom-0 left-0 right-0 bg-black/60 backdrop-blur-md border-t border-white/10 safe-bottom">
+          <div className="absolute bottom-0 left-0 right-0 bg-black/60 backdrop-blur-md border-t border-white/10 safe-bottom z-50">
             <div className="flex items-center justify-between px-4 py-3">
-              {/* Galeria */}
-              <button
-                onClick={() => onFallbackToUpload?.()}
-                className="w-10 h-10 flex items-center justify-center text-white/70 hover:text-white transition-colors"
-                aria-label="Galeria"
-              >
-                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-              </button>
-
-              {/* URL/Brand (opcional) */}
-              <div className="flex items-center gap-2 px-3 py-1.5 bg-white/10 rounded-full">
-                <svg className="w-4 h-4 text-green-400" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z" />
-                </svg>
-                <span className="text-xs text-white/70 font-medium">start.maxxing.me</span>
-                <button className="text-white/70 hover:text-white">
-                  <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              {/* Botão de Galeria - Melhorado */}
+              {onFallbackToUpload && (
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    onFallbackToUpload();
+                  }}
+                  className="min-w-[44px] min-h-[44px] w-11 h-11 flex items-center justify-center text-white hover:text-white transition-colors bg-white/10 rounded-full border border-white/20 hover:bg-white/20"
+                  aria-label="Abrir galeria"
+                  title="Abrir galeria"
+                >
+                  <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                   </svg>
                 </button>
-              </div>
+              )}
 
-              {/* Botão de captura circular grande */}
+              {/* Espaço flexível para centralizar o botão de captura */}
+              <div className="flex-1" />
+
+              {/* Botão de captura circular grande - Sempre visível */}
               <button
                 onClick={handleCapture}
                 disabled={!isReady || isCompressing}
                 className={cn(
-                  "w-14 h-14 rounded-full border-4 transition-all",
+                  "w-14 h-14 rounded-full border-4 transition-all z-50",
                   isReady && !isCompressing
                     ? "bg-white border-white shadow-lg hover:scale-105 active:scale-95"
-                    : "bg-white/50 border-white/50"
+                    : "bg-white/50 border-white/50 cursor-not-allowed"
                 )}
                 aria-label="Capturar foto"
+                title="Capturar foto"
               >
                 {isCompressing && (
                   <div className="w-full h-full flex items-center justify-center">
@@ -347,15 +342,13 @@ export function CameraCapture({ onCapture, onCancel, isLoading = false, onFallba
                 )}
               </button>
 
-              {/* Menu dots */}
-              <button
-                className="w-10 h-10 flex items-center justify-center text-white/70 hover:text-white transition-colors"
-                aria-label="Mais opções"
-              >
-                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
-                </svg>
-              </button>
+              {/* Espaço flexível para equilibrar */}
+              <div className="flex-1" />
+
+              {/* Menu dots (opcional - pode ser removido ou mantido) */}
+              {onFallbackToUpload && (
+                <div className="min-w-[44px] min-h-[44px] w-11 h-11" />
+              )}
             </div>
           </div>
         </>

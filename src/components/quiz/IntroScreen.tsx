@@ -1,10 +1,22 @@
 import { motion } from 'framer-motion';
+import { useRef } from 'react';
 
 interface IntroScreenProps {
   onContinue: () => void;
 }
 
 export function IntroScreen({ onContinue }: IntroScreenProps) {
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const userClickedRef = useRef(false);
+
+  const handleContinue = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    userClickedRef.current = true;
+    console.log('[IntroScreen] ✅ User clicked continue button');
+    onContinue();
+  };
+
   return (
     <div className="flex flex-col items-center text-center px-5 min-h-[100dvh] justify-center">
       {/* Face Scan Animation */}
@@ -50,13 +62,16 @@ export function IntroScreen({ onContinue }: IntroScreenProps) {
 
       {/* CTA Button */}
       <motion.button
+        ref={buttonRef}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.4 }}
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
-        onClick={onContinue}
+        onClick={handleContinue}
+        type="button"
         className="btn-primary w-full max-w-sm py-4 text-lg font-semibold"
+        aria-label="Continuar para seleção de gênero"
       >
         Continuar
       </motion.button>

@@ -7,4 +7,8 @@ export default defineConfig({
   integrations: [react(), tailwind()],
   output: 'server',
   adapter: vercel(),
+  server: {
+    host: true, // Escuta em todas as interfaces de rede (0.0.0.0)
+    port: 4321,
+  },
 });

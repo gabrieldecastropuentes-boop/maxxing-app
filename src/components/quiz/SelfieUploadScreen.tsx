@@ -17,6 +17,7 @@ export function SelfieUploadScreen({ onComplete, gender = 'male' }: SelfieUpload
   const [sideImage, setSideImage] = useState<string | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const galleryInputRef = useRef<HTMLInputElement>(null); // Input separado para galeria (sem capture)
   const currentUpload = useRef<'front' | 'side'>('front');
 
   const isFemale = gender === 'female';
@@ -100,8 +101,12 @@ export function SelfieUploadScreen({ onComplete, gender = 'male' }: SelfieUpload
       reader.readAsDataURL(file);
     } finally {
       setIsCompressing(false);
+      // Limpar ambos os inputs
       if (fileInputRef.current) {
         fileInputRef.current.value = '';
+      }
+      if (galleryInputRef.current) {
+        galleryInputRef.current.value = '';
       }
     }
   }, []);
@@ -121,6 +126,7 @@ export function SelfieUploadScreen({ onComplete, gender = 'male' }: SelfieUpload
       "flex flex-col min-h-[100dvh] px-5",
       isFemale && "female-flow" // Classe para estilização feminina
     )}>
+      {/* Input para câmera (com capture) - usado no botão principal */}
       <input
         ref={fileInputRef}
         type="file"
@@ -129,6 +135,20 @@ export function SelfieUploadScreen({ onComplete, gender = 'male' }: SelfieUpload
         onChange={handleFileSelect}
         className="hidden"
         id="selfie-file-input"
+        style={{
+          transform: 'none',
+          filter: 'none',
+          willChange: 'auto',
+        }}
+      />
+      {/* Input para galeria (sem capture) - permite escolher foto da galeria */}
+      <input
+        ref={galleryInputRef}
+        type="file"
+        accept="image/jpeg,image/png,image/webp,image/heic"
+        onChange={handleFileSelect}
+        className="hidden"
+        id="selfie-gallery-input"
         style={{
           transform: 'none',
           filter: 'none',
@@ -292,7 +312,8 @@ export function SelfieUploadScreen({ onComplete, gender = 'male' }: SelfieUpload
             onCancel={() => setStep('intro')}
             onFallbackToUpload={() => {
               currentUpload.current = 'front';
-              fileInputRef.current?.click();
+              // Usar input da galeria (sem capture) para permitir escolher foto
+              galleryInputRef.current?.click();
             }}
           />
         )}
@@ -309,7 +330,8 @@ export function SelfieUploadScreen({ onComplete, gender = 'male' }: SelfieUpload
             onCancel={() => setStep('front')}
             onFallbackToUpload={() => {
               currentUpload.current = 'side';
-              fileInputRef.current?.click();
+              // Usar input da galeria (sem capture) para permitir escolher foto
+              galleryInputRef.current?.click();
             }}
           />
         )}
