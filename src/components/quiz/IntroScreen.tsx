@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { useRef } from 'react';
+import { tracking } from '../../lib/tracking';
 
 interface IntroScreenProps {
   onContinue: () => void;
@@ -14,6 +15,7 @@ export function IntroScreen({ onContinue }: IntroScreenProps) {
     e.stopPropagation();
     userClickedRef.current = true;
     console.log('[IntroScreen] ✅ User clicked continue button');
+    tracking.startQuizClick();
     onContinue();
   };
 

@@ -327,16 +327,72 @@ export function PaywallScreen({ results, userPhoto, onPurchase }: PaywallScreenP
 
           {/* CTA Button #1 */}
           <div className="mt-6">
-            <CTAButton text="Obter acesso agora" variant="primary" />
+            <CTAButton text="Obter meu plano individual exclusivo" variant="primary" />
           </div>
         </div>
       </section>
 
       {/* ═══════════════════════════════════════════════════════════════
-          SEÇÃO 2: ANÁLISE DE ATRATIVIDADE (Print 3)
+          SEÇÃO 2: ANÁLISE DE ATRATIVIDADE COM BLUR (Print 3)
       ═══════════════════════════════════════════════════════════════ */}
       <section className="px-4 py-8">
         <div className="max-w-md mx-auto">
+          {/* Preview com BLUR para gerar curiosidade */}
+          <div className="mb-12">
+            <div className="relative p-8 rounded-3xl bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-sm border border-white/20 overflow-hidden">
+              
+              {/* Conteúdo - Título e Métricas Visíveis */}
+              <div className="relative">
+                {/* Título e Métricas - SEM BLUR */}
+                <h3 className="text-2xl font-bold mb-6 text-white">Análise de Atratividade</h3>
+                
+                <div className="grid grid-cols-2 gap-4 mb-6">
+                  <div className="p-4 rounded-xl bg-white/5">
+                    <p className="text-sm text-gray-400 mb-1">Simetria Facial</p>
+                    <p className="text-2xl font-bold text-white">8.7/10</p>
+                  </div>
+                  <div className="p-4 rounded-xl bg-white/5">
+                    <p className="text-sm text-gray-400 mb-1">Estrutura Óssea</p>
+                    <p className="text-2xl font-bold text-white">9.2/10</p>
+                  </div>
+                  <div className="p-4 rounded-xl bg-white/5">
+                    <p className="text-sm text-gray-400 mb-1">Qualidade da Pele</p>
+                    <p className="text-2xl font-bold text-white">7.5/10</p>
+                  </div>
+                  <div className="p-4 rounded-xl bg-white/5">
+                    <p className="text-sm text-gray-400 mb-1">Harmonia Facial</p>
+                    <p className="text-2xl font-bold text-white">8.9/10</p>
+                  </div>
+                </div>
+
+                {/* Conteúdo Bloqueado - COM BLUR */}
+                <div className="relative">
+                  <div className="select-none pointer-events-none" style={{ filter: 'blur(12px)', WebkitFilter: 'blur(12px)' }}>
+                    {/* Palavras-chave do Nicho (Borradas) */}
+                    <div className="space-y-2">
+                      <p className="text-gray-300">• Protocolo de <strong>Mewing</strong> personalizado</p>
+                      <p className="text-gray-300">• Rotina de <strong>Skincare</strong> otimizada</p>
+                      <p className="text-gray-300">• Exercícios de <strong>Jawline</strong> específicos</p>
+                      <p className="text-gray-300">• Suplementação para <strong>Colágeno</strong> e <strong>Elastina</strong></p>
+                      <p className="text-gray-300">• Técnicas de <strong>Face Sculpting</strong></p>
+                    </div>
+                  </div>
+
+                  {/* Overlay de Bloqueio - Apenas sobre o conteúdo borrado */}
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/60 backdrop-blur-md" style={{ backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)' }}>
+                    <div className="text-center p-6">
+                      <svg className="w-16 h-16 mx-auto mb-4 text-[#FF4D4D]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                      </svg>
+                      <p className="text-xl font-bold mb-2 text-white">Conteúdo Bloqueado</p>
+                      <p className="text-sm text-gray-400">Desbloqueie para ver sua análise completa</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div className="rounded-3xl bg-gradient-to-b from-[#1a1a1a] to-[#0d0d0d] border border-gray-800 overflow-hidden">
             {/* Header */}
             <div className="text-center py-5 border-b border-gray-800">
@@ -462,32 +518,81 @@ export function PaywallScreen({ results, userPhoto, onPurchase }: PaywallScreenP
 
           {/* CTA após Análise de Atratividade */}
           <div className="mt-6">
-            <CTAButton text="Obter acesso agora" variant="primary" />
+            <CTAButton text="Obter meu plano individual exclusivo" variant="primary" />
           </div>
         </div>
       </section>
 
       {/* ═══════════════════════════════════════════════════════════════
-          SEÇÃO 3: O QUE VOCÊ RECEBE (Print 2)
+          SEÇÃO 3: O QUE VOCÊ RECEBE (Print 2) - OTIMIZADA
       ═══════════════════════════════════════════════════════════════ */}
       <section className="px-4 py-10">
         <div className="max-w-md mx-auto">
           <h3 className="text-2xl font-bold text-center mb-2">
-            Tudo que você recebe<br />
+            O que você recebe<br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent">
-              no seu Plano Looksmaxxer
+              no seu Plano Personalizado
             </span>
           </h3>
-          <p className="text-gray-400 text-sm text-center mb-6">Tecnologia exclusiva + acompanhamento personalizado</p>
+          <p className="text-gray-400 text-sm text-center mb-6">Análise completa + plano de ação individual</p>
           
+          {/* Entrega Principal + Exemplos em um único banner */}
+          <div className="mb-6 p-5 rounded-2xl bg-gradient-to-br from-white/5 to-white/[0.02] border border-white/10 space-y-4">
+            <h4 className="text-white font-bold text-base mb-3 text-center">Seu plano inclui:</h4>
+            <div className="space-y-2.5">
+              <div className="flex items-start gap-3">
+                <span className="text-green-500 text-lg mt-0.5">✓</span>
+                <p className="text-sm text-gray-300 flex-1">Escaneamento facial completo usando tecnologia lookmaxing</p>
+              </div>
+              <div className="flex items-start gap-3">
+                <span className="text-green-500 text-lg mt-0.5">✓</span>
+                <p className="text-sm text-gray-300 flex-1">Relatório detalhado com seus pontos fortes e áreas de melhoria</p>
+              </div>
+              <div className="flex items-start gap-3">
+                <span className="text-green-500 text-lg mt-0.5">✓</span>
+                <p className="text-sm text-gray-300 flex-1">Plano personalizado de melhoria baseado na sua análise</p>
+              </div>
+              <div className="flex items-start gap-3">
+                <span className="text-green-500 text-lg mt-0.5">✓</span>
+                <p className="text-sm text-gray-300 flex-1">Orientações individuais sobre pele, rosto, hábitos e estética</p>
+              </div>
+            </div>
+            <div className="h-px bg-white/10" />
+            <div className="p-4 rounded-xl bg-gray-900/40 border border-gray-800/50">
+              <h4 className="text-white font-semibold text-sm mb-3 flex items-center gap-2">
+                <span className="text-base">📋</span>
+                Exemplos de orientações que você pode receber:
+              </h4>
+              <div className="space-y-2 text-xs text-gray-400">
+                <p className="flex items-start gap-2">
+                  <span className="text-gray-600">•</span>
+                  <span>Rotina facial sugerida baseada no seu tipo de pele</span>
+                </p>
+                <p className="flex items-start gap-2">
+                  <span className="text-gray-600">•</span>
+                  <span>Produtos ideais para seu rosto (categorias específicas)</span>
+                </p>
+                <p className="flex items-start gap-2">
+                  <span className="text-gray-600">•</span>
+                  <span>Pequenos ajustes de estilo para reforçar atração facial</span>
+                </p>
+                <p className="flex items-start gap-2">
+                  <span className="text-gray-600">•</span>
+                  <span>Checklist de melhorias diárias personalizadas</span>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Lista Detalhada - Mantida mas refinada */}
           <div className="space-y-3">
             {[
-              { icon: '🔬', title: 'Escaneamento Facial 3D', desc: 'Mapeamento automático de pontos fracos', value: 'R$197' },
-              { icon: '📊', title: 'Score de Atração Atualizado', desc: 'Reavaliação semanal do seu progresso', value: 'R$97' },
-              { icon: '🧴', title: 'Plano de Produtos Personalizado', desc: 'Ranking dos melhores para sua pele', value: 'R$147' },
-              { icon: '📋', title: 'Rotina Looksmaxxer Exclusiva', desc: 'Horários exatos + passos numerados', value: 'R$127' },
-              { icon: '💋', title: 'Mapa de Atração Feminina', desc: 'Pontos mais valorizados por mulheres', value: 'R$97' },
-              { icon: '📈', title: 'Acompanhamento Mensal', desc: 'Check-in de evolução + ajustes', value: 'R$67' },
+              { icon: '🔬', title: 'Escaneamento Facial Completo', desc: 'Análise de pontos fracos e fortes faciais', value: 'R$197' },
+              { icon: '📊', title: 'Relatório de Análise Detalhado', desc: 'Score de atração e potencial de melhoria', value: 'R$97' },
+              { icon: '📋', title: 'Plano Personalizado de Melhoria', desc: 'Rotina completa baseada na sua análise', value: 'R$127' },
+              { icon: '🧴', title: 'Recomendações de Produtos', desc: 'Produtos ideais para seu tipo de pele', value: 'R$147' },
+              { icon: '💡', title: 'Orientações Individuais', desc: 'Hidratação, estética e hábitos personalizados', value: 'R$97' },
+              { icon: '📈', title: 'Acompanhamento de Progresso', desc: 'Check-in mensal com ajustes do plano', value: 'R$67' },
             ].map((item, i) => (
               <motion.div
                 key={item.title}
@@ -519,7 +624,170 @@ export function PaywallScreen({ results, userPhoto, onPurchase }: PaywallScreenP
 
           {/* CTA Button #4 */}
           <div className="mt-6">
-            <CTAButton text="Finalizar minha inscrição" variant="primary" />
+            <CTAButton text="Obter meu plano individual exclusivo" variant="primary" />
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════════════
+          SEÇÃO 3.5: PRODUTOS EXCLUSIVOS DE SKINCARE (NOVO)
+      ═══════════════════════════════════════════════════════════════ */}
+      <section className="px-4 py-10">
+        <div className="max-w-6xl mx-auto">
+          <h3 className="text-2xl sm:text-3xl font-bold mb-3 text-center">
+            Produtos exclusivos incluídos no seu plano
+          </h3>
+          <p className="text-sm sm:text-base text-gray-400 text-center max-w-3xl mx-auto mb-6">
+            Veja o valor individual de alguns produtos premium que podem fazer parte do seu kit personalizado.
+            Os preços abaixo são apenas uma referência.
+          </p>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mb-8">
+            {/* Produto 1 - Sérum Premium */}
+            <div className="relative rounded-2xl overflow-hidden group bg-gray-900/50 border border-gray-800/50">
+              <img 
+                src="/media/serum paywall.jpg" 
+                alt="Sérum Premium"
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none';
+                  const fallback = e.currentTarget.nextElementSibling as HTMLElement;
+                  if (fallback) fallback.classList.remove('hidden');
+                }}
+                className="w-full aspect-square object-cover group-hover:scale-105 transition-transform duration-300"
+                loading="lazy"
+                style={{ maxHeight: '400px' }}
+              />
+              <div className="hidden w-full aspect-square bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center">
+                <span className="text-4xl">🧴</span>
+              </div>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent flex items-end p-3">
+                <div className="flex w-full items-center justify-between gap-2">
+                  <p className="text-xs sm:text-sm font-semibold text-white">Sérum Premium</p>
+                  <span className="pointer-events-none select-none inline-block bg-gradient-to-r from-primary to-accent text-white px-3 py-1 rounded-md text-[0.9rem] font-semibold shadow-[0_2px_8px_rgba(255,107,53,0.3)]">
+                    R$ 19,90
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Produto 2 - Hidratante Facial */}
+            <div className="relative rounded-2xl overflow-hidden group bg-gray-900/50 border border-gray-800/50">
+              <img 
+                src="/media/monsturiaser paywall.jpg" 
+                alt="Hidratante Facial"
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none';
+                  const fallback = e.currentTarget.nextElementSibling as HTMLElement;
+                  if (fallback) fallback.classList.remove('hidden');
+                }}
+                className="w-full aspect-square object-cover group-hover:scale-105 transition-transform duration-300"
+                loading="lazy"
+                style={{ maxHeight: '400px' }}
+              />
+              <div className="hidden w-full aspect-square bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center">
+                <span className="text-4xl">🧴</span>
+              </div>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent flex items-end p-3">
+                <div className="flex w-full items-center justify-between gap-2">
+                  <p className="text-xs sm:text-sm font-semibold text-white">Hidratante Facial</p>
+                  <span className="pointer-events-none select-none inline-block bg-gradient-to-r from-primary to-accent text-white px-3 py-1 rounded-md text-[0.9rem] font-semibold shadow-[0_2px_8px_rgba(255,107,53,0.3)]">
+                    R$ 24,90
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Produto 3 - Protetor Solar */}
+            <div className="relative rounded-2xl overflow-hidden group bg-gray-900/50 border border-gray-800/50">
+              <img 
+                src="/media/sun scream payywall.jpg" 
+                alt="Protetor Solar"
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none';
+                  const fallback = e.currentTarget.nextElementSibling as HTMLElement;
+                  if (fallback) fallback.classList.remove('hidden');
+                }}
+                className="w-full aspect-square object-cover group-hover:scale-105 transition-transform duration-300"
+                loading="lazy"
+                style={{ maxHeight: '400px' }}
+              />
+              <div className="hidden w-full aspect-square bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center">
+                <span className="text-4xl">🧴</span>
+              </div>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent flex items-end p-3">
+                <div className="flex w-full items-center justify-between gap-2">
+                  <p className="text-xs sm:text-sm font-semibold text-white">Protetor Solar</p>
+                  <span className="pointer-events-none select-none inline-block bg-gradient-to-r from-primary to-accent text-white px-3 py-1 rounded-md text-[0.9rem] font-semibold shadow-[0_2px_8px_rgba(255,107,53,0.3)]">
+                    R$ 29,90
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Produto 4 - Esfoliante */}
+            <div className="relative rounded-2xl overflow-hidden group bg-gray-900/50 border border-gray-800/50">
+              <img 
+                src="/media/esfoliante paywall.jpg" 
+                alt="Esfoliante"
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none';
+                  const fallback = e.currentTarget.nextElementSibling as HTMLElement;
+                  if (fallback) fallback.classList.remove('hidden');
+                }}
+                className="w-full aspect-square object-cover group-hover:scale-105 transition-transform duration-300"
+                loading="lazy"
+                style={{ maxHeight: '400px' }}
+              />
+              <div className="hidden w-full aspect-square bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center">
+                <span className="text-4xl">🧴</span>
+              </div>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent flex items-end p-3">
+                <div className="flex w-full items-center justify-between gap-2">
+                  <p className="text-xs sm:text-sm font-semibold text-white">Esfoliante</p>
+                  <span className="pointer-events-none select-none inline-block bg-gradient-to-r from-primary to-accent text-white px-3 py-1 rounded-md text-[0.9rem] font-semibold shadow-[0_2px_8px_rgba(255,107,53,0.3)]">
+                    R$ 34,90
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Copy Reforçando Exclusividade */}
+          <div className="mb-8 p-8 rounded-3xl bg-gradient-to-br from-[#FF4D4D]/10 to-[#FF8A00]/10 border border-[#FF4D4D]/30">
+            <div className="flex items-start gap-4">
+              <svg className="w-8 h-8 text-[#FF8A00] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+              </svg>
+              <div>
+                <h4 className="text-xl font-bold mb-3 text-white">Por que nosso plano é diferente?</h4>
+                <ul className="space-y-3">
+                  <li className="flex items-start gap-3">
+                    <svg className="w-5 h-5 text-[#FF4D4D] flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span className="text-gray-300">Produtos <strong className="text-white">importados premium</strong> que você não encontra em lojas comuns</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <svg className="w-5 h-5 text-[#FF4D4D] flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span className="text-gray-300">Protocolo desenvolvido por <strong className="text-white">especialistas em estética facial</strong></span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <svg className="w-5 h-5 text-[#FF4D4D] flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span className="text-gray-300">Fórmulas <strong className="text-white">exclusivas</strong> não disponíveis no varejo</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <svg className="w-5 h-5 text-[#FF4D4D] flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span className="text-gray-300">Suporte direto com profissionais certificados</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -583,7 +851,7 @@ export function PaywallScreen({ results, userPhoto, onPurchase }: PaywallScreenP
           <p className="text-primary text-sm mt-5 mb-4 font-medium">Mais dados no relatório completo</p>
           
           {/* CTA Button #2 */}
-          <CTAButton text="Desbloquear meu plano personalizado" variant="primary" />
+          <CTAButton text="Obter meu plano individual exclusivo" variant="primary" />
         </div>
       </section>
 

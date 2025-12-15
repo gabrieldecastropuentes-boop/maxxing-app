@@ -6,6 +6,7 @@
  */
 
 import type { APIRoute } from 'astro';
+import { prisma } from '../../../lib/db';
 
 export interface QuizResultPayload {
   user_id: string;
@@ -18,6 +19,7 @@ export interface QuizResultPayload {
   score: number;
   image_reference?: string;
   gender: 'male' | 'female';
+  lead_id?: string; // Opcional: ID do lead associado
 }
 
 export interface QuizResultResponse {
@@ -25,6 +27,8 @@ export interface QuizResultResponse {
   recommended_plan: 'basic' | 'standard' | 'premium';
   score: number;
 }
+
+export const prerender = false;
 
 export const POST: APIRoute = async ({ request }) => {
   try {
@@ -50,18 +54,29 @@ export const POST: APIRoute = async ({ request }) => {
       recommended_plan = 'basic';
     }
 
-    const result_id = `result_${data.quiz_id}_${Date.now()}`;
+    // Salvar no banco de dados
+    const quizResult = await prisma.quizResult.create({
+      data: {
+        userId: data.user_id,
+        quizId: data.quiz_id,
+        score: data.score,
+        gender: data.gender,
+        recommendedPlan: recommended_plan,
+        answers: data.answers as any, // Prisma aceita JSON
+        imageReference: data.image_reference,
+        leadId: data.lead_id, // Associar com lead se fornecido
+      },
+    });
 
-    // TODO: Salvar no banco de dados
+    console.log('[API/quiz/result] Resultado salvo:', { result_id: quizResult.id, ...data });
+
     // TODO: Gerar recomendações personalizadas
     // TODO: Enviar para analytics
 
-    console.log('[API/quiz/result] Resultado salvo:', { result_id, ...data });
-
     return new Response(JSON.stringify({
-      result_id,
-      recommended_plan,
-      score: data.score
+      result_id: quizResult.id,
+      recommended_plan: recommended_plan,
+      score: quizResult.score
     }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' }

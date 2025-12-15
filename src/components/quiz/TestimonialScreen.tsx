@@ -2,11 +2,62 @@ import { motion } from 'framer-motion';
 
 interface TestimonialScreenProps {
   onContinue: () => void;
+  selectedAge?: string;
+  gender?: 'male' | 'female';
 }
 
-export function TestimonialScreen({ onContinue }: TestimonialScreenProps) {
+const getTestimonialImage = (age?: string) => {
+  switch (age) {
+    case '18-24':
+    case '25-29':
+      return '/media/after-photo.png';
+    case '30-34':
+      return '/media/depois depoimento_C_30_34.jpg';
+    case '35-39':
+      return "/media/depois depoimento_D_35_39.jpg.png";
+    case '40+':
+      return "/media/depois depoimento_E_40_mais.jpg'.png";
+    default:
+      return '/media/1-m-progress-male.webp';
+  }
+};
+
+const getTestimonialBeforeImage = (age?: string) => {
+  switch (age) {
+    case '18-24':
+    case '25-29':
+      return '/media/before-photo.png';
+    case '30-34':
+      return '/media/antes depoimento_C_30_34.jpg';
+    case '35-39':
+      return "/media/antes depoimento_D_35_39.jpg.png";
+    case '40+':
+      return "/media/antes depoimento_E_40_mais.jpg'.png";
+    default:
+      return '/media/before-photo.png';
+  }
+};
+
+export function TestimonialScreen({ onContinue, selectedAge, gender = 'male' }: TestimonialScreenProps) {
+  const fluxo_genero = gender === 'female' ? 'feminino' : 'masculino';
+  const isFemale = fluxo_genero === 'feminino';
+
+  const testimonialImage = isFemale
+    ? "/media/depois_depoimento_feminino.jpg .jpg"
+    : getTestimonialImage(selectedAge);
+
+  const testimonialBeforeImage = isFemale
+    ? '/media/antes_depoimento_feminino.jpg.png'
+    : getTestimonialBeforeImage(selectedAge);
+
+  const backgroundGradient = isFemale
+    ? 'bg-gradient-to-b from-[#1a0a1a] via-[#2a0f23] to-[#EC4899]/40'
+    : 'bg-gradient-to-b from-[#0A0A0A] via-[#1a0f00] to-[#FF6B35]/40';
+
+  const testimonialName = isFemale ? 'Mariana Costa' : 'Lucas';
+
   return (
-    <div className="flex flex-col min-h-[100dvh] bg-gradient-to-b from-[#0A0A0A] via-[#1a0f00] to-[#FF6B35]/40">
+    <div className={`flex flex-col min-h-[100dvh] ${backgroundGradient}`}>
       <div className="flex-1 px-5 sm:px-8 pt-12 sm:pt-16 pb-4 flex flex-col items-center">
         {/* Container centralizado */}
         <div className="w-full max-w-lg">
@@ -55,34 +106,50 @@ export function TestimonialScreen({ onContinue }: TestimonialScreenProps) {
             transition={{ delay: 0.3 }}
             className="text-sm sm:text-base text-white mb-6 sm:mb-8"
           >
-            — Lucas, 23
+            — {testimonialName}, 23
           </motion.p>
 
-          {/* Before/After Image - Usando a imagem real */}
+          {/* Before/After Image - dinâmico por faixa etária */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
             className="relative w-full flex justify-center"
           >
-            <div className="relative rounded-2xl overflow-hidden border border-white/10 shadow-[0_20px_60px_rgba(0,0,0,0.5)]">
-              {/* Imagem de progresso */}
-              <img
-                src="/media/1-m-progress-male.webp"
-                alt="Transformação de 8 semanas"
-                className="w-full h-auto max-w-[400px]"
-                loading="eager"
-              />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-[800px]">
+              <div className="relative rounded-2xl overflow-hidden border border-white/10 shadow-[0_20px_60px_rgba(0,0,0,0.5)]">
+                <img
+                  src={testimonialBeforeImage}
+                  alt="Antes"
+                  className="w-full h-auto"
+                  loading="eager"
+                />
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.55 }}
+                  className="absolute bottom-3 left-1/2 -translate-x-1/2 bg-black/80 backdrop-blur-sm px-3 py-1.5 rounded-full border border-white/10"
+                >
+                  <span className="text-xs sm:text-sm font-medium text-white">Antes</span>
+                </motion.div>
+              </div>
 
-              {/* Progress Badge */}
-              <motion.div
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.6 }}
-                className="absolute bottom-3 sm:bottom-4 left-1/2 -translate-x-1/2 bg-black/80 backdrop-blur-sm px-4 py-2 rounded-full border border-white/10"
-              >
-                <span className="text-xs sm:text-sm font-medium text-white">8 semanas de progresso</span>
-              </motion.div>
+              <div className="relative rounded-2xl overflow-hidden border border-white/10 shadow-[0_20px_60px_rgba(0,0,0,0.5)]">
+                <img
+                  src={testimonialImage}
+                  alt="Depois"
+                  className="w-full h-auto"
+                  loading="eager"
+                />
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.6 }}
+                  className="absolute bottom-3 left-1/2 -translate-x-1/2 bg-black/80 backdrop-blur-sm px-3 py-1.5 rounded-full border border-white/10"
+                >
+                  <span className="text-xs sm:text-sm font-medium text-white">Depois</span>
+                </motion.div>
+              </div>
             </div>
           </motion.div>
         </div>

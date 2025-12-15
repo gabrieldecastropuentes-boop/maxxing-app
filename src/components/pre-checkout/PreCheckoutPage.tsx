@@ -1,6 +1,8 @@
+import { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '../../lib/utils';
 import { useInView } from '../../hooks/useInView';
+import { tracking } from '../../lib/tracking';
 
 const CHECKOUT_URL = 'https://checkout.perfectpay.com.br/pay/PPU38CQ3RIM';
 
@@ -50,7 +52,13 @@ export function PreCheckoutPage() {
   const { ref: includedRef, isVisible: includedVisible } = useInView<HTMLDivElement>({ threshold: 0.2 });
   const { ref: benefitsRef, isVisible: benefitsVisible } = useInView<HTMLDivElement>({ threshold: 0.2 });
 
+  // Track VSL view
+  useEffect(() => {
+    tracking.vslView();
+  }, []);
+
   const handleCheckout = () => {
+    tracking.checkoutClick();
     if (typeof window !== 'undefined' && (window as any).fbq) {
       (window as any).fbq('track', 'InitiateCheckout', {
         content_name: 'Pre-Checkout CTA Clicked',

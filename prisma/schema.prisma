@@ -20,15 +20,15 @@ model Lead {
   name        String?
   email       String
   phone       String?
-  userId      String    @map("user_id")
-  quizId      String?   @map("quiz_id")
-  source      String    // 'quiz' | 'paywall' | 'landing' | 'popup'
-  utmSource   String?   @map("utm_source")
-  utmMedium   String?   @map("utm_medium")
-  utmCampaign String?   @map("utm_campaign")
-  utmContent  String?   @map("utm_content")
-  createdAt   DateTime  @default(now()) @map("created_at")
-  updatedAt   DateTime  @updatedAt @map("updated_at")
+  userId      String   @map("user_id")
+  quizId      String?  @map("quiz_id")
+  source      String // 'quiz' | 'paywall' | 'landing' | 'popup'
+  utmSource   String?  @map("utm_source")
+  utmMedium   String?  @map("utm_medium")
+  utmCampaign String?  @map("utm_campaign")
+  utmContent  String?  @map("utm_content")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
 
   // Relacionamentos
   quizResults QuizResult[]
@@ -50,17 +50,17 @@ model QuizResult {
   userId          String   @map("user_id")
   quizId          String   @map("quiz_id")
   score           Int
-  gender          String   // 'male' | 'female'
+  gender          String // 'male' | 'female'
   recommendedPlan String   @map("recommended_plan") // 'basic' | 'standard' | 'premium'
   imageReference  String?  @map("image_reference")
-  answers         Json     // Array de respostas
+  answers         Json // Array de respostas
   createdAt       DateTime @default(now()) @map("created_at")
   updatedAt       DateTime @updatedAt @map("updated_at")
 
   // Relacionamentos
-  leadId          String?  @map("lead_id")
-  lead            Lead?    @relation(fields: [leadId], references: [id], onDelete: SetNull)
-  photoScores    PhotoScore[]
+  leadId      String?      @map("lead_id")
+  lead        Lead?        @relation(fields: [leadId], references: [id], onDelete: SetNull)
+  photoScores PhotoScore[]
 
   @@index([userId])
   @@index([quizId])
@@ -89,7 +89,7 @@ model PhotoScore {
   updatedAt       DateTime @updatedAt @map("updated_at")
 
   // Relacionamentos
-  quizResult      QuizResult? @relation(fields: [quizResultId], references: [id], onDelete: SetNull)
+  quizResult QuizResult? @relation(fields: [quizResultId], references: [id], onDelete: SetNull)
 
   @@index([userId])
   @@index([quizResultId])
@@ -103,12 +103,12 @@ model PhotoScore {
 // Eventos de tracking e analytics
 // ═══════════════════════════════════════════════════════════════
 model Event {
-  id          String   @id @default(cuid())
-  userId      String?  @map("user_id")
-  eventName   String   @map("event_name")
-  eventData   Json?    @map("event_data")
-  source      String?
-  createdAt   DateTime @default(now()) @map("created_at")
+  id        String   @id @default(cuid())
+  userId    String?  @map("user_id")
+  eventName String   @map("event_name")
+  eventData Json?    @map("event_data")
+  source    String?
+  createdAt DateTime @default(now()) @map("created_at")
 
   @@index([userId])
   @@index([eventName])
@@ -121,49 +121,49 @@ model Event {
 // Compras recebidas via webhook (PerfectPay, etc.)
 // ═══════════════════════════════════════════════════════════════
 model Purchase {
-  id                  String   @id @default(cuid())
-  
+  id String @id @default(cuid())
+
   // Identificadores externos
-  externalId          String   @unique @map("external_id") // ID da transação no gateway
-  gateway             String   @default("perfectpay") // perfectpay, hotmart, etc.
-  
+  externalId String @unique @map("external_id") // ID da transação no gateway
+  gateway    String @default("perfectpay") // perfectpay, hotmart, etc.
+
   // Status da compra
-  status              String   // approved, refused, refunded, chargeback, pending, canceled
-  paymentMethod       String?  @map("payment_method") // pix, credit_card, boleto
-  
+  status        String // approved, refused, refunded, chargeback, pending, canceled
+  paymentMethod String? @map("payment_method") // pix, credit_card, boleto
+
   // Dados do cliente
-  customerEmail       String   @map("customer_email")
-  customerName        String?  @map("customer_name")
-  customerPhone       String?  @map("customer_phone")
-  customerDocument    String?  @map("customer_document") // CPF/CNPJ
-  
+  customerEmail    String  @map("customer_email")
+  customerName     String? @map("customer_name")
+  customerPhone    String? @map("customer_phone")
+  customerDocument String? @map("customer_document") // CPF/CNPJ
+
   // Dados do produto
-  productId           String?  @map("product_id")
-  productName         String?  @map("product_name")
-  planName            String?  @map("plan_name")
-  
+  productId   String? @map("product_id")
+  productName String? @map("product_name")
+  planName    String? @map("plan_name")
+
   // Valores
-  amount              Float    // Valor da compra em centavos ou reais
-  currency            String   @default("BRL")
-  
+  amount   Float // Valor da compra em centavos ou reais
+  currency String @default("BRL")
+
   // UTM e tracking
-  utmSource           String?  @map("utm_source")
-  utmMedium           String?  @map("utm_medium")
-  utmCampaign         String?  @map("utm_campaign")
-  utmContent          String?  @map("utm_content")
-  
+  utmSource   String? @map("utm_source")
+  utmMedium   String? @map("utm_medium")
+  utmCampaign String? @map("utm_campaign")
+  utmContent  String? @map("utm_content")
+
   // Dados brutos do webhook
-  rawPayload          Json?    @map("raw_payload")
-  
+  rawPayload Json? @map("raw_payload")
+
   // Timestamps
-  paidAt              DateTime? @map("paid_at")
-  refundedAt          DateTime? @map("refunded_at")
-  createdAt           DateTime @default(now()) @map("created_at")
-  updatedAt           DateTime @updatedAt @map("updated_at")
+  paidAt     DateTime? @map("paid_at")
+  refundedAt DateTime? @map("refunded_at")
+  createdAt  DateTime  @default(now()) @map("created_at")
+  updatedAt  DateTime  @updatedAt @map("updated_at")
 
   // Relacionamentos
-  leadId              String?  @map("lead_id")
-  lead                Lead?    @relation(fields: [leadId], references: [id], onDelete: SetNull)
+  leadId String? @map("lead_id")
+  lead   Lead?   @relation(fields: [leadId], references: [id], onDelete: SetNull)
 
   @@index([externalId])
   @@index([customerEmail])
@@ -174,3 +174,112 @@ model Purchase {
   @@map("purchases")
 }
 
+// ═══════════════════════════════════════════════════════════════
+// TRACKING TABLES - Analytics agregado (pseudônimo)
+// ═══════════════════════════════════════════════════════════════
+
+// ═══════════════════════════════════════════════════════════════
+// MODEL: TrackingSession
+// Sessões de tracking (chave de ligação: session_id + fbp/fbc + utms)
+// ═══════════════════════════════════════════════════════════════
+model TrackingSession {
+  id        String @id @default(cuid())
+  sessionId String @unique @map("session_id") // UUID do localStorage
+
+  // Identificadores para match futuro
+  fbp    String? // Facebook Pixel Browser ID
+  fbc    String? // Facebook Click ID
+  fbclid String? // Facebook Click ID (URL param)
+
+  // UTMs
+  utmSource   String? @map("utm_source")
+  utmMedium   String? @map("utm_medium")
+  utmCampaign String? @map("utm_campaign")
+  utmContent  String? @map("utm_content")
+  utmTerm     String? @map("utm_term")
+
+  // Metadados da sessão
+  userAgent  String? @map("user_agent")
+  referrer   String?
+  landingUrl String? @map("landing_url")
+
+  // Timestamps
+  firstSeenAt DateTime @default(now()) @map("first_seen_at")
+  lastSeenAt  DateTime @updatedAt @map("last_seen_at")
+
+  // Relacionamentos
+  events    TrackingEvent[]
+  purchases TrackingPurchase[]
+
+  @@index([sessionId])
+  @@index([fbp])
+  @@index([fbc])
+  @@index([firstSeenAt])
+  @@map("tracking_lmx_sessions")
+}
+
+// ═══════════════════════════════════════════════════════════════
+// MODEL: TrackingEvent
+// Eventos de tracking (analytics agregado)
+// ═══════════════════════════════════════════════════════════════
+model TrackingEvent {
+  id        String @id @default(cuid())
+  sessionId String @map("session_id")
+
+  // Evento
+  eventName String  @map("event_name") // 'home_view', 'quiz_step_view', etc.
+  eventId   String? @unique @map("event_id") // Para dedup Meta Pixel/CAPI
+
+  // Dados do evento
+  stepIndex Int?    @map("step_index")
+  stepId    String? @map("step_id")
+  answerId  Int?    @map("answer_id") // OK para analytics agregado
+
+  // Metadados
+  metadata Json? // Dados adicionais do evento
+  url      String?
+  referrer String?
+
+  // Timestamp
+  createdAt DateTime @default(now()) @map("created_at")
+
+  // Relacionamento
+  session TrackingSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId])
+  @@index([eventName])
+  @@index([eventId])
+  @@index([createdAt])
+  @@map("tracking_lmx_events")
+}
+
+// ═══════════════════════════════════════════════════════════════
+// MODEL: TrackingPurchase
+// Compras vinculadas a sessões (para match futuro)
+// ═══════════════════════════════════════════════════════════════
+model TrackingPurchase {
+  id         String  @id @default(cuid())
+  sessionId  String? @map("session_id")
+  purchaseId String? @unique @map("purchase_id") // ID da tabela purchases
+
+  // Event ID para dedup Meta
+  eventId String? @unique @map("event_id")
+
+  // Dados da compra (denormalizado para analytics)
+  amount   Float
+  currency String @default("BRL")
+  status   String // 'approved', 'refused', etc.
+  gateway  String @default("perfectpay")
+
+  // Timestamp
+  createdAt DateTime @default(now()) @map("created_at")
+
+  // Relacionamento
+  session TrackingSession? @relation(fields: [sessionId], references: [id], onDelete: SetNull)
+
+  @@index([sessionId])
+  @@index([purchaseId])
+  @@index([eventId])
+  @@index([createdAt])
+  @@map("tracking_lmx_purchases")
+}

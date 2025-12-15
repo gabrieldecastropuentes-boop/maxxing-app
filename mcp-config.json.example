@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "supabase": {
+      "command": "supabase-mcp-server",
+      "env": {
+        "SUPABASE_PROJECT_REF": "seu_project_ref_aqui",
+        "SUPABASE_DB_PASSWORD": "sua_senha_do_banco",
+        "SUPABASE_REGION": "us-east-1",
+        "SUPABASE_ACCESS_TOKEN": "seu_access_token_aqui"
+      }
+    }
+  }
+}
+

@@ -5,7 +5,15 @@
  * ═══════════════════════════════════════════════════════════════
  */
 
+/**
+ * ═══════════════════════════════════════════════════════════════
+ * API ENDPOINT: POST /api/leads
+ * Captura de leads do quiz e paywall
+ * ═══════════════════════════════════════════════════════════════
+ */
+
 import type { APIRoute } from 'astro';
+import { prisma } from '../../lib/db';
 
 export interface LeadPayload {
   name?: string;
@@ -26,6 +34,8 @@ export interface LeadResponse {
   message?: string;
 }
 
+export const prerender = false;
+
 export const POST: APIRoute = async ({ request }) => {
   try {
     const data: LeadPayload = await request.json();
@@ -42,16 +52,48 @@ export const POST: APIRoute = async ({ request }) => {
       });
     }
 
-    // TODO: Implementar salvamento no banco de dados
+    // Verificar se já existe um lead com o mesmo email e user_id
+    const existingLead = await prisma.lead.findFirst({
+      where: {
+        email: data.email,
+        userId: data.user_id,
+      },
+    });
+
+    if (existingLead) {
+      return new Response(JSON.stringify({
+        lead_id: existingLead.id,
+        status: 'duplicate',
+        message: 'Lead já existe'
+      }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    // Criar novo lead no banco de dados
+    const lead = await prisma.lead.create({
+      data: {
+        email: data.email,
+        userId: data.user_id,
+        name: data.name,
+        phone: data.phone,
+        quizId: data.quiz_id,
+        source: data.source,
+        utmSource: data.utm_source,
+        utmMedium: data.utm_medium,
+        utmCampaign: data.utm_campaign,
+        utmContent: data.utm_content,
+      },
+    });
+
+    console.log('[API/leads] Lead capturado:', { lead_id: lead.id, ...data });
+
     // TODO: Integrar com CRM/Email marketing (ActiveCampaign, Mailchimp, etc)
     // TODO: Enviar evento para Facebook CAPI
-    
-    const lead_id = `lead_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
-
-    console.log('[API/leads] Lead capturado:', { lead_id, ...data });
 
     return new Response(JSON.stringify({
-      lead_id,
+      lead_id: lead.id,
       status: 'captured'
     }), {
       status: 200,

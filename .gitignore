@@ -41,3 +41,11 @@ coverage/
 
 # Prisma
 prisma/migrations/
+
+# Debug logs
+.cursor/
+debug.log
+*.debug.log
+
+# MCP Configuration (contém tokens sensíveis)
+mcp-config.json

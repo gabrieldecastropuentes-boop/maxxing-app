@@ -1727,3 +1727,84 @@ img[width][height] {
     opacity: 0.2 !important;
   }
 }
+
+/* ============================================
+   ANIMAÇÕES DE TRANSIÇÃO - QUIZ
+   ============================================ */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* ============================================
+   CLASSES DE ANIMAÇÃO PARA QUIZ
+   ============================================ */
+
+.quiz-screen {
+  animation: fadeIn 0.4s ease-out;
+}
+
+.quiz-screen-forward {
+  animation: slideInRight 0.4s ease-out;
+}
+
+.quiz-screen-backward {
+  animation: slideInLeft 0.4s ease-out;
+}
+
+/* Transição suave em botões */
+.btn-smooth {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-smooth:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(255, 77, 77, 0.3);
+}
+
+.btn-smooth:active {
+  transform: translateY(0);
+}
+
+/* Animação shimmer para loading */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 2s infinite;
+}

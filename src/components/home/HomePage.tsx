@@ -1,17 +1,24 @@
+import { useEffect } from 'react';
 import { Header } from './Header';
 import { HeroSection } from './HeroSection';
 import { AspirationalHero } from './AspirationalHero';
 import { LooksmaxxingSection } from './LooksmaxxingSection';
 import { HowItWorksSection } from './HowItWorksSection';
 import { SocialProofSection } from './SocialProofSection';
+import { TopArtistsSection } from './TopArtistsSection';
 import { FinalCTASection } from './FinalCTASection';
 import { RiskFreeBadges } from './RiskFreeBadges';
 import { TestimonialsCarousel } from './TestimonialsCarousel';
 import { SocialProofBanner } from './SocialProofBanner';
 import { FAQSection } from './FAQSection';
 import { ExitIntentPopup } from './ExitIntentPopup';
+import { tracking } from '../../lib/tracking';
 
 export function HomePage() {
+  // Track home view
+  useEffect(() => {
+    tracking.homeView();
+  }, []);
   return (
     <div 
       className="relative min-h-screen overflow-x-hidden"
@@ -45,6 +52,9 @@ export function HomePage() {
         </section>
         <section className="isolation-section">
       <SocialProofSection />
+        </section>
+        <section className="isolation-section">
+      <TopArtistsSection />
         </section>
         
         {/* Testimonials Carousel */}

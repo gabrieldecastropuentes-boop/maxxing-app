@@ -62,7 +62,7 @@ export const quizQuestions: QuizQuestion[] = [
   {
     id: 3,
     question: "Qual melhor descreve seu tipo de corpo?",
-    subtitle: "Seja honesto para resultados precisos",
+    subtitle: "Isso ajuda a personalizar seu plano de cuidados",
     type: 'image', // renderizado como grid 2x2 com imagens
     options: [
       { id: 1, text: "Musculoso", score: 4, image: "/media/muscular.jpg" },
@@ -73,8 +73,8 @@ export const quizQuestions: QuizQuestion[] = [
   },
   {
     id: 4,
-    question: "Como você avalia a saúde da sua pele?",
-    subtitle: "Considere acne, manchas e textura",
+    question: "Como você sente que está sua pele hoje?",
+    subtitle: "Pense na textura, se tem acne, manchas ou se está opaca",
     type: 'text',
     options: [
       { id: 1, text: "Excelente, pele limpa e clara", score: 4, icon: "✨" },
@@ -85,7 +85,8 @@ export const quizQuestions: QuizQuestion[] = [
   },
   {
     id: 5,
-    question: "Como você descreveria sua linha da mandíbula?",
+    question: "Você sente que sua mandíbula tem definição?",
+    subtitle: "Pense na linha do queixo - está bem marcada ou mais arredondada?",
     type: 'text',
     options: [
       { id: 1, text: "Muito definida e angular", score: 4, icon: "💎" },
@@ -96,7 +97,8 @@ export const quizQuestions: QuizQuestion[] = [
   },
   {
     id: 6,
-    question: "Qual é o estado atual do seu cabelo?",
+    question: "Como você sente que está seu cabelo?",
+    subtitle: "Pense na espessura, se está ralo, se tem volume ou se está caindo",
     type: 'text',
     options: [
       { id: 1, text: "Cheio e saudável", score: 4, icon: "💇" },
@@ -107,7 +109,7 @@ export const quizQuestions: QuizQuestion[] = [
   },
   {
     id: 7,
-    question: "Você tem um estilo de corte que combina com seu rosto?",
+    question: "Você sente que seu corte de cabelo combina com seu rosto?",
     type: 'text',
     options: [
       { id: 1, text: "Sim, perfeitamente", score: 4, icon: "💯" },
@@ -118,7 +120,8 @@ export const quizQuestions: QuizQuestion[] = [
   },
   {
     id: 8,
-    question: "Como está sua postura no dia a dia?",
+    question: "Você sente que sua postura está boa?",
+    subtitle: "Pense se você fica ereto ou se costuma ficar curvado",
     type: 'text',
     options: [
       { id: 1, text: "Excelente, sempre ereto", score: 4, icon: "🧘" },
@@ -130,7 +133,7 @@ export const quizQuestions: QuizQuestion[] = [
   {
     id: 9,
     question: "Você pratica mewing ou exercícios faciais?",
-    subtitle: "Mewing é a técnica de posicionamento da língua no céu da boca",
+    subtitle: "Mewing (posicionar a língua no céu da boca) ajuda a definir a mandíbula",
     type: 'text',
     options: [
       { id: 1, text: "Sim, diariamente", score: 4, icon: "✅" },
@@ -141,7 +144,8 @@ export const quizQuestions: QuizQuestion[] = [
   },
   {
     id: 10,
-    question: "Com que frequência você cuida da sua pele?",
+    question: "Você tem uma rotina de cuidados com a pele?",
+    subtitle: "Limpeza, hidratação e protetor solar - mesmo que seja básica",
     type: 'text',
     options: [
       { id: 1, text: "Diariamente, rotina completa", score: 4, icon: "🧴" },
@@ -152,7 +156,7 @@ export const quizQuestions: QuizQuestion[] = [
   },
   {
     id: 11,
-    question: "Como você se sente em relação à sua aparência?",
+    question: "Como você se sente com sua aparência hoje?",
     type: 'text',
     options: [
       { id: 1, text: "Muito confiante", score: 4, icon: "😎" },
@@ -162,19 +166,8 @@ export const quizQuestions: QuizQuestion[] = [
     ],
   },
   {
-    id: 12,
-    question: "Como é sua experiência em Encontros e relacionamentos?",
-    type: 'text',
-    options: [
-      { id: 1, text: "Muito boa, sem problemas", score: 4, icon: "❤️" },
-      { id: 2, text: "Razoável", score: 3, icon: "👍" },
-      { id: 3, text: "Difícil às vezes", score: 2, icon: "😕" },
-      { id: 4, text: "Muito difícil", score: 1, icon: "💔" },
-    ],
-  },
-  {
     id: 13,
-    question: "Você recebe elogios sobre sua aparência?",
+    question: "Você recebe elogios sobre sua aparência com frequência?",
     type: 'text',
     options: [
       { id: 1, text: "Frequentemente", score: 4, icon: "🌟" },
@@ -185,7 +178,7 @@ export const quizQuestions: QuizQuestion[] = [
   },
   {
     id: 14,
-    question: "Como é sua vida social?",
+    question: "Como você considera sua vida social?",
     type: 'text',
     options: [
       { id: 1, text: "Muito ativa, saio frequentemente", score: 4, icon: "🎉" },
@@ -196,18 +189,18 @@ export const quizQuestions: QuizQuestion[] = [
   },
   {
     id: 15,
-    question: "Qual é seu maior objetivo com o glow-up?",
+    question: "Qual é seu maior objetivo com essa transformação?",
     type: 'text',
     options: [
       { id: 1, text: "Aumentar a autoconfiança", score: 4, icon: "💪" },
-      { id: 2, text: "Melhorar nos Encontros", score: 4, icon: "❤️" },
+      { id: 2, text: "Melhorar com minha parceira e em novos encontros", score: 4, icon: "❤️" },
       { id: 3, text: "Ser mais atraente", score: 4, icon: "✨" },
       { id: 4, text: "Melhorar na carreira", score: 4, icon: "💼" },
     ],
   },
   {
     id: 16,
-    question: "Quanto tempo você pode dedicar por dia para melhorar?",
+    question: "Quanto tempo você consegue dedicar por dia para seus cuidados?",
     type: 'text',
     options: [
       { id: 1, text: "30+ minutos", score: 4, icon: "⏰" },
@@ -218,7 +211,7 @@ export const quizQuestions: QuizQuestion[] = [
   },
   {
     id: 17,
-    question: "Você está disposto a investir em produtos de skincare?",
+    question: "Você está disposto a investir em produtos que realmente funcionem?",
     type: 'text',
     options: [
       { id: 1, text: "Sim, sem problemas", score: 4, icon: "💰" },
@@ -228,8 +221,20 @@ export const quizQuestions: QuizQuestion[] = [
     ],
   },
   {
-    id: 18,
-    question: "Você está comprometido a seguir um plano de melhoria?",
+    id: 12,
+    question: "Como você considera sua experiência em encontros?",
+    type: 'text',
+    options: [
+      { id: 1, text: "Muito boa, sem problemas", score: 4, icon: "❤️" },
+      { id: 2, text: "Razoável", score: 3, icon: "👍" },
+      { id: 3, text: "Difícil às vezes", score: 2, icon: "😕" },
+      { id: 4, text: "Muito difícil", score: 1, icon: "💔" },
+      { id: 5, text: "Sou comprometido(a)", score: 4, icon: "😊" },
+    ],
+  },
+  {
+    id: 19,
+    question: "Você está disposto a seguir um plano personalizado para você?",
     type: 'text',
     options: [
       { id: 1, text: "100% comprometido", score: 4, icon: "🔥" },

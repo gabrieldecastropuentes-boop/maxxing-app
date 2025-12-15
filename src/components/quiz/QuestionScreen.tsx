@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import type { QuizQuestion } from '../../data/quizData';
 import { cn } from '../../lib/utils';
+import { tracking } from '../../lib/tracking';
 
 interface QuestionScreenProps {
   question: QuizQuestion;
@@ -19,6 +20,11 @@ export function QuestionScreen({
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [isTransitioning, setIsTransitioning] = useState(false);
 
+  // Track quiz step view
+  useEffect(() => {
+    tracking.quizStepView(questionNumber, question.id.toString());
+  }, [questionNumber, question.id]);
+
   const handleOptionClick = (optionId: number, score: number) => {
     if (isTransitioning) {
       console.log('[QuestionScreen] Already transitioning, ignoring click');
@@ -28,6 +34,9 @@ export function QuestionScreen({
     console.log('[QuestionScreen] Option clicked:', { optionId, score });
     setSelectedOption(optionId);
     setIsTransitioning(true);
+    
+    // Track answer selection
+    tracking.quizAnswerSelect(questionNumber, optionId);
     
     // Haptic feedback on mobile (if supported)
     if (typeof navigator !== 'undefined' && navigator.vibrate) {
@@ -61,30 +70,57 @@ export function QuestionScreen({
   const isImageGrid = question.type === 'image' || question.type === 'grid';
   const isBodyTypeQuestion = question.id === 3;
 
+  const progress = ((questionNumber / totalQuestions) * 100);
+
   return (
-    <div className="w-full max-w-3xl mx-auto px-4 md:px-0">
-      {/* Question */}
-      <motion.div
-        initial={{ opacity: 0, y: 15 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4 }}
-        className="rounded-[32px] bg-gradient-to-b from-[#130F0F] via-[#1B1311] to-[#0A090B] border border-white/5 px-6 py-6 md:px-10 md:py-8 text-center shadow-[0_20px_120px_rgba(0,0,0,0.45)]"
-      >
-        <div className="h-1 rounded-full bg-white/10 overflow-hidden mb-4">
-          <div
-            className="h-full rounded-full bg-gradient-to-r from-[#FF9553] via-[#FF4D4D] to-[#FF9553]"
-            style={{ width: `${(questionNumber / totalQuestions) * 100}%` }}
+    <div className="quiz-screen min-h-screen bg-[#0A0A0A] text-white flex flex-col p-6">
+      {/* Header com Barra de Progresso Melhorada */}
+      <div className="mb-8">
+        <div className="flex items-center justify-between mb-3">
+          <span className="text-sm font-medium text-gray-400">
+            Pergunta {questionNumber} de {totalQuestions}
+          </span>
+          <span className="text-sm font-bold text-[#FF4D4D]">
+            {Math.round(progress)}%
+          </span>
+        </div>
+        
+        <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden">
+          <motion.div 
+            initial={{ width: 0 }}
+            animate={{ width: `${progress}%` }}
+            transition={{ duration: 0.5, ease: 'easeOut' }}
+            className="h-full bg-gradient-to-r from-[#FF4D4D] to-[#FF8A00] rounded-full"
           />
         </div>
-        <h2 className="text-xl sm:text-2xl md:text-[32px] font-bold font-display mb-2 text-white leading-tight">
-          {question.question}
-        </h2>
-        {question.subtitle && (
-          <p className="text-sm md:text-base text-white/70 max-w-xl mx-auto">
-            {question.subtitle}
-          </p>
-        )}
-      </motion.div>
+      </div>
+
+      {/* Pergunta - ESPAÇAMENTO AUMENTADO (mb-20) */}
+      <div className="mb-12 sm:mb-16 md:mb-20">
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+          className="rounded-3xl bg-gradient-to-br from-white/10 to-white/[0.02] backdrop-blur-sm border border-white/20 shadow-2xl p-6 md:p-8"
+        >
+          {/* Badge de Número */}
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#FF4D4D]/20 border border-[#FF4D4D]/40 mb-4">
+            <svg className="w-4 h-4 text-[#FF4D4D]" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+            </svg>
+            <span className="text-xs font-bold text-[#FF4D4D]">PERGUNTA {questionNumber}/{totalQuestions}</span>
+          </div>
+
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold leading-tight mb-4">
+            {question.question}
+          </h2>
+          {question.subtitle && (
+            <p className="text-base sm:text-lg text-gray-400 leading-relaxed">
+              {question.subtitle}
+            </p>
+          )}
+        </motion.div>
+      </div>
 
       {/* Options */}
       {isImageGrid ? (
@@ -92,7 +128,7 @@ export function QuestionScreen({
           variants={containerVariants}
           initial="hidden"
           animate="visible"
-          className="grid grid-cols-2 gap-3 sm:gap-4 md:gap-5 mt-6"
+          className="flex-1 grid grid-cols-2 gap-3 sm:gap-4 md:gap-5"
         >
           {question.options.map((option, index) => (
             <motion.button
@@ -157,7 +193,7 @@ export function QuestionScreen({
           variants={containerVariants}
           initial="hidden"
           animate="visible"
-          className="space-y-2.5 md:space-y-3"
+          className="flex-1 flex flex-col gap-4"
         >
           {question.options.map((option, index) => (
             <motion.button
@@ -166,61 +202,63 @@ export function QuestionScreen({
               onClick={() => handleOptionClick(option.id, option.score)}
               disabled={isTransitioning}
               className={cn(
-                "quiz-option flex items-center gap-3 md:gap-4",
-                "min-h-[44px] py-3 px-4 touch-manipulation",
-                selectedOption === option.id && "selected"
+                "group w-full p-6 text-left rounded-2xl border-2 transition-all duration-300 hover:scale-[1.02]",
+                "bg-white/5 backdrop-blur-sm",
+                selectedOption === option.id
+                  ? "border-[#FF4D4D] bg-[#FF4D4D]/10 shadow-xl shadow-[#FF4D4D]/30"
+                  : "border-white/20 hover:border-white/40 hover:bg-white/10"
               )}
             >
-              {/* Option Letter */}
-              <span
-                className={cn(
-                  "flex-shrink-0 w-8 h-8 md:w-10 md:h-10 rounded-lg md:rounded-xl flex items-center justify-center",
-                  "font-bold text-xs md:text-sm transition-all duration-200",
+              <div className="flex items-center gap-4">
+                {/* Option Letter - Melhorado */}
+                <div className={cn(
+                  "flex-shrink-0 w-11 h-11 rounded-xl border-2 flex items-center justify-center font-bold text-lg transition-all",
                   selectedOption === option.id
-                    ? "bg-primary text-white scale-110"
-                    : "bg-white/[0.06] text-text-secondary"
-                )}
-              >
-                {String.fromCharCode(65 + index)}
-              </span>
+                    ? "bg-[#FF4D4D] border-[#FF4D4D] scale-110"
+                    : "bg-white/10 border-white/20 group-hover:border-[#FF4D4D] group-hover:bg-[#FF4D4D]"
+                )}>
+                  {String.fromCharCode(65 + index)}
+                </div>
 
-              {/* Option Content */}
-              <div className="flex-1 flex items-center gap-2 md:gap-3 min-w-0">
-                {option.icon && (
-                  <span className="text-lg md:text-xl flex-shrink-0">{option.icon}</span>
-                )}
-                <span className="text-sm md:text-base font-medium text-white truncate">
-                  {option.text}
-                </span>
-              </div>
+                {/* Option Content */}
+                <div className="flex-1 flex items-center gap-3 min-w-0">
+                  {option.icon && (
+                    <span className="text-xl flex-shrink-0">{option.icon}</span>
+                  )}
+                  <span className="text-base sm:text-lg font-semibold group-hover:text-[#FF4D4D] transition-colors">
+                    {option.text}
+                  </span>
+                </div>
 
-              {/* Selection Indicator */}
-              <div
-                className={cn(
-                  "flex-shrink-0 w-5 h-5 md:w-6 md:h-6 rounded-full border-2 flex items-center justify-center",
-                  "transition-all duration-200",
-                  selectedOption === option.id
-                    ? "border-primary bg-primary scale-110"
-                    : "border-white/20"
-                )}
-              >
-                {selectedOption === option.id && (
-                  <motion.svg
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    transition={{ type: 'spring', stiffness: 500 }}
-                    className="w-3 h-3 md:w-3.5 md:h-3.5 text-white"
-                    fill="none"
+                {/* Seta ou Checkmark */}
+                {selectedOption === option.id ? (
+                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-[#FF4D4D] flex items-center justify-center shadow-lg">
+                    <motion.svg
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      transition={{ type: 'spring', stiffness: 500 }}
+                      className="w-5 h-5 text-white"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={3}
+                        d="M5 13l4 4L19 7"
+                      />
+                    </motion.svg>
+                  </div>
+                ) : (
+                  <svg 
+                    className="w-6 h-6 text-gray-600 group-hover:text-[#FF4D4D] group-hover:translate-x-1 transition-all flex-shrink-0"
+                    fill="none" 
+                    stroke="currentColor" 
                     viewBox="0 0 24 24"
-                    stroke="currentColor"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={3}
-                      d="M5 13l4 4L19 7"
-                    />
-                  </motion.svg>
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
                 )}
               </div>
             </motion.button>
@@ -228,15 +266,24 @@ export function QuestionScreen({
         </motion.div>
       )}
 
-      {/* Progress Hint */}
+      {/* Progress Hint - Copy Envolvente */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.4 }}
         className="text-center mt-6 md:mt-8"
       >
-        <p className="text-xs md:text-sm text-text-muted">
-          Toque para selecionar sua resposta
+        <p className="text-xs md:text-sm text-gray-400">
+          {progress < 25 
+            ? '✨ Você está indo muito bem! Continue assim.'
+            : progress < 50
+            ? '🎯 Ótimo progresso! Você está no caminho certo.'
+            : progress < 75
+            ? '🔥 Quase na metade! Mantenha o foco.'
+            : progress < 90
+            ? '💪 Excelente! Você está quase terminando!'
+            : '🚀 Últimas perguntas! Você consegue!'
+          }
         </p>
       </motion.div>
     </div>

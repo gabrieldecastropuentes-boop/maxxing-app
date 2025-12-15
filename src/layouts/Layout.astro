@@ -16,11 +16,11 @@ const {
 } = Astro.props;
 
 // ═══════════════════════════════════════════════════════════════
-// CONFIGURAÇÕES - Substitua pelos seus valores
+// CONFIGURAÇÕES - Usa variáveis de ambiente
 // ═══════════════════════════════════════════════════════════════
-const SITE_URL = "https://glowmax.app"; // Altere para seu domínio
-const FB_PIXEL_ID = ""; // Adicione seu Pixel ID do Facebook
-const GA_MEASUREMENT_ID = ""; // Adicione seu GA4 Measurement ID (ex: G-XXXXXXXXXX)
+const SITE_URL = import.meta.env.PUBLIC_SITE_URL || "https://glowmax.app";
+const FB_PIXEL_ID = import.meta.env.PUBLIC_FB_PIXEL_ID || ""; // Desligado se vazio
+const GA_MEASUREMENT_ID = import.meta.env.PUBLIC_GA_ID || "";
 const TAWK_PROPERTY_ID = ""; // Adicione seu Tawk.to Property ID
 const TAWK_WIDGET_ID = ""; // Adicione seu Tawk.to Widget ID
 ---
@@ -101,27 +101,41 @@ const TAWK_WIDGET_ID = ""; // Adicione seu Tawk.to Widget ID
       </>
     )}
     
-    <!-- Facebook Pixel Code -->
-    <script is:inline define:vars={{ FB_PIXEL_ID }}>
-      !function(f,b,e,v,n,t,s)
-      {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-      n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-      n.queue=[];t=b.createElement(e);t.async=!0;
-      t.src=v;s=b.getElementsByTagName(e)[0];
-      s.parentNode.insertBefore(t,s)}(window, document,'script',
-      'https://connect.facebook.net/en_US/fbevents.js');
-      
-      if (FB_PIXEL_ID) {
-        fbq('init', FB_PIXEL_ID);
-        fbq('track', 'PageView');
-      }
-    </script>
+    <!-- Facebook Pixel Code (desligado se FB_PIXEL_ID não configurado) -->
     {FB_PIXEL_ID && (
-      <noscript>
-        <img height="1" width="1" style="display:none" 
-          src={`https://www.facebook.com/tr?id=${FB_PIXEL_ID}&ev=PageView&noscript=1`}/>
-      </noscript>
+      <>
+        <script is:inline define:vars={{ FB_PIXEL_ID }}>
+          !function(f,b,e,v,n,t,s)
+          {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+          n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+          if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+          n.queue=[];t=b.createElement(e);t.async=!0;
+          t.src=v;s=b.getElementsByTagName(e)[0];
+          s.parentNode.insertBefore(t,s)}(window, document,'script',
+          'https://connect.facebook.net/en_US/fbevents.js');
+          
+          // Inicializar Pixel (PageView dispara automaticamente)
+          fbq('init', FB_PIXEL_ID);
+          fbq('track', 'PageView');
+          
+          // Helper para tracking com event_id (dedup)
+          window.trackFacebookEvent = function(eventName, params, eventId) {
+            if (eventId) {
+              // Enviar com event_id para dedup com CAPI
+              fbq('track', eventName, {
+                ...params,
+                eventID: eventId
+              });
+            } else {
+              fbq('track', eventName, params);
+            }
+          };
+        </script>
+        <noscript>
+          <img height="1" width="1" style="display:none" 
+            src={`https://www.facebook.com/tr?id=${FB_PIXEL_ID}&ev=PageView&noscript=1`}/>
+        </noscript>
+      </>
     )}
     <!-- End Facebook Pixel Code -->
 

@@ -13,6 +13,7 @@
 
 import type { APIRoute } from 'astro';
 import { prisma } from '../../../lib/db';
+import { supabaseServer } from '../../../lib/supabase-server';
 
 export const prerender = false;
 
@@ -106,22 +107,27 @@ interface PerfectPayWebhookPayload {
 // ═══════════════════════════════════════════════════════════════
 
 function validateWebhook(payload: PerfectPayWebhookPayload, headers: Headers): boolean {
-  const webhookToken = import.meta.env.PERFECTPAY_WEBHOOK_TOKEN;
+  const webhookSecret = import.meta.env.PERFECTPAY_WEBHOOK_SECRET || import.meta.env.PERFECTPAY_WEBHOOK_TOKEN;
   
-  // Se não tiver token configurado, aceitar todos (NÃO recomendado em produção)
-  if (!webhookToken) {
-    console.warn('[Webhook] ⚠️ PERFECTPAY_WEBHOOK_TOKEN não configurado - aceitando todos os webhooks');
+  if (!webhookSecret) {
+    console.warn('[Webhook] ⚠️ PERFECTPAY_WEBHOOK_SECRET não configurado');
+    return false; // Em produção, rejeitar se não tiver secret
+  }
+  
+  // Verificar secret no header (formato solicitado)
+  const headerSecret = headers.get('x-webhook-secret');
+  if (headerSecret === webhookSecret) {
     return true;
   }
   
-  // Verificar token no header
+  // Fallback: verificar token no header (compatibilidade)
   const headerToken = headers.get('x-webhook-token') || headers.get('authorization');
-  if (headerToken === webhookToken || headerToken === `Bearer ${webhookToken}`) {
+  if (headerToken === webhookSecret || headerToken === `Bearer ${webhookSecret}`) {
     return true;
   }
   
-  // Verificar token no payload
-  if (payload.token === webhookToken) {
+  // Fallback: verificar token no payload
+  if (payload.token === webhookSecret) {
     return true;
   }
   
@@ -323,6 +329,87 @@ export const POST: APIRoute = async ({ request }) => {
         source: 'webhook_perfectpay',
       },
     });
+    
+    // ═══════════════════════════════════════════════════════════
+    // DISPARAR FACEBOOK CAPI - Purchase (quando compra aprovada)
+    // ═══════════════════════════════════════════════════════════
+    if (status === 'approved') {
+      const fbPixelId = import.meta.env.FB_PIXEL_ID || import.meta.env.PUBLIC_FB_PIXEL_ID;
+      const fbAccessToken = import.meta.env.FB_ACCESS_TOKEN;
+
+      if (fbPixelId && fbAccessToken) {
+        try {
+          // Buscar lead associado para obter dados do usuário
+          const lead = purchase.leadId
+            ? await prisma.lead.findUnique({
+                where: { id: purchase.leadId },
+                select: { email: true, phone: true },
+              })
+            : null;
+
+          // Gerar event_id para dedup (mesmo formato do tracking)
+          const purchaseEventId = `evt_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`;
+
+          const fbEvent = {
+            event_name: 'Purchase',
+            event_time: Math.floor(Date.now() / 1000),
+            event_id: purchaseEventId, // ⚠️ CRÍTICO: Para dedup com Pixel (se disparado no browser)
+            event_source_url: '',
+            action_source: 'website',
+            user_data: {
+              client_ip_address: request.headers.get('x-forwarded-for')?.split(',')[0] || '',
+              client_user_agent: request.headers.get('user-agent') || '',
+              ...(lead?.email && { em: lead.email.toLowerCase().trim() }),
+              ...(lead?.phone && { ph: lead.phone.replace(/\D/g, '') }),
+            },
+            custom_data: {
+              value: amount,
+              currency: 'BRL',
+              content_name: purchase.productName || 'Maxxing Quiz Premium',
+              content_category: 'digital_product',
+              content_ids: purchase.productId ? [purchase.productId] : [],
+            },
+          };
+
+          const fbResponse = await fetch(
+            `https://graph.facebook.com/v18.0/${fbPixelId}/events?access_token=${fbAccessToken}`,
+            {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ data: [fbEvent] }),
+            }
+          );
+
+          if (fbResponse.ok) {
+            console.log('[Webhook PerfectPay] ✅ Purchase enviado para Facebook CAPI com event_id:', purchaseEventId);
+            
+            // Salvar event_id na tabela de tracking (se quiser vincular)
+            try {
+              await prisma.trackingPurchase.create({
+                data: {
+                  purchaseId: purchase.id,
+                  eventId: purchaseEventId,
+                  amount,
+                  currency: 'BRL',
+                  status: 'approved',
+                  gateway: 'perfectpay',
+                },
+              });
+            } catch (err) {
+              // Não falhar se não conseguir salvar
+              console.warn('[Webhook PerfectPay] ⚠️ Erro ao salvar tracking purchase:', err);
+            }
+          } else {
+            console.warn('[Webhook PerfectPay] ⚠️ Erro ao enviar Purchase para Facebook CAPI:', await fbResponse.text());
+          }
+        } catch (capiError) {
+          console.error('[Webhook PerfectPay] ⚠️ Erro no Facebook CAPI:', capiError);
+          // Não falhar o webhook se CAPI falhar
+        }
+      } else {
+        console.log('[Webhook PerfectPay] ℹ️ Facebook CAPI não configurado (FB_PIXEL_ID ou FB_ACCESS_TOKEN faltando)');
+      }
+    }
     
     const duration = Date.now() - startTime;
     console.log(`[Webhook PerfectPay] ✅ Processado em ${duration}ms:`, {

@@ -29,7 +29,7 @@ export const quizQuestionsFemale: QuizQuestion[] = [
   {
     id: 3,
     question: "Qual melhor descreve seu tipo de corpo?",
-    subtitle: "Seja honesta para resultados precisos",
+    subtitle: "Isso ajuda a personalizar seu plano de cuidados",
     type: 'text',
     options: [
       { id: 1, text: "Atlético/Fitness", score: 4, icon: "💪" },
@@ -40,8 +40,8 @@ export const quizQuestionsFemale: QuizQuestion[] = [
   },
   {
     id: 4,
-    question: "Como você avalia a saúde da sua pele?",
-    subtitle: "Considere textura, poros, manchas e luminosidade",
+    question: "Como você sente que está sua pele hoje?",
+    subtitle: "Pense na textura, se está hidratada, se tem manchas ou se está opaca",
     type: 'text',
     options: [
       { id: 1, text: "Excelente, pele radiante e uniforme", score: 4, icon: "✨" },
@@ -52,8 +52,8 @@ export const quizQuestionsFemale: QuizQuestion[] = [
   },
   {
     id: 5,
-    question: "Como está o contorno do seu rosto?",
-    subtitle: "Considere a definição das maçãs do rosto e linha do queixo",
+    question: "Você sente que seu rosto tem definição?",
+    subtitle: "Pense nas maçãs do rosto (bochechas) e na linha do queixo - estão bem marcadas ou mais arredondadas?",
     type: 'text',
     options: [
       { id: 1, text: "Bem definido e harmonioso", score: 4, icon: "💎" },
@@ -64,8 +64,8 @@ export const quizQuestionsFemale: QuizQuestion[] = [
   },
   {
     id: 6,
-    question: "Qual é o estado atual do seu cabelo?",
-    subtitle: "Considere brilho, volume e saúde",
+    question: "Como você sente que está seu cabelo?",
+    subtitle: "Pense no brilho, se está hidratado, se tem volume ou se está sem vida",
     type: 'text',
     options: [
       { id: 1, text: "Saudável, brilhante e volumoso", score: 4, icon: "💇‍♀️" },
@@ -76,7 +76,7 @@ export const quizQuestionsFemale: QuizQuestion[] = [
   },
   {
     id: 7,
-    question: "Você tem um corte/penteado que valoriza seu rosto?",
+    question: "Você sente que seu corte de cabelo valoriza seu rosto?",
     type: 'text',
     options: [
       { id: 1, text: "Sim, perfeitamente", score: 4, icon: "💯" },
@@ -87,8 +87,8 @@ export const quizQuestionsFemale: QuizQuestion[] = [
   },
   {
     id: 8,
-    question: "Como estão suas sobrancelhas?",
-    subtitle: "Sobrancelhas bem feitas emolduram o rosto",
+    question: "Você cuida das suas sobrancelhas regularmente?",
+    subtitle: "Sobrancelhas bem feitas emolduram o rosto e fazem toda diferença",
     type: 'text',
     options: [
       { id: 1, text: "Perfeitas, bem desenhadas", score: 4, icon: "✨" },
@@ -100,7 +100,7 @@ export const quizQuestionsFemale: QuizQuestion[] = [
   {
     id: 9,
     question: "Você tem uma rotina de skincare?",
-    subtitle: "Limpeza, hidratação e proteção solar",
+    subtitle: "Limpeza, hidratação e protetor solar - mesmo que seja básica",
     type: 'text',
     options: [
       { id: 1, text: "Sim, rotina completa diária", score: 4, icon: "🧴" },
@@ -111,8 +111,8 @@ export const quizQuestionsFemale: QuizQuestion[] = [
   },
   {
     id: 10,
-    question: "Você usa proteção solar diariamente?",
-    subtitle: "Proteção solar é essencial para a saúde da pele",
+    question: "Você usa protetor solar no dia a dia?",
+    subtitle: "Mesmo em dias nublados ou dentro de casa",
     type: 'text',
     options: [
       { id: 1, text: "Sim, todos os dias", score: 4, icon: "☀️" },
@@ -123,7 +123,7 @@ export const quizQuestionsFemale: QuizQuestion[] = [
   },
   {
     id: 11,
-    question: "Como você se sente em relação à sua aparência?",
+    question: "Como você se sente com sua aparência hoje?",
     type: 'text',
     options: [
       { id: 1, text: "Muito confiante", score: 4, icon: "😎" },
@@ -134,7 +134,7 @@ export const quizQuestionsFemale: QuizQuestion[] = [
   },
   {
     id: 12,
-    question: "Você sabe fazer uma maquiagem que valorize seus traços?",
+    question: "Você sente que sabe fazer uma maquiagem que valoriza seu rosto?",
     type: 'text',
     options: [
       { id: 1, text: "Sim, domino várias técnicas", score: 4, icon: "💄" },
@@ -145,7 +145,7 @@ export const quizQuestionsFemale: QuizQuestion[] = [
   },
   {
     id: 13,
-    question: "Você recebe elogios sobre sua aparência?",
+    question: "Você recebe elogios sobre sua aparência com frequência?",
     type: 'text',
     options: [
       { id: 1, text: "Frequentemente", score: 4, icon: "🌟" },
@@ -156,7 +156,7 @@ export const quizQuestionsFemale: QuizQuestion[] = [
   },
   {
     id: 14,
-    question: "Como é sua vida social?",
+    question: "Como você considera sua vida social?",
     type: 'text',
     options: [
       { id: 1, text: "Muito ativa, saio frequentemente", score: 4, icon: "🎉" },
@@ -167,7 +167,7 @@ export const quizQuestionsFemale: QuizQuestion[] = [
   },
   {
     id: 15,
-    question: "Qual é seu maior objetivo com o glow-up?",
+    question: "Qual é seu maior objetivo com essa transformação?",
     type: 'text',
     options: [
       { id: 1, text: "Aumentar a autoconfiança", score: 4, icon: "💪" },
@@ -178,7 +178,7 @@ export const quizQuestionsFemale: QuizQuestion[] = [
   },
   {
     id: 16,
-    question: "Quanto tempo você pode dedicar por dia para cuidados pessoais?",
+    question: "Quanto tempo você consegue dedicar por dia para seus cuidados?",
     type: 'text',
     options: [
       { id: 1, text: "30+ minutos", score: 4, icon: "⏰" },
@@ -189,7 +189,7 @@ export const quizQuestionsFemale: QuizQuestion[] = [
   },
   {
     id: 17,
-    question: "Você está disposta a investir em produtos de beleza e skincare?",
+    question: "Você está disposta a investir em produtos que realmente funcionem?",
     type: 'text',
     options: [
       { id: 1, text: "Sim, sem problemas", score: 4, icon: "💰" },
@@ -199,8 +199,8 @@ export const quizQuestionsFemale: QuizQuestion[] = [
     ],
   },
   {
-    id: 18,
-    question: "Você está comprometida a seguir um plano de cuidados?",
+    id: 19,
+    question: "Você está disposta a seguir um plano personalizado para você?",
     type: 'text',
     options: [
       { id: 1, text: "100% comprometida", score: 4, icon: "🔥" },
