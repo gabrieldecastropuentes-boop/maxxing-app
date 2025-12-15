@@ -1,5 +1,6 @@
 ---
 import '../styles/globals.css';
+import Analytics from '@vercel/analytics/astro';
 
 interface Props {
   title: string;
@@ -79,6 +80,9 @@ const TAWK_WIDGET_ID = ""; // Adicione seu Tawk.to Widget ID
     <meta name="twitter:image" content={`${SITE_URL}${ogImage}`} />
     
     <title>{title}</title>
+    
+    <!-- Vercel Web Analytics -->
+    <Analytics />
     
     <!-- Google Analytics 4 -->
     {GA_MEASUREMENT_ID && (
