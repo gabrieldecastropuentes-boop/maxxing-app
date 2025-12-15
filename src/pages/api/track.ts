@@ -7,6 +7,7 @@
 
 import type { APIRoute } from 'astro';
 import { getSupabaseServer } from '../../lib/supabase-server';
+import { jsonError, jsonResponse } from '../../lib/apiResponse';
 
 export const prerender = false;
 
@@ -155,13 +156,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
 
     // Validação básica (session_id é obrigatória; event_id pode ser gerado no server)
     if (!data.event_name || !data.session_id) {
-      return new Response(
-        JSON.stringify({ ok: false, error: 'Missing required fields' }),
-        {
-          status: 400,
-          headers: { 'Content-Type': 'application/json' },
-        }
-      );
+      return jsonError('Missing required fields', 400);
     }
 
     // ═══════════════════════════════════════════════════════════
@@ -180,7 +175,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     // ═══════════════════════════════════════════════════════════
     try {
       // Buscar sessão existente
-      const { data: existingSession } = await supabase
+    const { data: existingSession } = await supabase
         .from('tracking_lmx_sessions')
         .select('*')
         .eq('session_id', data.session_id)
@@ -258,7 +253,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
       if (eventError) {
         console.error('[API/track] ⚠️ Erro ao salvar evento:', eventError);
       } else {
-        console.log('[API/track] ✅ Evento salvo:', data.event_name, 'event_id:', data.event_id);
+        console.log('[API/track] ✅ Evento salvo:', data.event_name, 'event_id:', eventId);
       }
     } catch (eventError) {
       console.error('[API/track] ⚠️ Erro ao salvar evento:', eventError);
@@ -322,18 +317,15 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     // ═══════════════════════════════════════════════════════════
     // 4. RESPOSTA DE SUCESSO
     // ═══════════════════════════════════════════════════════════
-    return new Response(
-      JSON.stringify({ ok: true }),
-      {
-        status: 200,
-        headers: {
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': origin || '*',
-          'Access-Control-Allow-Methods': 'POST',
-          'Access-Control-Allow-Headers': 'Content-Type',
-        },
-      }
-    );
+    return new Response(JSON.stringify({ ok: true }), {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': origin || '*',
+        'Access-Control-Allow-Methods': 'POST',
+        'Access-Control-Allow-Headers': 'Content-Type',
+      },
+    });
   } catch (error) {
     // #region agent log
     fetch('http://127.0.0.1:7242/ingest/c16f74a9-f7f8-40d0-ab65-a7068f18cccd',{
@@ -352,13 +344,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     // #endregion
 
     console.error('[API/track] ❌ Erro:', error);
-    return new Response(
-      JSON.stringify({ ok: false, error: 'Internal server error' }),
-      {
-        status: 500,
-        headers: { 'Content-Type': 'application/json' },
-      }
-    );
+    return jsonError('Internal server error', 500);
   }
 };
 

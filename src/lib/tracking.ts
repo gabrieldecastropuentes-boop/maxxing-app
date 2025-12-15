@@ -168,6 +168,13 @@ export async function trackEvent(event: TrackingEvent, data?: Partial<TrackingDa
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
     });
+
+    if (!response.ok) {
+      const text = await response.text().catch(() => '');
+      if (import.meta.env.DEV) {
+        console.error('[Tracking] Falha no envio', { status: response.status, body: text });
+      }
+    }
     
     // Se tiver Pixel configurado, também disparar no browser (com mesmo event_id)
     if (typeof window !== 'undefined' && (window as any).trackFacebookEvent) {

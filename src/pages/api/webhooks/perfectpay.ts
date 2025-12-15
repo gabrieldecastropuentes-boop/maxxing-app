@@ -5,6 +5,7 @@
 
 import type { APIRoute } from 'astro';
 import { getSupabaseServer } from '../../../lib/supabase-server';
+import { jsonError, jsonResponse } from '../../../lib/apiResponse';
 
 export const prerender = false;
 
@@ -92,10 +93,7 @@ export const POST: APIRoute = async ({ request }) => {
     const auth = validateWebhook(rawBody, payload, request.headers);
     if (!auth.ok) {
       const status = auth.error === 'missing webhook secret' ? 500 : 401;
-      return new Response(JSON.stringify({ ok: false, error: auth.error }), {
-        status,
-        headers: { 'Content-Type': 'application/json' },
-      });
+      return jsonError(auth.error || 'unauthorized', status);
     }
 
     const orderId =
@@ -106,10 +104,7 @@ export const POST: APIRoute = async ({ request }) => {
       payload.sale_status;
 
     if (!orderId) {
-      return new Response(JSON.stringify({ ok: false, error: 'missing order_id' }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json' },
-      });
+      return jsonError('missing order_id', 400);
     }
 
     const eventType = payload.sale_status_enum_key || payload.sale_status || payload.status || 'unknown';
@@ -128,10 +123,7 @@ export const POST: APIRoute = async ({ request }) => {
 
     if (existing) {
       console.log('[Webhook PerfectPay] 🔁 Duplicate purchase', { orderId, providerEventId });
-      return new Response(JSON.stringify({ ok: true, duplicate: true, id: existing.id }), {
-        status: 200,
-        headers: { 'Content-Type': 'application/json' },
-      });
+      return jsonResponse({ duplicate: true, id: existing.id }, 200);
     }
 
     const { data: inserted, error: insertError } = await supabase
@@ -152,28 +144,15 @@ export const POST: APIRoute = async ({ request }) => {
 
     if (insertError) {
       console.error('[Webhook PerfectPay] ❌ Supabase insert error:', insertError);
-      return new Response(JSON.stringify({ ok: false, error: insertError.message }), {
-        status: 500,
-        headers: { 'Content-Type': 'application/json' },
-      });
+      return jsonError(insertError.message, 500);
     }
 
     console.log('[Webhook PerfectPay] ✅ Saved purchase', { orderId, providerEventId, id: inserted?.id });
 
-    return new Response(JSON.stringify({ ok: true, id: inserted?.id, order_id: orderId }), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return jsonResponse({ id: inserted?.id, order_id: orderId }, 200);
   } catch (error) {
     const duration = Date.now() - startTime;
     console.error('[Webhook PerfectPay] ❌ Erro inesperado:', error);
-    return new Response(JSON.stringify({
-      ok: false,
-      error: error instanceof Error ? error.message : 'Unknown error',
-      duration_ms: duration,
-    }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return jsonError(error instanceof Error ? error.message : 'Unknown error', 500, { duration_ms: duration });
   }
 };
