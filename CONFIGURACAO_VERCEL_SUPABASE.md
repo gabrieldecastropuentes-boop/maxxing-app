@@ -1,8 +1,8 @@
 # 🚀 Configurar Supabase no Vercel
 
-## ✅ Credenciais Configuradas Localmente
+## ✅ Variáveis de Ambiente (sem credenciais reais)
 
-Agora você precisa adicionar as mesmas credenciais no Vercel para que o deploy funcione.
+Use **apenas placeholders**. Nunca commit credenciais reais. Gere novas chaves no dashboard do Supabase e configure somente no painel da Vercel.
 
 ---
 
@@ -20,45 +20,45 @@ Agora você precisa adicionar as mesmas credenciais no Vercel para que o deploy 
 
 #### 🔴 OBRIGATÓRIAS:
 
-**DATABASE_URL:**
+**DATABASE_URL (exemplo):**
 ```
-postgresql://postgres:jpGgiuFTUgOyPnQM@db.lwtjeqvnyytxlecxnkpw.supabase.co:5432/postgres
+postgresql://postgres:<SUPABASE_DB_PASSWORD>@db.<SUPABASE_PROJECT_REF>.supabase.co:5432/postgres
 ```
 - Marque: ✅ Production, ✅ Preview, ✅ Development
 
 **SUPABASE_URL:**
 ```
-https://lwtjeqvnyytxlecxnkpw.supabase.co
+https://<SUPABASE_PROJECT_REF>.supabase.co
 ```
 - Marque: ✅ Production, ✅ Preview, ✅ Development
 
 **PUBLIC_SUPABASE_URL:**
 ```
-https://lwtjeqvnyytxlecxnkpw.supabase.co
+https://<SUPABASE_PROJECT_REF>.supabase.co
 ```
 - Marque: ✅ Production, ✅ Preview, ✅ Development
 
 **SUPABASE_ANON_KEY:**
 ```
-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx3dGplcXZueXl0eGxlY3hua3B3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU1NTkxOTksImV4cCI6MjA4MTEzNTE5OX0.D_7mjPmK2A7Suq7fCKGNNPDu5xaHLBJS3aJIwCJ-b4A
+<SUPABASE_ANON_KEY>
 ```
 - Marque: ✅ Production, ✅ Preview, ✅ Development
 
 **PUBLIC_SUPABASE_ANON_KEY:**
 ```
-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx3dGplcXZueXl0eGxlY3hua3B3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU1NTkxOTksImV4cCI6MjA4MTEzNTE5OX0.D_7mjPmK2A7Suq7fCKGNNPDu5xaHLBJS3aJIwCJ-b4A
+<SUPABASE_ANON_KEY>
 ```
 - Marque: ✅ Production, ✅ Preview, ✅ Development
 
 **SUPABASE_PROJECT_REF:**
 ```
-lwtjeqvnyytxlecxnkpw
+<SUPABASE_PROJECT_REF>
 ```
 - Marque: ✅ Production, ✅ Preview, ✅ Development
 
 **SUPABASE_DB_PASSWORD:**
 ```
-jpGgiuFTUgOyPnQM
+<SUPABASE_DB_PASSWORD>
 ```
 - Marque: ✅ Production, ✅ Preview, ✅ Development
 
@@ -70,7 +70,7 @@ us-east-1
 
 **SUPABASE_ACCESS_TOKEN:**
 ```
-sbp_85d205a7eb454d896b8f4971ebd230d5ca52341f
+<SUPABASE_ACCESS_TOKEN>
 ```
 - Marque: ✅ Production, ✅ Preview, ✅ Development
 

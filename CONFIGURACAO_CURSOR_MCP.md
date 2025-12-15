@@ -33,10 +33,10 @@ O Cursor precisa de um arquivo de configuração JSON. Ele pode estar em:
     "supabase": {
       "command": "supabase-mcp-server",
       "env": {
-        "SUPABASE_PROJECT_REF": "lwtjeqvnyytxlecxnkpw",
-        "SUPABASE_DB_PASSWORD": "jpGgiuFTUgOyPnQM",
+        "SUPABASE_PROJECT_REF": "<SUPABASE_PROJECT_REF>",
+        "SUPABASE_DB_PASSWORD": "<SUPABASE_DB_PASSWORD>",
         "SUPABASE_REGION": "us-east-1",
-        "SUPABASE_ACCESS_TOKEN": "sbp_85d205a7eb454d896b8f4971ebd230d5ca52341f"
+        "SUPABASE_ACCESS_TOKEN": "<SUPABASE_ACCESS_TOKEN>"
       }
     }
   }

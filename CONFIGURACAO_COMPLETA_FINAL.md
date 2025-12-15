@@ -15,11 +15,11 @@
 
 ## 📋 Suas Credenciais Configuradas:
 
-- ✅ **Project ID:** `lwtjeqvnyytxlecxnkpw`
-- ✅ **Access Token:** `sbp_85d205a7eb454d896b8f4971ebd230d5ca52341f`
-- ✅ **API URL:** `https://lwtjeqvnyytxlecxnkpw.supabase.co`
+- ✅ **Project ID:** `<SUPABASE_PROJECT_REF>`
+- ✅ **Access Token:** `<SUPABASE_ACCESS_TOKEN>`
+- ✅ **API URL:** `https://<SUPABASE_PROJECT_REF>.supabase.co`
 - ✅ **API Key (anon):** Configurada
-- ✅ **Database Password:** `jpGgiuFTUgOyPnQM`
+- ✅ **Database Password:** `<SUPABASE_DB_PASSWORD>`
 - ✅ **Region:** `us-east-1`
 
 ---
@@ -48,7 +48,7 @@ Você precisa adicionar as variáveis de ambiente no Vercel:
 
 ### 3. 🔗 Conectar GitHub ao Supabase
 
-1. Acesse: https://supabase.com/dashboard/project/lwtjeqvnyytxlecxnkpw/settings/integrations
+1. Acesse: https://supabase.com/dashboard/project/<SUPABASE_PROJECT_REF>/settings/integrations
 2. Clique em **"GitHub"**
 3. Clique em **"Authorize GitHub"**
 4. Autorize o repositório: `gabrieldecastropuentes-boop/maxxing-app`
@@ -115,10 +115,10 @@ curl -X POST https://seu-site.vercel.app/api/leads \
 
 ## 🔗 Links Úteis:
 
-- **Supabase Dashboard:** https://supabase.com/dashboard/project/lwtjeqvnyytxlecxnkpw
-- **API Settings:** https://supabase.com/dashboard/project/lwtjeqvnyytxlecxnkpw/settings/api
+- **Supabase Dashboard:** https://supabase.com/dashboard/project/<SUPABASE_PROJECT_REF>
+- **API Settings:** https://supabase.com/dashboard/project/<SUPABASE_PROJECT_REF>/settings/api
 - **Vercel Dashboard:** https://vercel.com/dashboard
-- **SQL Editor:** https://supabase.com/dashboard/project/lwtjeqvnyytxlecxnkpw/sql/new
+- **SQL Editor:** https://supabase.com/dashboard/project/<SUPABASE_PROJECT_REF>/sql/new
 
 ---
 

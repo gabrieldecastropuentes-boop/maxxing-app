@@ -13,8 +13,8 @@
 
 ## 📋 Suas Credenciais:
 
-- ✅ **Project ID:** `lwtjeqvnyytxlecxnkpw`
-- ✅ **Database Password:** `jpGgiuFTUgOyPnQM`
+- ✅ **Project ID:** `<SUPABASE_PROJECT_REF>`
+- ✅ **Database Password:** `<SUPABASE_DB_PASSWORD>`
 - ✅ **Region:** `us-east-1`
 - ⚠️ **Access Token:** **PRECISA OBTER** (veja `INSTRUCOES_ACCESS_TOKEN.md`)
 
@@ -40,7 +40,7 @@
 - Siga as instruções em `INSTRUCOES_ACCESS_TOKEN.md`
 
 ### 2. Obter Chaves da API
-- Acesse: https://supabase.com/dashboard/project/lwtjeqvnyytxlecxnkpw/settings/api
+- Acesse: https://supabase.com/dashboard/project/<SUPABASE_PROJECT_REF>/settings/api
 - Copie:
   - **anon/public key**
   - **service_role key**

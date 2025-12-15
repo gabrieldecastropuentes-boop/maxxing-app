@@ -2,8 +2,8 @@
 
 ## 📋 Credenciais Configuradas
 
-- ✅ **Project ID:** `lwtjeqvnyytxlecxnkpw`
-- ✅ **Database Password:** `jpGgiuFTUgOyPnQM`
+- ✅ **Project ID:** `<SUPABASE_PROJECT_REF>`
+- ✅ **Database Password:** `<SUPABASE_DB_PASSWORD>`
 - ✅ **Region:** `us-east-1` (América)
 - ⚠️ **Access Token:** **PRECISA OBTER** (veja abaixo)
 
@@ -42,16 +42,16 @@
    - Vá para: **Settings** → **API**
 
 2. **Você verá:**
-   - **Project URL:** `https://lwtjeqvnyytxlecxnkpw.supabase.co`
+   - **Project URL:** `https://<SUPABASE_PROJECT_REF>.supabase.co`
    - **anon/public key:** (chave longa começando com `eyJhbGc...`)
    - **service_role key:** (chave longa - mantenha segura!)
 
 3. **Adicione ao arquivo `.env`** (crie se não existir):
    ```env
-   SUPABASE_URL=https://lwtjeqvnyytxlecxnkpw.supabase.co
+   SUPABASE_URL=https://<SUPABASE_PROJECT_REF>.supabase.co
    SUPABASE_ANON_KEY=sua_anon_key_aqui
    SUPABASE_SERVICE_ROLE_KEY=sua_service_role_key_aqui
-   DATABASE_URL=postgresql://postgres:jpGgiuFTUgOyPnQM@db.lwtjeqvnyytxlecxnkpw.supabase.co:5432/postgres
+   DATABASE_URL=postgresql://postgres:<SUPABASE_DB_PASSWORD>@db.<SUPABASE_PROJECT_REF>.supabase.co:5432/postgres
    ```
 
 ---
@@ -93,15 +93,15 @@
 3. **Adicione estas variáveis:**
 
    ```
-   DATABASE_URL=postgresql://postgres:jpGgiuFTUgOyPnQM@db.lwtjeqvnyytxlecxnkpw.supabase.co:5432/postgres
+   DATABASE_URL=postgresql://postgres:<SUPABASE_DB_PASSWORD>@db.<SUPABASE_PROJECT_REF>.supabase.co:5432/postgres
    ```
 
    ```
-   SUPABASE_URL=https://lwtjeqvnyytxlecxnkpw.supabase.co
+   SUPABASE_URL=https://<SUPABASE_PROJECT_REF>.supabase.co
    ```
 
    ```
-   PUBLIC_SUPABASE_URL=https://lwtjeqvnyytxlecxnkpw.supabase.co
+   PUBLIC_SUPABASE_URL=https://<SUPABASE_PROJECT_REF>.supabase.co
    ```
 
    ```
@@ -151,7 +151,7 @@ O projeto já está configurado com Prisma. Para conectar ao Supabase:
 
 1. **Atualize o `.env` local:**
    ```env
-   DATABASE_URL=postgresql://postgres:jpGgiuFTUgOyPnQM@db.lwtjeqvnyytxlecxnkpw.supabase.co:5432/postgres
+   DATABASE_URL=postgresql://postgres:<SUPABASE_DB_PASSWORD>@db.<SUPABASE_PROJECT_REF>.supabase.co:5432/postgres
    ```
 
 2. **Execute as migrations:**
@@ -240,10 +240,10 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 ## 🔗 Links Rápidos
 
-- **Supabase Dashboard:** https://supabase.com/dashboard/project/lwtjeqvnyytxlecxnkpw
-- **API Settings:** https://supabase.com/dashboard/project/lwtjeqvnyytxlecxnkpw/settings/api
+- **Supabase Dashboard:** https://supabase.com/dashboard/project/<SUPABASE_PROJECT_REF>
+- **API Settings:** https://supabase.com/dashboard/project/<SUPABASE_PROJECT_REF>/settings/api
 - **Access Tokens:** https://supabase.com/dashboard/account/tokens
-- **SQL Editor:** https://supabase.com/dashboard/project/lwtjeqvnyytxlecxnkpw/sql/new
+- **SQL Editor:** https://supabase.com/dashboard/project/<SUPABASE_PROJECT_REF>/sql/new
 
 ---
 
