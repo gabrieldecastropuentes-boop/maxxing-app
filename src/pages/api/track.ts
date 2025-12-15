@@ -136,32 +136,6 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
   }).catch(()=>{});
   // #endregion
 
-  if (!supabaseServer) {
-    // #region agent log
-    fetch('http://127.0.0.1:7242/ingest/c16f74a9-f7f8-40d0-ab65-a7068f18cccd',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        sessionId:'debug-session',
-        runId:'pre-fix',
-        hypothesisId:'H5',
-        location:'api/track.ts:supabase-missing',
-        message:'Supabase server client not initialized',
-        data:{
-          hasUrl: Boolean(import.meta.env.SUPABASE_URL || import.meta.env.PUBLIC_SUPABASE_URL),
-          hasServiceRole: Boolean(import.meta.env.SUPABASE_SERVICE_ROLE_KEY),
-        },
-        timestamp:Date.now()
-      })
-    }).catch(()=>{});
-    // #endregion
-
-    return new Response(JSON.stringify({ ok: false, error: 'Supabase credentials not configured' }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' },
-    });
-  }
-
   // ═══════════════════════════════════════════════════════════
   // CORS: Validar origem
   // ═══════════════════════════════════════════════════════════
@@ -197,14 +171,14 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     const referer = request.headers.get('referer') || '';
     const ip = clientAddress || request.headers.get('x-forwarded-for')?.split(',')[0] || '';
 
-    const supabaseServer = getSupabaseServer();
+    const supabase = getSupabaseServer();
 
     // ═══════════════════════════════════════════════════════════
     // 1. CRIAR/ATUALIZAR SESSÃO NO SUPABASE
     // ═══════════════════════════════════════════════════════════
     try {
       // Buscar sessão existente
-      const { data: existingSession } = await supabaseServer
+      const { data: existingSession } = await supabase
         .from('tracking_lmx_sessions')
         .select('*')
         .eq('session_id', data.session_id)
@@ -228,7 +202,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
 
       if (existingSession) {
         // Atualizar sessão existente
-        await supabaseServer
+        await supabase
           .from('tracking_lmx_sessions')
           .update({
             last_seen_at: new Date().toISOString(),
@@ -239,7 +213,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
           .eq('session_id', data.session_id);
       } else {
         // Criar nova sessão
-        await supabaseServer
+        await supabase
           .from('tracking_lmx_sessions')
           .insert({
             session_id: data.session_id,
@@ -265,7 +239,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     // 2. SALVAR EVENTO NO SUPABASE
     // ═══════════════════════════════════════════════════════════
     try {
-      const { error: eventError } = await supabaseServer
+      const { error: eventError } = await supabase
         .from('tracking_lmx_events')
         .insert({
           session_id: data.session_id,

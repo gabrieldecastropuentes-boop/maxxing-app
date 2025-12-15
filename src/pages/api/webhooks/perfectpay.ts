@@ -173,7 +173,7 @@ export const POST: APIRoute = async ({ request }) => {
   const startTime = Date.now();
   
   try {
-    const supabaseServer = getSupabaseServer();
+    const supabase = getSupabaseServer();
     // Parsear payload
     const rawBody = await request.text();
     const payload: PerfectPayWebhookPayload = JSON.parse(rawBody);
