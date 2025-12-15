@@ -277,7 +277,7 @@ const TAWK_WIDGET_ID = ""; // Adicione seu Tawk.to Widget ID
         
         // Server-side tracking (optional)
         if (navigator.sendBeacon) {
-          navigator.sendBeacon('/api/track/event', JSON.stringify({
+          navigator.sendBeacon('/api/track', JSON.stringify({
             event: eventName,
             ...params
           }));

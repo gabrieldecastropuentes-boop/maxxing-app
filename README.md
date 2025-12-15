@@ -162,7 +162,7 @@ Envia eventos para Facebook CAPI.
 }
 ```
 
-### POST `/api/track/event`
+### POST `/api/track`
 Tracking unificado de eventos.
 
 ```json

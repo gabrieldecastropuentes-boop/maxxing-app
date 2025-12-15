@@ -203,7 +203,7 @@ const TAWK_WIDGET_ID = ""; // ⚠️ VAZIO
 - ✅ Google Analytics 4 (estrutura pronta)
 - ✅ Facebook Pixel (estrutura pronta)
 - ✅ Eventos customizados (`trackEvent`)
-- ✅ Server-side tracking (`/api/track/event`)
+- ✅ Server-side tracking (`/api/track`)
 - ✅ Facebook CAPI (`/api/facebook/capi`)
 
 **Eventos rastreados:**
