@@ -13,7 +13,7 @@
 
 import type { APIRoute } from 'astro';
 import { prisma } from '../../../lib/db';
-import { supabaseServer } from '../../../lib/supabase-server';
+import { getSupabaseServer } from '../../../lib/supabase-server';
 
 export const prerender = false;
 
@@ -173,6 +173,7 @@ export const POST: APIRoute = async ({ request }) => {
   const startTime = Date.now();
   
   try {
+    const supabaseServer = getSupabaseServer();
     // Parsear payload
     const rawBody = await request.text();
     const payload: PerfectPayWebhookPayload = JSON.parse(rawBody);

@@ -47,8 +47,8 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
       quiz_step: data.quiz_step,
       metadata: {
         ...data.metadata,
-        userAgent: request.headers.get('user-agent'),
-        referer: request.headers.get('referer'),
+      userAgent: request.headers.get('user-agent'),
+      referer: request.headers.get('referer'),
         ip: clientAddress,
       },
       event_data: {
@@ -144,12 +144,12 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     // ═══════════════════════════════════════════════════════════
     return new Response(
       JSON.stringify({
-        success: true,
+      success: true,
         event_id: eventId,
         event: data.event,
       }),
       {
-        status: 200,
+      status: 200,
         headers: { 'Content-Type': 'application/json' },
       }
     );
@@ -161,7 +161,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
         error: 'Erro ao processar evento',
       }),
       {
-        status: 500,
+      status: 500,
         headers: { 'Content-Type': 'application/json' },
       }
     );

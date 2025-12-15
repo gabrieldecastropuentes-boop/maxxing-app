@@ -6,9 +6,35 @@
  */
 
 import type { APIRoute } from 'astro';
-import { supabaseServer } from '../../lib/supabase-server';
+import { getSupabaseServer } from '../../lib/supabase-server';
 
 export const prerender = false;
+
+// ═══════════════════════════════════════════════════════════════
+// GET → 405 (para permitir ver status no navegador)
+// ═══════════════════════════════════════════════════════════════
+export const GET: APIRoute = async ({ request }) => {
+  // #region agent log
+  fetch('http://127.0.0.1:7242/ingest/c16f74a9-f7f8-40d0-ab65-a7068f18cccd',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+      sessionId:'debug-session',
+      runId:'pre-fix',
+      hypothesisId:'H4',
+      location:'api/track.ts:GET',
+      message:'GET received',
+      data:{ method: request.method },
+      timestamp:Date.now()
+    })
+  }).catch(()=>{});
+  // #endregion
+
+  return new Response('Method Not Allowed', {
+    status: 405,
+    headers: { 'Content-Type': 'text/plain' },
+  });
+};
 
 export interface TrackEventPayload {
   // Evento
@@ -89,6 +115,53 @@ function mapEventToFacebook(event: string): string | null {
 }
 
 export const POST: APIRoute = async ({ request, clientAddress }) => {
+  // #region agent log
+  fetch('http://127.0.0.1:7242/ingest/c16f74a9-f7f8-40d0-ab65-a7068f18cccd',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+      sessionId:'debug-session',
+      runId:'pre-fix',
+      hypothesisId:'H1',
+      location:'api/track.ts:POST:start',
+      message:'incoming request',
+      data:{
+        method: request.method,
+        origin: request.headers.get('origin') || null,
+        hasSupabaseUrl: Boolean(import.meta.env.SUPABASE_URL || import.meta.env.PUBLIC_SUPABASE_URL),
+        hasServiceRole: Boolean(import.meta.env.SUPABASE_SERVICE_ROLE_KEY),
+      },
+      timestamp:Date.now()
+    })
+  }).catch(()=>{});
+  // #endregion
+
+  if (!supabaseServer) {
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/c16f74a9-f7f8-40d0-ab65-a7068f18cccd',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        sessionId:'debug-session',
+        runId:'pre-fix',
+        hypothesisId:'H5',
+        location:'api/track.ts:supabase-missing',
+        message:'Supabase server client not initialized',
+        data:{
+          hasUrl: Boolean(import.meta.env.SUPABASE_URL || import.meta.env.PUBLIC_SUPABASE_URL),
+          hasServiceRole: Boolean(import.meta.env.SUPABASE_SERVICE_ROLE_KEY),
+        },
+        timestamp:Date.now()
+      })
+    }).catch(()=>{});
+    // #endregion
+
+    return new Response(JSON.stringify({ ok: false, error: 'Supabase credentials not configured' }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+
   // ═══════════════════════════════════════════════════════════
   // CORS: Validar origem
   // ═══════════════════════════════════════════════════════════
@@ -124,6 +197,8 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     const referer = request.headers.get('referer') || '';
     const ip = clientAddress || request.headers.get('x-forwarded-for')?.split(',')[0] || '';
 
+    const supabaseServer = getSupabaseServer();
+
     // ═══════════════════════════════════════════════════════════
     // 1. CRIAR/ATUALIZAR SESSÃO NO SUPABASE
     // ═══════════════════════════════════════════════════════════
@@ -134,6 +209,22 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
         .select('*')
         .eq('session_id', data.session_id)
         .single();
+
+      // #region agent log
+      fetch('http://127.0.0.1:7242/ingest/c16f74a9-f7f8-40d0-ab65-a7068f18cccd',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({
+          sessionId:'debug-session',
+          runId:'pre-fix',
+          hypothesisId:'H2',
+          location:'api/track.ts:session-check',
+          message:'session lookup result',
+          data:{ found:Boolean(existingSession), session_id:data.session_id },
+          timestamp:Date.now()
+        })
+      }).catch(()=>{});
+      // #endregion
 
       if (existingSession) {
         // Atualizar sessão existente
@@ -186,7 +277,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
           metadata: data.meta || {},
           page_url: data.page,
           referrer: referer,
-        });
+      });
 
       if (eventError) {
         console.error('[API/track] ⚠️ Erro ao salvar evento:', eventError);
@@ -268,6 +359,22 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
       }
     );
   } catch (error) {
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/c16f74a9-f7f8-40d0-ab65-a7068f18cccd',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        sessionId:'debug-session',
+        runId:'pre-fix',
+        hypothesisId:'H3',
+        location:'api/track.ts:catch',
+        message:'unhandled error',
+        data:{ error: error instanceof Error ? error.message : String(error) },
+        timestamp:Date.now()
+      })
+    }).catch(()=>{});
+    // #endregion
+
     console.error('[API/track] ❌ Erro:', error);
     return new Response(
       JSON.stringify({ ok: false, error: 'Internal server error' }),

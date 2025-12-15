@@ -104,19 +104,19 @@ const TAWK_WIDGET_ID = ""; // Adicione seu Tawk.to Widget ID
     <!-- Facebook Pixel Code (desligado se FB_PIXEL_ID não configurado) -->
     {FB_PIXEL_ID && (
       <>
-        <script is:inline define:vars={{ FB_PIXEL_ID }}>
-          !function(f,b,e,v,n,t,s)
-          {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-          n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-          if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-          n.queue=[];t=b.createElement(e);t.async=!0;
-          t.src=v;s=b.getElementsByTagName(e)[0];
-          s.parentNode.insertBefore(t,s)}(window, document,'script',
-          'https://connect.facebook.net/en_US/fbevents.js');
-          
+    <script is:inline define:vars={{ FB_PIXEL_ID }}>
+      !function(f,b,e,v,n,t,s)
+      {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+      n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+      n.queue=[];t=b.createElement(e);t.async=!0;
+      t.src=v;s=b.getElementsByTagName(e)[0];
+      s.parentNode.insertBefore(t,s)}(window, document,'script',
+      'https://connect.facebook.net/en_US/fbevents.js');
+      
           // Inicializar Pixel (PageView dispara automaticamente)
-          fbq('init', FB_PIXEL_ID);
-          fbq('track', 'PageView');
+        fbq('init', FB_PIXEL_ID);
+        fbq('track', 'PageView');
           
           // Helper para tracking com event_id (dedup)
           window.trackFacebookEvent = function(eventName, params, eventId) {
@@ -130,11 +130,11 @@ const TAWK_WIDGET_ID = ""; // Adicione seu Tawk.to Widget ID
               fbq('track', eventName, params);
             }
           };
-        </script>
-        <noscript>
-          <img height="1" width="1" style="display:none" 
-            src={`https://www.facebook.com/tr?id=${FB_PIXEL_ID}&ev=PageView&noscript=1`}/>
-        </noscript>
+    </script>
+      <noscript>
+        <img height="1" width="1" style="display:none" 
+          src={`https://www.facebook.com/tr?id=${FB_PIXEL_ID}&ev=PageView&noscript=1`}/>
+      </noscript>
       </>
     )}
     <!-- End Facebook Pixel Code -->

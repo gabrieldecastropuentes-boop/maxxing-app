@@ -111,26 +111,25 @@ tracking.checkoutClick(); // track("checkout_click")
 
 ### D) ✅ Variáveis de Ambiente
 
-**Arquivo:** `.env.local.example` (criar `.env.local`)
+**Arquivo:** `.env.example` (criar `.env.local` a partir dele)
 
 ```env
 # Site
-NEXT_PUBLIC_SITE_URL=https://seu-dominio.com
 PUBLIC_SITE_URL=https://seu-dominio.com
 
-# Supabase
-SUPABASE_URL=https://lwtjeqvnyytxlecxnkpw.supabase.co
-SUPABASE_SERVICE_ROLE_KEY=sua_service_role_key
+# Supabase (server-side)
+SUPABASE_URL=https://<SUPABASE_PROJECT_REF>.supabase.co
+SUPABASE_SERVICE_ROLE_KEY=<SUPABASE_SERVICE_ROLE_KEY>
 
 # CORS
-ALLOWED_ORIGINS=https://seu-dominio.com
+ALLOWED_ORIGINS=https://maxxing-quiz.vercel.app
 
 # PerfectPay
 PERFECTPAY_WEBHOOK_SECRET=trocar_depois
 
 # Meta (futuro)
-NEXT_PUBLIC_META_PIXEL_ID=trocar_depois
 PUBLIC_FB_PIXEL_ID=trocar_depois
+FB_PIXEL_ID=trocar_depois
 META_CAPI_ACCESS_TOKEN=trocar_depois
 FB_ACCESS_TOKEN=trocar_depois
 ```
