@@ -153,8 +153,8 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
   try {
     const data: TrackEventPayload = await request.json();
 
-    // Validação básica
-    if (!data.event_name || !data.event_id || !data.session_id) {
+    // Validação básica (session_id é obrigatória; event_id pode ser gerado no server)
+    if (!data.event_name || !data.session_id) {
       return new Response(
         JSON.stringify({ ok: false, error: 'Missing required fields' }),
         {
@@ -172,6 +172,8 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     const ip = clientAddress || request.headers.get('x-forwarded-for')?.split(',')[0] || '';
 
     const supabase = getSupabaseServer();
+
+    const eventId = data.event_id || `evt_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
 
     // ═══════════════════════════════════════════════════════════
     // 1. CRIAR/ATUALIZAR SESSÃO NO SUPABASE
@@ -244,7 +246,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
         .insert({
           session_id: data.session_id,
           event_name: data.event_name,
-          event_id: data.event_id, // Para dedup Meta
+          event_id: eventId, // Para dedup Meta
           step_index: data.step_index,
           step_id: data.step_id,
           answer_id: data.answer_id,
@@ -277,7 +279,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
           const fbEvent = {
             event_name: fbEventName,
             event_time: Math.floor(Date.now() / 1000),
-            event_id: data.event_id, // ⚠️ CRÍTICO: Mesmo event_id do Pixel (dedup)
+            event_id: eventId, // ⚠️ CRÍTICO: Mesmo event_id do Pixel (dedup)
             event_source_url: data.page || referer,
             action_source: 'website',
             user_data: {

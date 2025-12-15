@@ -257,38 +257,62 @@ const TAWK_WIDGET_ID = ""; // Adicione seu Tawk.to Widget ID
 
     <!-- Global Event Tracking Helper -->
     <script is:inline>
-      // Unified tracking function
-      window.trackEvent = function(eventName, params) {
-        params = params || {};
-        params.timestamp = Date.now();
-        
-        // Console log for debugging
-        console.log('[Track]', eventName, params);
-        
-        // Google Analytics 4
-        if (typeof gtag !== 'undefined') {
-          gtag('event', eventName, params);
+      // Unified tracking function (usa /api/track com event_id e session_id)
+      (function() {
+        function ensureSessionId() {
+          if (typeof window === 'undefined') return '';
+          const key = 'session_id';
+          let id = localStorage.getItem(key);
+          if (!id) {
+            id = (crypto.randomUUID ? crypto.randomUUID() : 'sess_' + Math.random().toString(36).slice(2, 11));
+            localStorage.setItem(key, id);
+          }
+          return id;
         }
-        
-        // Facebook Pixel
-        if (typeof fbq !== 'undefined') {
-          fbq('trackCustom', eventName, params);
+
+        function generateEventId() {
+          return (crypto.randomUUID ? crypto.randomUUID() : 'evt_' + Math.random().toString(36).slice(2, 11));
         }
-        
-        // Server-side tracking (optional)
-        if (navigator.sendBeacon) {
-          navigator.sendBeacon('/api/track', JSON.stringify({
-            event: eventName,
-            ...params
-          }));
-        }
-      };
+
+        window.trackEvent = function(eventName, params) {
+          params = params || {};
+          const sessionId = ensureSessionId();
+          const eventId = generateEventId();
+
+          const payload = {
+            event_name: eventName,
+            event_id: eventId,
+            session_id: sessionId,
+            page: window.location.href,
+            timestamp: Date.now(),
+            ...params,
+          };
+
+          // Google Analytics 4
+          if (typeof gtag !== 'undefined') {
+            gtag('event', eventName, params);
+          }
+
+          // Facebook Pixel
+          if (typeof fbq !== 'undefined') {
+            fbq('trackCustom', eventName, params);
+          }
+
+          // Server-side tracking
+          fetch('/api/track', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+            keepalive: true,
+          }).catch(() => {});
+        };
+      })();
       
       // Track page visibility changes (for bounce rate)
       document.addEventListener('visibilitychange', function() {
         if (document.visibilityState === 'hidden') {
-          window.trackEvent('PageHidden', { 
-            timeOnPage: Math.round((Date.now() - performance.timing.navigationStart) / 1000)
+          window.trackEvent('PageHidden', {
+            timeOnPage: Math.round((Date.now() - performance.timing.navigationStart) / 1000),
           });
         }
       });
