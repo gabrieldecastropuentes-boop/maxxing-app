@@ -19,6 +19,7 @@ export function HomePage() {
   useEffect(() => {
     tracking.homeView();
   }, []);
+  
   return (
     <div 
       className="relative min-h-screen overflow-x-hidden"
@@ -28,7 +29,6 @@ export function HomePage() {
       }}
     >
       <Header />
-      
       <div 
         className="pt-[60px] sm:pt-[80px] overflow-x-hidden"
         style={{

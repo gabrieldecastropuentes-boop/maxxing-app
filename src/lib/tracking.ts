@@ -279,8 +279,6 @@ export const tracking = {
 // INICIALIZAÇÃO AUTOMÁTICA
 // ═══════════════════════════════════════════════════════════════
 
-// Capturar UTMs na primeira carga da página
-if (typeof window !== 'undefined') {
-  getUTMParams();
-}
+// UTMs são capturados automaticamente quando getStoredUtm() é chamado
+// Não há necessidade de inicialização explícita aqui
 
