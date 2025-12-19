@@ -108,13 +108,14 @@ interface PerfectPayWebhookPayload {
   
   // Autenticação (não usar no payload, apenas para validação)
   token?: string;
+  public_token?: string; // Token no body (para postbacks que não permitem custom header)
   
   [key: string]: any;
 }
 
 /**
  * Valida o webhook usando apenas PERFECTPAY_WEBHOOK_SECRET
- * Validação na ordem: x-webhook-secret → x-webhook-token → authorization
+ * Validação na ordem: x-webhook-secret → x-webhook-token → authorization → public_token (body)
  */
 function validateWebhook(rawBody: string, payload: PerfectPayWebhookPayload, headers: Headers): { ok: boolean; error?: string } {
   const secret = process.env.PERFECTPAY_WEBHOOK_SECRET;
@@ -146,6 +147,16 @@ function validateWebhook(rawBody: string, payload: PerfectPayWebhookPayload, hea
     if (authHeader === secret) {
       return { ok: true };
     }
+  }
+
+  // 4. Fallback: public_token no body (para postbacks que não permitem custom header)
+  if (payload.public_token && payload.public_token === secret) {
+    return { ok: true };
+  }
+
+  // 5. Fallback legacy: token no body (compatibilidade)
+  if (payload.token && payload.token === secret) {
+    return { ok: true };
   }
 
   return { ok: false, error: 'unauthorized' };
@@ -359,6 +370,7 @@ export const POST: APIRoute = async ({ request }) => {
       currency,
       product_code: productCode,
       offer_type: productMapping.offer_type,
+      offer_key: productMapping.offer_type, // offer_key = offer_type (mesmo valor)
       is_bump: productMapping.is_bump,
       bump_index: productMapping.bump_index,
       affiliate_code: affiliateCode,

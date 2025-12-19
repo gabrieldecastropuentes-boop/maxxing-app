@@ -80,6 +80,10 @@ const CHECKOUT_URL = 'https://checkout.perfectpay.com.br/pay/SEU_CODIGO';
 
 O webhook está configurado e pronto para receber eventos de compra da PerfectPay.
 
+⚠️ **IMPORTANTE:** Antes de usar o webhook, aplique a migration SQL no Supabase:
+- Execute `supabase/migrations/20251218_fix_purchases_missing_columns.sql` no Supabase SQL Editor
+- Isso garante que todas as colunas necessárias (`affiliate_code`, `product_code`, `offer_key`, etc.) existam na tabela
+
 #### Configuração no Vercel
 
 Adicione a seguinte variável de ambiente no Vercel Dashboard (Settings → Environment Variables):
@@ -100,10 +104,11 @@ Adicione a seguinte variável de ambiente no Vercel Dashboard (Settings → Envi
 3. Configure:
    - **URL:** `https://seu-dominio.com/api/webhooks/perfectpay`
    - **Método:** `POST`
-   - **Headers:** Adicione um dos seguintes headers com o secret:
-     - `x-webhook-secret: <seu-secret>`
-     - `x-perfectpay-secret: <seu-secret>`
-     - `Authorization: Bearer <seu-secret>`
+   - **Autenticação:** Use uma das opções abaixo:
+     - **Header** `x-webhook-secret: <seu-secret>` (recomendado)
+     - **Header** `x-webhook-token: <seu-secret>`
+     - **Header** `Authorization: Bearer <seu-secret>`
+     - **Body** `public_token: <seu-secret>` (se não permitir custom headers)
 
 #### Mapeamento de Produtos
 
@@ -138,6 +143,71 @@ O webhook aceita qualquer estrutura de payload da PerfectPay e extrai:
 - `product_code` (busca recursiva em todo o payload)
 - `affiliate_code`
 - `session_id` (de: `session_id`, `metadata.session_id`, `external_reference`, etc.)
+
+#### Teste do Webhook
+
+**1. Healthcheck (GET):**
+```bash
+curl https://maxxing-quiz.vercel.app/api/webhooks/perfectpay
+# Resposta esperada: {"ok":true}
+```
+
+**2. Evento de compra (POST com header):**
+```bash
+curl -X POST https://maxxing-quiz.vercel.app/api/webhooks/perfectpay \
+  -H "Content-Type: application/json" \
+  -H "x-webhook-secret: SEU_SECRET_AQUI" \
+  -d '{
+    "code": "TEST_ORDER_001",
+    "sale_status": "approved",
+    "sale_amount": 99.90,
+    "currency": "BRL",
+    "product_code": "PPPBDPJI",
+    "affiliate_code": "PPA23VRV",
+    "session_id": "sess_abc123"
+  }'
+```
+
+**3. Evento de compra (POST com public_token no body):**
+```bash
+curl -X POST https://maxxing-quiz.vercel.app/api/webhooks/perfectpay \
+  -H "Content-Type: application/json" \
+  -d '{
+    "public_token": "SEU_SECRET_AQUI",
+    "code": "TEST_ORDER_002",
+    "sale_status": "approved",
+    "sale_amount": 99.90,
+    "currency": "BRL",
+    "product_code": "PPPBDPJI"
+  }'
+```
+
+**4. Verificar no Supabase:**
+```sql
+SELECT 
+  order_id,
+  status,
+  amount,
+  currency,
+  product_code,
+  offer_type,
+  offer_key,
+  is_bump,
+  bump_index,
+  affiliate_code,
+  session_id,
+  created_at
+FROM public.tracking_lmx_purchases
+ORDER BY created_at DESC
+LIMIT 10;
+```
+
+**Respostas esperadas:**
+- ✅ **200 OK (novo evento):** `{"ok":true,"id":"uuid","order_id":"TEST_ORDER_001","offer_type":"MAIN","is_bump":false}`
+- ✅ **200 OK (duplicado):** `{"ok":true,"duplicate":true,"id":"uuid","order_id":"TEST_ORDER_001"}`
+- ❌ **401 Unauthorized:** `{"ok":false,"error":"unauthorized"}`
+- ❌ **400 Bad Request:** `{"ok":false,"error":"missing order_id"}`
+- ❌ **500 Internal Server Error:** `{"ok":false,"error":"..."}`
 
 ---
 
@@ -242,13 +312,21 @@ Tracking unificado de eventos.
 }
 ```
 
+### GET `/api/webhooks/perfectpay`
+Healthcheck do webhook PerfectPay.
+
+**Resposta:** `{ok:true}`
+
+---
+
 ### POST `/api/webhooks/perfectpay`
 Webhook para receber eventos de compra da PerfectPay.
 
-**Headers necessários (um dos seguintes):**
-- `x-webhook-secret: <PERFECTPAY_WEBHOOK_SECRET>`
-- `x-perfectpay-secret: <PERFECTPAY_WEBHOOK_SECRET>`
-- `Authorization: Bearer <PERFECTPAY_WEBHOOK_SECRET>`
+**Autenticação (uma das opções):**
+- Header `x-webhook-secret: <PERFECTPAY_WEBHOOK_SECRET>` (recomendado)
+- Header `x-webhook-token: <PERFECTPAY_WEBHOOK_SECRET>`
+- Header `Authorization: Bearer <PERFECTPAY_WEBHOOK_SECRET>`
+- Body `public_token: <PERFECTPAY_WEBHOOK_SECRET>` (para postbacks que não permitem custom headers)
 
 **Exemplo de payload:**
 ```json
@@ -263,6 +341,11 @@ Webhook para receber eventos de compra da PerfectPay.
   "event_type": "sale_approved"
 }
 ```
+
+**Campos salvos no Supabase:**
+- `order_id`, `status`, `amount`, `currency`
+- `product_code`, `offer_type`, `offer_key`, `is_bump`, `bump_index`
+- `affiliate_code`, `session_id`, `event_type`, `raw_payload`
 
 **Respostas:**
 - **200 OK (novo evento):** `{ok:true,id:"uuid",order_id:"ORD123",offer_type:"MAIN",is_bump:false}`
