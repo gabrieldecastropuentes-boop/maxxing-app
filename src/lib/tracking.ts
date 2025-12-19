@@ -23,40 +23,64 @@ function getOrCreateSessionId(): string {
 }
 
 // ═══════════════════════════════════════════════════════════════
-// CAPTURAR UTMs E PARÂMETROS
+// UTMs + REFERRER + LANDING (persistência 7 dias)
 // ═══════════════════════════════════════════════════════════════
 
-function getUTMParams(): Record<string, string> {
+const UTM_STORAGE_KEY = 'utm_cache_v1';
+const UTM_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 dias
+
+function captureCurrentUtm(): Record<string, string> {
   if (typeof window === 'undefined') return {};
-  
+
   const params = new URLSearchParams(window.location.search);
   const utms: Record<string, string> = {};
-  
-  // UTMs
-  const utmKeys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'];
-  utmKeys.forEach(key => {
-    const value = params.get(key);
-    if (value) utms[key] = value;
-  });
-  
-  // Facebook Click ID
+  const keys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'];
+  for (const k of keys) {
+    const v = params.get(k);
+    if (v) utms[k] = v;
+  }
   const fbclid = params.get('fbclid');
   if (fbclid) utms.fbclid = fbclid;
-  
-  // Salvar UTMs no sessionStorage para persistir durante a sessão
-  if (Object.keys(utms).length > 0) {
-    sessionStorage.setItem('utm_params', JSON.stringify(utms));
-  } else {
-    // Tentar recuperar do sessionStorage se não estiver na URL
-    const stored = sessionStorage.getItem('utm_params');
-    if (stored) {
-      try {
-        Object.assign(utms, JSON.parse(stored));
-      } catch {}
-    }
-  }
-  
+
   return utms;
+}
+
+function getStoredUtm(): {
+  utms: Record<string, string>;
+  referrer?: string;
+  landing_url?: string;
+} {
+  if (typeof window === 'undefined') return { utms: {} };
+
+  const now = Date.now();
+  try {
+    const cachedRaw = localStorage.getItem(UTM_STORAGE_KEY);
+    if (cachedRaw) {
+      const cached = JSON.parse(cachedRaw) as {
+        utms: Record<string, string>;
+        referrer?: string;
+        landing_url?: string;
+        ts: number;
+      };
+      if (cached.ts && now - cached.ts < UTM_TTL_MS) {
+        return { utms: cached.utms || {}, referrer: cached.referrer, landing_url: cached.landing_url };
+      }
+    }
+  } catch {}
+
+  // Capturar da página atual
+  const utms = captureCurrentUtm();
+  const referrer = document.referrer || '';
+  const landing_url = window.location.href;
+
+  try {
+    localStorage.setItem(
+      UTM_STORAGE_KEY,
+      JSON.stringify({ utms, referrer, landing_url, ts: now })
+    );
+  } catch {}
+
+  return { utms, referrer, landing_url };
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -131,7 +155,7 @@ export async function trackEvent(event: TrackingEvent, data?: Partial<TrackingDa
   
   try {
     const sessionId = getOrCreateSessionId();
-    const utms = getUTMParams();
+    const { utms, referrer: storedReferrer, landing_url } = getStoredUtm();
     const fbCookies = getFacebookCookies();
     const eventId = generateEventId(); // Gerar event_id para dedup
     
@@ -140,6 +164,9 @@ export async function trackEvent(event: TrackingEvent, data?: Partial<TrackingDa
       event_id: eventId, // UUID para dedup Meta Pixel/CAPI
       session_id: sessionId,
       page: window.location.href,
+      path: window.location.pathname,
+      referrer: storedReferrer || document.referrer || '',
+      landing_url,
       
       // Dados do evento
       ...(data?.step_index !== undefined && { step_index: data.step_index }),

@@ -30,10 +30,10 @@ export interface FacebookEventPayload {
   };
 }
 
-// Configuração do Facebook (substituir por variáveis de ambiente)
-const FB_PIXEL_ID = import.meta.env.FB_PIXEL_ID || 'YOUR_PIXEL_ID';
-const FB_ACCESS_TOKEN = import.meta.env.FB_ACCESS_TOKEN || 'YOUR_ACCESS_TOKEN';
-const FB_API_VERSION = 'v18.0';
+// ⚠️ CRÍTICO: META_CAPI_ACCESS_TOKEN é server-only, nunca expor no client bundle
+const FB_PIXEL_ID = import.meta.env.PUBLIC_FB_PIXEL_ID?.trim() || '';
+const META_CAPI_TOKEN = import.meta.env.META_CAPI_ACCESS_TOKEN?.trim() || '';
+const META_API_VERSION = 'v20.0'; // Versão configurável da Meta API
 
 export const POST: APIRoute = async ({ request, clientAddress }) => {
   try {
@@ -55,10 +55,20 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
 
     console.log('[API/facebook/capi] Evento preparado:', event);
 
-    // TODO: Descomentar quando tiver as credenciais do Facebook
-    /*
+    // Validar: se não tiver token ou Pixel ID, retornar erro
+    if (!FB_PIXEL_ID || !META_CAPI_TOKEN) {
+      return new Response(JSON.stringify({
+        success: false,
+        error: !FB_PIXEL_ID ? 'PUBLIC_FB_PIXEL_ID não configurado' : 'META_CAPI_ACCESS_TOKEN não configurado',
+        event_name: data.event_name,
+      }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
     const response = await fetch(
-      `https://graph.facebook.com/${FB_API_VERSION}/${FB_PIXEL_ID}/events?access_token=${FB_ACCESS_TOKEN}`,
+      `https://graph.facebook.com/${META_API_VERSION}/${FB_PIXEL_ID}/events?access_token=${META_CAPI_TOKEN}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -68,14 +78,26 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
       }
     );
 
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('[API/facebook/capi] Erro ao enviar para Meta CAPI:', errorText);
+      return new Response(JSON.stringify({
+        success: false,
+        error: 'Erro ao enviar evento para Meta CAPI',
+        details: errorText,
+      }), {
+        status: response.status,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
     const fbResponse = await response.json();
-    console.log('[API/facebook/capi] Resposta FB:', fbResponse);
-    */
+    console.log('[API/facebook/capi] ✅ Resposta Meta CAPI:', fbResponse);
 
     return new Response(JSON.stringify({
       success: true,
       event_name: data.event_name,
-      message: 'Evento registrado (modo de desenvolvimento)'
+      meta_response: fbResponse,
     }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' }

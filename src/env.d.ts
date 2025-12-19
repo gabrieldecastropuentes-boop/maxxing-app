@@ -12,8 +12,11 @@ interface ImportMetaEnv {
   // Database
   readonly DATABASE_URL: string;
   
+  // Meta/Facebook Conversions API (server-only, never exposed to client)
+  readonly META_CAPI_ACCESS_TOKEN: string;
+  
   // Webhooks
-  readonly PERFECTPAY_WEBHOOK_TOKEN: string;
+  readonly PERFECTPAY_WEBHOOK_SECRET: string; // Secret para validação do webhook PerfectPay (server-only)
   
   // Admin
   readonly ADMIN_API_TOKEN: string;

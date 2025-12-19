@@ -30,21 +30,26 @@ npm run build
 
 ## ⚙️ Configuração de Credenciais
 
-### 1. Facebook Pixel / CAPI
+### Vercel Environment Variables
 
-Edite `src/layouts/Layout.astro`:
+Configure as seguintes variáveis de ambiente no Vercel Dashboard (Settings → Environment Variables):
 
-```javascript
-const FB_PIXEL_ID = "SEU_PIXEL_ID"; // Ex: 1234567890
-```
+| Variável | Descrição | Onde obter |
+|----------|-----------|------------|
+| **PUBLIC_FB_PIXEL_ID** | Meta Pixel ID (client-side) | Meta Business → Events Manager → Pixel ID |
+| **META_CAPI_ACCESS_TOKEN** | Meta Conversions API Access Token (server-only) | Meta Business → Events Manager → Settings → Conversions API → Access Token |
 
-Para Facebook CAPI (server-side), crie `.env`:
+⚠️ **IMPORTANTE:**
+- `PUBLIC_FB_PIXEL_ID` pode ser usado no client (já é público por padrão)
+- `META_CAPI_ACCESS_TOKEN` é **server-only** e nunca será exposto no client bundle
+- Se `PUBLIC_FB_PIXEL_ID` estiver vazio, o Pixel não será inicializado (apenas log em dev)
+- Se `META_CAPI_ACCESS_TOKEN` faltar, o server não tentará chamar CAPI (mas continuará gravando no Supabase)
 
-```env
-FB_ACCESS_TOKEN=seu_access_token
-FB_PIXEL_ID=1234567890
-FB_BUSINESS_ID=seu_business_id
-```
+### 1. Meta Pixel / CAPI
+
+O Pixel é inicializado automaticamente no `Layout.astro` quando `PUBLIC_FB_PIXEL_ID` está configurado. O CAPI é chamado automaticamente no endpoint `/api/track` quando `META_CAPI_ACCESS_TOKEN` está configurado.
+
+**Não é necessário editar código manualmente** - apenas configure as variáveis de ambiente no Vercel.
 
 ### 2. Google Analytics 4
 
@@ -70,6 +75,69 @@ Edite `src/components/quiz/PaywallScreen.tsx`:
 ```javascript
 const CHECKOUT_URL = 'https://checkout.perfectpay.com.br/pay/SEU_CODIGO';
 ```
+
+### 5. PerfectPay Webhook
+
+O webhook está configurado e pronto para receber eventos de compra da PerfectPay.
+
+#### Configuração no Vercel
+
+Adicione a seguinte variável de ambiente no Vercel Dashboard (Settings → Environment Variables):
+
+| Variável | Descrição | Onde obter |
+|----------|-----------|------------|
+| **PERFECTPAY_WEBHOOK_SECRET** | Secret para validação do webhook (server-only) | Painel PerfectPay → Webhooks → Secret/Token |
+
+⚠️ **IMPORTANTE:**
+- `PERFECTPAY_WEBHOOK_SECRET` é **server-only** e nunca será exposto no client bundle
+- Se o secret faltar, o webhook retornará 500 com `{ok:false,error:"missing webhook secret"}`
+- Se o token/secret for inválido, retornará 401 com `{ok:false,error:"unauthorized"}`
+
+#### Configuração no Painel PerfectPay
+
+1. Acesse o painel da PerfectPay
+2. Vá em **Webhooks** → **Configurar Webhook**
+3. Configure:
+   - **URL:** `https://seu-dominio.com/api/webhooks/perfectpay`
+   - **Método:** `POST`
+   - **Headers:** Adicione um dos seguintes headers com o secret:
+     - `x-webhook-secret: <seu-secret>`
+     - `x-perfectpay-secret: <seu-secret>`
+     - `Authorization: Bearer <seu-secret>`
+
+#### Mapeamento de Produtos
+
+O sistema mapeia automaticamente os seguintes produtos:
+
+| Tipo | Product Code | Affiliate Code |
+|------|--------------|----------------|
+| MAIN | `PPPBDPJI` | `PPA23VRV` |
+| BUMP_1 | `PPPBDPJF` | `PPA23VRR` |
+| BUMP_2 | `PPPBDPJH` | `PPA23VRU` |
+| BUMP_3 | `PPPBDPJK` | `PPA23VRX` |
+| BUMP_4 | `PPPBDPJO` | `PPA23VS1` |
+| BUMP_5 | `PPPBDPJL` | `PPA23VRY` |
+
+Produtos não mapeados serão registrados como `UNKNOWN`.
+
+#### Funcionalidades
+
+- ✅ **Idempotência:** Eventos duplicados retornam `{ok:true,duplicate:true}` sem criar duplicatas
+- ✅ **Parsing Robusto:** Extrai `product_code` de múltiplas fontes (direto, items, line_items, etc.)
+- ✅ **Mapeamento Automático:** Identifica MAIN vs BUMPs automaticamente
+- ✅ **Session Tracking:** Vincula compras a `session_id` quando disponível no payload
+- ✅ **Modo de Teste:** Disponível apenas em dev via `?test=1`
+
+#### Estrutura do Payload
+
+O webhook aceita qualquer estrutura de payload da PerfectPay e extrai:
+
+- `order_id` (de: `code`, `sale_id`, `transaction_id`, `id`, etc.)
+- `status` (normalizado para: `approved`, `pending`, `refused`, `canceled`, `refunded`, `chargeback`)
+- `amount` e `currency`
+- `product_code` (busca recursiva em todo o payload)
+- `affiliate_code`
+- `session_id` (de: `session_id`, `metadata.session_id`, `external_reference`, etc.)
 
 ---
 
@@ -172,6 +240,43 @@ Tracking unificado de eventos.
   "quiz_step": "string",
   "metadata": {}
 }
+```
+
+### POST `/api/webhooks/perfectpay`
+Webhook para receber eventos de compra da PerfectPay.
+
+**Headers necessários (um dos seguintes):**
+- `x-webhook-secret: <PERFECTPAY_WEBHOOK_SECRET>`
+- `x-perfectpay-secret: <PERFECTPAY_WEBHOOK_SECRET>`
+- `Authorization: Bearer <PERFECTPAY_WEBHOOK_SECRET>`
+
+**Exemplo de payload:**
+```json
+{
+  "code": "ORD123456",
+  "sale_status": "approved",
+  "sale_amount": 99.90,
+  "currency": "BRL",
+  "product_code": "PPPBDPJI",
+  "affiliate_code": "PPA23VRV",
+  "session_id": "sess_abc123",
+  "event_type": "sale_approved"
+}
+```
+
+**Respostas:**
+- **200 OK (novo evento):** `{ok:true,id:"uuid",order_id:"ORD123",offer_type:"MAIN",is_bump:false}`
+- **200 OK (duplicado):** `{ok:true,duplicate:true,id:"uuid",order_id:"ORD123"}`
+- **400 Bad Request:** `{ok:false,error:"missing order_id",details:{...}}`
+- **401 Unauthorized:** `{ok:false,error:"unauthorized"}`
+- **500 Internal Server Error:** `{ok:false,error:"missing webhook secret"}` ou erro do banco
+
+**Modo de teste (apenas em dev):**
+```bash
+curl -X POST "http://localhost:4321/api/webhooks/perfectpay?test=1" \
+  -H "x-webhook-secret: seu-secret" \
+  -H "Content-Type: application/json" \
+  -d '{}'
 ```
 
 ---

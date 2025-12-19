@@ -73,14 +73,14 @@ export interface TrackEventPayload {
 function isOriginAllowed(origin: string | null): boolean {
   if (!origin) return false;
   
-  const allowedOrigins = (import.meta.env.ALLOWED_ORIGINS || import.meta.env.PUBLIC_SITE_URL || '').split(',').map(o => o.trim());
+  const allowedOrigins = (import.meta.env.ALLOWED_ORIGINS || import.meta.env.PUBLIC_SITE_URL || '').split(',').map((o: string) => o.trim());
   
   if (allowedOrigins.length === 0) {
     // Se não configurado, aceitar qualquer origem em dev
     return import.meta.env.DEV;
   }
   
-  return allowedOrigins.some(allowed => origin.startsWith(allowed));
+  return allowedOrigins.some((allowed: string) => origin.startsWith(allowed));
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -142,17 +142,16 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
   // ═══════════════════════════════════════════════════════════
   const origin = request.headers.get('origin');
   if (!isOriginAllowed(origin)) {
-    return new Response(
-      JSON.stringify({ ok: false, error: 'Origin not allowed' }),
-      {
-        status: 403,
-        headers: { 'Content-Type': 'application/json' },
-      }
-    );
+    return jsonError('Origin not allowed', 403);
   }
 
   try {
-    const data: TrackEventPayload = await request.json();
+    let data: TrackEventPayload;
+    try {
+      data = await request.json();
+    } catch (parseError) {
+      return jsonError('Invalid JSON payload', 400);
+    }
 
     // Validação básica (session_id é obrigatória; event_id pode ser gerado no server)
     if (!data.event_name || !data.session_id) {
@@ -236,6 +235,16 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     // 2. SALVAR EVENTO NO SUPABASE
     // ═══════════════════════════════════════════════════════════
     try {
+      const meta = data.meta || {};
+      const utmMeta = {
+        utm_source: data.utm_source,
+        utm_medium: data.utm_medium,
+        utm_campaign: data.utm_campaign,
+        utm_content: data.utm_content,
+        utm_term: data.utm_term,
+        fbclid: data.fbclid,
+      };
+
       const { error: eventError } = await supabase
         .from('tracking_lmx_events')
         .insert({
@@ -245,7 +254,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
           step_index: data.step_index,
           step_id: data.step_id,
           answer_id: data.answer_id,
-          metadata: data.meta || {},
+          metadata: { ...meta, utm: utmMeta },
           page_url: data.page,
           referrer: referer,
       });
@@ -263,10 +272,13 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     // ═══════════════════════════════════════════════════════════
     // 3. DISPARAR FACEBOOK CAPI (quando disponível)
     // ═══════════════════════════════════════════════════════════
-    const fbPixelId = import.meta.env.FB_PIXEL_ID || import.meta.env.PUBLIC_FB_PIXEL_ID;
-    const fbAccessToken = import.meta.env.FB_ACCESS_TOKEN || import.meta.env.META_CAPI_ACCESS_TOKEN;
+    // ⚠️ CRÍTICO: META_CAPI_ACCESS_TOKEN é server-only, nunca expor no client bundle
+    const fbPixelId = import.meta.env.PUBLIC_FB_PIXEL_ID?.trim() || '';
+    const metaCapiToken = import.meta.env.META_CAPI_ACCESS_TOKEN?.trim() || '';
+    const META_API_VERSION = 'v20.0'; // Versão configurável da Meta API
 
-    if (fbPixelId && fbAccessToken) {
+    // Validar: se não tiver token, pular CAPI sem erro (mas continuar gravando no Supabase)
+    if (fbPixelId && metaCapiToken) {
       try {
         const fbEventName = mapEventToFacebook(data.event_name);
         
@@ -280,8 +292,8 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
             user_data: {
               client_ip_address: ip,
               client_user_agent: userAgent,
-              fbp: data.fbp,
-              fbc: data.fbc,
+              ...(data.fbp && { fbp: data.fbp }),
+              ...(data.fbc && { fbc: data.fbc }),
             },
             custom_data: {
               ...(data.step_index !== undefined && { step_index: data.step_index }),
@@ -290,10 +302,8 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
             },
           };
 
-          // TODO: Descomentar quando tiver META_CAPI_ACCESS_TOKEN
-          /*
           const fbResponse = await fetch(
-            `https://graph.facebook.com/v18.0/${fbPixelId}/events?access_token=${fbAccessToken}`,
+            `https://graph.facebook.com/${META_API_VERSION}/${fbPixelId}/events?access_token=${metaCapiToken}`,
             {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
@@ -302,30 +312,43 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
           );
 
           if (fbResponse.ok) {
-            console.log('[API/track] ✅ Evento enviado para Facebook CAPI');
+            const fbResult = await fbResponse.json();
+            console.log('[API/track] ✅ Evento enviado para Meta CAPI:', fbResult);
           } else {
-            console.warn('[API/track] ⚠️ Erro ao enviar para Facebook CAPI:', await fbResponse.text());
+            const errorText = await fbResponse.text();
+            console.warn('[API/track] ⚠️ Erro ao enviar para Meta CAPI:', errorText);
           }
-          */
         }
       } catch (capiError) {
-        console.error('[API/track] ⚠️ Erro no Facebook CAPI:', capiError);
+        console.error('[API/track] ⚠️ Erro no Meta CAPI:', capiError);
         // Não falhar o request se CAPI falhar
+      }
+    } else {
+      // Log apenas em dev se CAPI não estiver configurado
+      if (import.meta.env.DEV) {
+        if (!fbPixelId) {
+          console.log('[API/track] ⚠️ PUBLIC_FB_PIXEL_ID não configurado. CAPI não será chamado.');
+        }
+        if (!metaCapiToken) {
+          console.log('[API/track] ⚠️ META_CAPI_ACCESS_TOKEN não configurado. CAPI não será chamado.');
+        }
       }
     }
 
     // ═══════════════════════════════════════════════════════════
     // 4. RESPOSTA DE SUCESSO
     // ═══════════════════════════════════════════════════════════
-    return new Response(JSON.stringify({ ok: true }), {
-      status: 200,
-      headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': origin || '*',
-        'Access-Control-Allow-Methods': 'POST',
-        'Access-Control-Allow-Headers': 'Content-Type',
-      },
+    const response = jsonResponse({
+      event_id: eventId,
+      event_name: data.event_name,
     });
+    
+    // Adicionar headers CORS
+    response.headers.set('Access-Control-Allow-Origin', origin || '*');
+    response.headers.set('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    response.headers.set('Access-Control-Allow-Headers', 'Content-Type');
+    
+    return response;
   } catch (error) {
     // #region agent log
     fetch('http://127.0.0.1:7242/ingest/c16f74a9-f7f8-40d0-ab65-a7068f18cccd',{

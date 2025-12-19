@@ -19,10 +19,15 @@ const {
 // CONFIGURAÇÕES - Usa variáveis de ambiente
 // ═══════════════════════════════════════════════════════════════
 const SITE_URL = import.meta.env.PUBLIC_SITE_URL || "https://glowmax.app";
-const FB_PIXEL_ID = import.meta.env.PUBLIC_FB_PIXEL_ID || ""; // Desligado se vazio
+const FB_PIXEL_ID = import.meta.env.PUBLIC_FB_PIXEL_ID?.trim() || ""; // Desligado se vazio
 const GA_MEASUREMENT_ID = import.meta.env.PUBLIC_GA_ID || "";
 const TAWK_PROPERTY_ID = ""; // Adicione seu Tawk.to Property ID
 const TAWK_WIDGET_ID = ""; // Adicione seu Tawk.to Widget ID
+
+// Validação: log em dev se Pixel ID não estiver configurado
+if (import.meta.env.DEV && !FB_PIXEL_ID) {
+  console.log('[Meta Pixel] ⚠️ PUBLIC_FB_PIXEL_ID não configurado. Pixel não será inicializado.');
+}
 ---
 
 <!DOCTYPE html>
@@ -101,7 +106,7 @@ const TAWK_WIDGET_ID = ""; // Adicione seu Tawk.to Widget ID
       </>
     )}
     
-    <!-- Facebook Pixel Code (desligado se FB_PIXEL_ID não configurado) -->
+    <!-- Facebook Pixel Code (inicializa apenas se PUBLIC_FB_PIXEL_ID estiver configurado) -->
     {FB_PIXEL_ID && (
       <>
     <script is:inline define:vars={{ FB_PIXEL_ID }}>
@@ -114,11 +119,11 @@ const TAWK_WIDGET_ID = ""; // Adicione seu Tawk.to Widget ID
       s.parentNode.insertBefore(t,s)}(window, document,'script',
       'https://connect.facebook.net/en_US/fbevents.js');
       
-          // Inicializar Pixel (PageView dispara automaticamente)
-        fbq('init', FB_PIXEL_ID);
-        fbq('track', 'PageView');
+          // Inicializar Pixel e disparar PageView
+          fbq('init', FB_PIXEL_ID);
+          fbq('track', 'PageView');
           
-          // Helper para tracking com event_id (dedup)
+          // Helper para tracking com event_id (dedup com CAPI)
           window.trackFacebookEvent = function(eventName, params, eventId) {
             if (eventId) {
               // Enviar com event_id para dedup com CAPI
