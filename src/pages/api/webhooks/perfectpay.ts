@@ -163,6 +163,15 @@ function validateWebhook(rawBody: string, payload: PerfectPayWebhookPayload, hea
 }
 
 /**
+ * Helper: Converte valor para número de forma segura
+ */
+function toNumber(v: any): number | null {
+  if (v === null || v === undefined) return null;
+  const n = Number(v);
+  return Number.isFinite(n) ? n : null;
+}
+
+/**
  * Normaliza status do webhook para valores padronizados
  */
 function normalizeStatus(status?: string): string {
@@ -335,7 +344,22 @@ export const POST: APIRoute = async ({ request }) => {
 
     const eventType = payload.sale_status_enum_key || payload.event_type || payload.eventType || payload.sale_status || payload.status || 'unknown';
     const status = normalizeStatus(eventType);
-    const amount = payload.sale_amount ?? payload.amount ?? payload.price ?? payload.total ?? null;
+    
+    // Calcular total_value (NOT NULL - usar 0 como fallback)
+    const totalValueRaw =
+      payload.total_value ??
+      payload.totalValue ??
+      payload.total ??
+      payload.sale_amount ??
+      payload.amount ??
+      payload.price ??
+      null;
+    const totalValue = toNumber(totalValueRaw) ?? 0;
+    
+    // Calcular amount (opcional, mas usar totalValue como fallback)
+    const amountRaw = payload.amount ?? payload.sale_amount ?? payload.price ?? payload.total ?? null;
+    const amount = toNumber(amountRaw) ?? totalValue;
+    
     const currency = payload.currency || 'BRL';
     const sessionId = extractSessionId(payload);
 
@@ -366,14 +390,15 @@ export const POST: APIRoute = async ({ request }) => {
       order_id: orderId.toString(),
       session_id: sessionId?.toString() || null,
       status,
-      amount: amount ? Number(amount) : null,
+      total_value: totalValue, // NOT NULL - sempre tem valor (mínimo 0)
+      amount: amount ?? totalValue, // Opcional, mas usa totalValue como fallback
       currency,
       product_code: productCode,
       offer_type: productMapping.offer_type,
       offer_key: productMapping.offer_type, // offer_key = offer_type (mesmo valor)
       is_bump: productMapping.is_bump,
       bump_index: productMapping.bump_index,
-      affiliate_code: affiliateCode,
+      affiliate_code: affiliateCode ?? null,
       event_type: eventType.toString(),
       raw_payload: payload as any,
     };
