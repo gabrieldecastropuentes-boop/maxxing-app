@@ -4,11 +4,25 @@ import { HomePage } from '../components/home';
 ---
 
 <Layout title="Maxxing Inteligente | Avaliação Facial com IA">
+  {/* #region agent log */}
+  <script is:inline>
+    try {
+      fetch('http://127.0.0.1:7242/ingest/c16f74a9-f7f8-40d0-ab65-a7068f18cccd',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({sessionId:'debug-session',runId:'run1',hypothesisId:'C',location:'index.astro:before-main',message:'Layout rendered, about to render main',data:{timestamp:Date.now()},timestamp:Date.now()})}).catch(()=>{});
+    } catch(e) {}
+  </script>
+  {/* #endregion */}
   <main 
     class="relative z-10 overflow-x-hidden"
     style="isolation: isolate; position: relative; filter: none; transform: none; will-change: auto;"
   >
     <HomePage client:load />
   </main>
+  {/* #region agent log */}
+  <script is:inline>
+    try {
+      fetch('http://127.0.0.1:7242/ingest/c16f74a9-f7f8-40d0-ab65-a7068f18cccd',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({sessionId:'debug-session',runId:'run1',hypothesisId:'C',location:'index.astro:after-main',message:'Main tag rendered with HomePage',data:{timestamp:Date.now()},timestamp:Date.now()})}).catch(()=>{});
+    } catch(e) {}
+  </script>
+  {/* #endregion */}
 </Layout>
 
