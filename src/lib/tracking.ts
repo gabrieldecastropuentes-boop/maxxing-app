@@ -151,8 +151,10 @@ function generateEventId(): string {
 // ═══════════════════════════════════════════════════════════════
 
 export async function trackEvent(event: TrackingEvent, data?: Partial<TrackingData>): Promise<void> {
+  // Guard: apenas executa no browser
   if (typeof window === 'undefined') return;
   
+  // Wrap tudo em try/catch para nunca quebrar a página
   try {
     const sessionId = getOrCreateSessionId();
     const { utms, referrer: storedReferrer, landing_url } = getStoredUtm();
@@ -204,13 +206,20 @@ export async function trackEvent(event: TrackingEvent, data?: Partial<TrackingDa
     }
     
     // Se tiver Pixel configurado, também disparar no browser (com mesmo event_id)
-    if (typeof window !== 'undefined' && (window as any).trackFacebookEvent) {
-      const fbEventName = mapEventToFacebook(event);
-      if (fbEventName) {
-        (window as any).trackFacebookEvent(fbEventName, {
-          content_name: event,
-          ...data?.metadata,
-        }, eventId);
+    if (typeof window !== 'undefined' && typeof (window as any).trackFacebookEvent === 'function') {
+      try {
+        const fbEventName = mapEventToFacebook(event);
+        if (fbEventName) {
+          (window as any).trackFacebookEvent(fbEventName, {
+            content_name: event,
+            ...data?.metadata,
+          }, eventId);
+        }
+      } catch (fbError) {
+        // Não quebra se Facebook Pixel falhar
+        if (import.meta.env.DEV) {
+          console.warn('[Tracking] Facebook Pixel error (non-critical):', fbError);
+        }
       }
     }
     
@@ -219,8 +228,11 @@ export async function trackEvent(event: TrackingEvent, data?: Partial<TrackingDa
       console.log('[Tracking]', event, { event_id: eventId });
     }
   } catch (error) {
-    // Não bloquear a UI se tracking falhar
-    console.error('[Tracking] Erro ao enviar evento:', error);
+    // NUNCA bloquear a UI se tracking falhar - apenas log em dev
+    if (import.meta.env.DEV) {
+      console.warn('[Tracking] Non-critical tracking error:', error);
+    }
+    // Em produção, falha silenciosamente
   }
 }
 
