@@ -17,8 +17,7 @@ import { HaircutTransitionScreen } from './quiz/HaircutTransitionScreen';
 import { quizQuestions } from '../data/quizData';
 import { quizQuestionsFemale } from '../data/quizDataFemale';
 import { adaptQuestionByAge } from '../data/quizAgeAdaptations';
-
-const CHECKOUT_URL = 'https://checkout.perfectpay.com.br/pay/PPU38CQ3RIM';
+import { PERFECTPAY_CHECKOUT_URL } from '../lib/checkout';
 
 // ═══════════════════════════════════════════════════════════════
 // STORAGE KEYS
@@ -469,7 +468,7 @@ export default function Quiz() {
     Object.values(STORAGE_KEYS).forEach(key => {
       sessionStorage.removeItem(key);
     });
-    window.location.href = CHECKOUT_URL;
+    window.location.href = PERFECTPAY_CHECKOUT_URL;
   };
 
   const showBackButton = state !== 'intro' && state !== 'personality-intro' && state !== 'analyzing' && state !== 'paywall' && state !== 'mission';

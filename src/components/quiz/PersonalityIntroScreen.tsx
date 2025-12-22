@@ -85,7 +85,7 @@ export function PersonalityIntroScreen({ onContinue }: PersonalityIntroScreenPro
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2, duration: 0.5 }}
-          className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 sm:mb-6 leading-tight px-2"
+          className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-3 sm:mb-4 leading-tight px-2"
           style={{
             fontFamily: "'Plus Jakarta Sans', sans-serif",
             fontWeight: 800,
@@ -97,79 +97,124 @@ export function PersonalityIntroScreen({ onContinue }: PersonalityIntroScreenPro
           <span className="text-white/95">define sua atratividade</span>
         </motion.h1>
 
+        {/* Subtítulo explicativo */}
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.25, duration: 0.5 }}
+          className="text-lg sm:text-xl md:text-2xl text-white/80 mb-6 sm:mb-8 leading-relaxed max-w-2xl px-4"
+          style={{
+            fontFamily: "'Plus Jakarta Sans', sans-serif",
+            fontWeight: 400,
+          }}
+        >
+          Respondendo a algumas perguntas simples, criaremos um roadmap personalizado para você.
+        </motion.p>
+
         {/* Subtitle - Copy melhorada e melhor resolução */}
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4, duration: 0.5 }}
-          className="text-base sm:text-lg md:text-xl lg:text-2xl text-white/95 mb-8 sm:mb-10 leading-relaxed max-w-2xl px-4"
+          transition={{ delay: 0.35, duration: 0.5 }}
+          className="text-base sm:text-lg text-white/90 mb-6 sm:mb-8 leading-relaxed max-w-2xl px-4"
           style={{
             fontFamily: "'Plus Jakarta Sans', sans-serif",
             fontWeight: 400,
-            lineHeight: '1.6',
           }}
         >
           Analisamos suas respostas e criamos um <span className="font-semibold text-white">plano científico personalizado</span> para elevar sua confiança, carisma e presença — tanto online quanto offline.
         </motion.p>
 
-        {/* Ícones de benefícios */}
+        {/* 3 Pilares com descrições */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5, duration: 0.5 }}
-          className="flex flex-wrap justify-center gap-6 sm:gap-8 mb-8 sm:mb-10 px-4"
+          transition={{ delay: 0.45, duration: 0.5 }}
+          className="flex flex-wrap justify-center gap-6 sm:gap-8 mb-6 sm:mb-8 px-4"
         >
           {[
-            { icon: '✨', text: 'Análise Científica' },
-            { icon: '🎯', text: 'Plano Personalizado' },
-            { icon: '🚀', text: 'Resultados Comprovados' },
+            { icon: '📊', title: 'Análise Científica', desc: 'Algoritmo baseado em estudos de atratividade e bem-estar' },
+            { icon: '🎯', title: 'Plano Personalizado', desc: 'Recomendações adaptadas ao seu perfil e objetivos' },
+            { icon: '✅', title: 'Resultados Comprovados', desc: '+2,3M de pessoas já melhoraram sua confiança' },
           ].map((item, index) => (
             <motion.div
               key={index}
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.6 + index * 0.1 }}
-              className="flex flex-col items-center gap-2"
+              className="flex flex-col items-center gap-2 max-w-[160px] sm:max-w-[180px]"
             >
               <div className="text-3xl sm:text-4xl">{item.icon}</div>
-              <span className="text-sm sm:text-base text-white/90 font-medium">{item.text}</span>
+              <span className="text-sm sm:text-base text-white/90 font-medium text-center">{item.title}</span>
+              <span className="text-xs sm:text-sm text-white/75 text-center leading-relaxed">{item.desc}</span>
             </motion.div>
           ))}
         </motion.div>
+
       </div>
 
       {/* CTA Button - Centralizado e melhorado */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.7, duration: 0.5 }}
+        transition={{ delay: 0.55, duration: 0.5 }}
         className="w-full max-w-md mx-auto"
       >
+        <p className="text-sm sm:text-base text-white/90 font-medium mb-3 text-center">
+          Leva apenas 3 minutos ⏱️
+        </p>
         <motion.button
           whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
+          whileTap={{ scale: 0.99 }}
           onClick={handleContinue}
           className="
-            w-full
-            py-4 sm:py-5 px-6
+            relative isolate w-full max-w-md mx-auto
             rounded-2xl
-            bg-white
-            text-gray-900
+            px-6 py-4
+            text-base
             font-semibold
-            text-lg sm:text-xl
-            border border-gray-200
-            shadow-xl
-            transition-all duration-200
+            bg-orange-50
+            text-orange-700
+            border border-orange-200/80
+            shadow-[0_14px_40px_-18px_rgba(0,0,0,0.55)]
+            transition
+            hover:bg-orange-100/80
+            hover:border-orange-200
+            active:scale-[0.99]
+            focus:outline-none
+            focus:ring-2
+            focus:ring-white/80
+            focus:ring-offset-2
+            focus:ring-offset-orange-600
+            motion-reduce:transition-none
             min-h-[56px]
-            active:scale-[0.98]
-            hover:shadow-2xl
           "
           style={{
             fontFamily: "'Plus Jakarta Sans', sans-serif",
-            fontWeight: 700,
+            fontWeight: 600,
           }}
         >
-          Começar análise
+          {/* glow */}
+          <span
+            aria-hidden="true"
+            className="
+              pointer-events-none absolute -inset-2 -z-10 rounded-[1.25rem]
+              bg-white/30 blur-2xl opacity-70
+              animate-glow-premium
+            "
+          />
+
+          {/* pulse ring */}
+          <span
+            aria-hidden="true"
+            className="
+              pointer-events-none absolute inset-0 -z-10 rounded-2xl
+              ring-2 ring-white/25
+              animate-pulse-ring-premium
+            "
+          />
+
+          Começar Minha Avaliação
         </motion.button>
       </motion.div>
     </motion.div>

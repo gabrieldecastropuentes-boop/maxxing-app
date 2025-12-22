@@ -22,15 +22,25 @@ export function HeroSection() {
           <AuthorityBadge />
         </div>
         <h1 className="text-[1.9rem] sm:text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight text-white max-w-[90%] sm:max-w-[500px] mx-auto" style={{ fontFamily: "'Outfit', sans-serif" }}>
-          Descubra seu Score Facial em 3 Minutos{' '}
+          Análise Facial Completa em 3 Minutos{' '}
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FF8C42] via-[#FF4D4D] to-[#FF8C42]">(Grátis)</span>
         </h1>
+        
+        {/* Credibilidade Científica */}
+        <div className="flex items-center justify-center gap-2 text-xs sm:text-sm text-white/60 max-w-2xl mx-auto px-4">
+          <svg className="w-4 h-4 text-white/50 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+          </svg>
+          <span className="text-center" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+            Análise facial por IA combinada com dicas de autocuidado baseadas em estudos científicos
+          </span>
+        </div>
         
         {/* Rating Badge */}
         <RatingBadge />
         
         <p className="text-sm sm:text-base md:text-xl text-white/70 max-w-2xl leading-relaxed" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-          Análise completa baseada em IA sem custo e sem compromisso. Descubra como pequenas alterações podem elevar seu score de atratividade.
+          Análise completa por IA: grátis e sem compromisso. Veja como pequenas alterações podem elevar sua atratividade.
         </p>
         
         {/* Social Proof Inline */}
@@ -56,31 +66,57 @@ export function HeroSection() {
         </div>
 
         <div className="flex flex-col gap-4 pt-2">
-          <a
-            href="/quiz"
-            onClick={() => {
-              if (typeof window !== 'undefined') {
-                if ((window as any).gtag) {
-                  (window as any).gtag('event', 'hero_cta_click', { event_category: 'CTA', event_label: 'Hero Section' });
+          <div className="flex flex-col gap-3 items-center">
+            <a
+              href="/quiz"
+              onClick={() => {
+                if (typeof window !== 'undefined') {
+                  if ((window as any).gtag) {
+                    (window as any).gtag('event', 'hero_cta_click', { event_category: 'CTA', event_label: 'Hero Section' });
+                  }
+                  if ((window as any).fbq) {
+                    (window as any).fbq('track', 'Lead', { content_name: 'Hero CTA Click' });
+                  }
                 }
-                if ((window as any).fbq) {
-                  (window as any).fbq('track', 'Lead', { content_name: 'Hero CTA Click' });
-                }
-              }
-            }}
-            className={cn(
-              'btn-primary btn-full-mobile animate-pulse-glow',
-              'text-base sm:text-lg md:text-xl',
-              'min-h-[56px] py-4 px-6 sm:px-8',
-              'w-full sm:w-auto',
-              'whitespace-nowrap'
-            )}
-          >
-            Fazer Teste Grátis Agora
-            <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-            </svg>
-          </a>
+              }}
+              className={cn(
+                'btn-primary btn-full-mobile animate-pulse-glow',
+                'text-base sm:text-lg md:text-xl',
+                'min-h-[56px] py-4 px-6 sm:px-8',
+                'w-full sm:w-auto',
+                'whitespace-nowrap',
+                'group/cta'
+              )}
+              style={{
+                background: 'linear-gradient(135deg, #FF3D3D 0%, #FF6B35 50%, #FF3D3D 100%)',
+                backgroundSize: '200% 200%',
+              }}
+            >
+              Comece Sua Avaliação Gratuita
+              <svg className="w-5 h-5 sm:w-6 sm:h-6 transition-transform duration-300 group-hover/cta:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
+            </a>
+            
+            {/* Selo de Segurança */}
+            <div className="inline-flex items-baseline justify-center gap-2 text-[10px] sm:text-xs text-white/70 whitespace-nowrap leading-none" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+              <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white/60 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
+              <span className="leading-none">Seus dados são protegidos e nunca compartilhados</span>
+              <span className="text-white/40 leading-none">•</span>
+              <a 
+                href="#privacy" 
+                className="text-white/50 hover:text-white/80 underline decoration-[1px] underline-offset-2 decoration-white/30 hover:decoration-white/60 transition-colors leading-none"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  // Aqui você pode adicionar navegação para política de privacidade
+                }}
+              >
+                Política de Privacidade
+              </a>
+            </div>
+          </div>
           
           {/* Risk Free Badges */}
           <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 text-xs sm:text-sm">

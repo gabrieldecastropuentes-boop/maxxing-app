@@ -5,7 +5,6 @@ import { AspirationalHero } from './AspirationalHero';
 import { LooksmaxxingSection } from './LooksmaxxingSection';
 import { HowItWorksSection } from './HowItWorksSection';
 import { SocialProofSection } from './SocialProofSection';
-import { TopArtistsSection } from './TopArtistsSection';
 import { FinalCTASection } from './FinalCTASection';
 import { RiskFreeBadges } from './RiskFreeBadges';
 import { TestimonialsCarousel } from './TestimonialsCarousel';
@@ -53,10 +52,6 @@ export function HomePage() {
         <section className="isolation-section">
       <SocialProofSection />
         </section>
-        <section className="isolation-section">
-      <TopArtistsSection />
-        </section>
-        
         {/* Testimonials Carousel */}
         <section className="isolation-section section-container py-10 sm:py-14">
           <div className="text-center mb-8">

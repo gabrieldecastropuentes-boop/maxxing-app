@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { scoreCategories } from '../../data/quizData';
 import { cn } from '../../lib/utils';
+import { PERFECTPAY_CHECKOUT_URL } from '../../lib/checkout';
 import type { AnalysisResults } from './AnalyzingScreen';
 import type { UserData, QuizAnswer } from '../Quiz';
 
@@ -61,7 +62,7 @@ export function ResultsScreen({ quizScore, photoAnalysis, userData, answers, onC
         value: finalScore,
       });
     }
-    window.location.href = 'https://checkout.perfectpay.com.br/pay/PPU38CQ3RIM';
+    window.location.href = PERFECTPAY_CHECKOUT_URL;
   };
 
   return (

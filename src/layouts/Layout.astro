@@ -85,6 +85,45 @@ if (import.meta.env.DEV && !FB_PIXEL_ID) {
     
     <title>{title}</title>
     
+    <!-- CRITICAL: Define getUTMParams FIRST, before any scripts that might use it -->
+    <script is:inline>
+      // ⚠️ CRÍTICO: Definir getUTMParams GLOBALMENTE IMEDIATAMENTE
+      // Esta função DEVE existir antes de qualquer script que possa usá-la
+      (function() {
+        try {
+          if (typeof window === 'undefined') return;
+          
+          // Definir getUTMParams globalmente de forma imediata e síncrona
+          window.getUTMParams = window.getUTMParams || function() {
+            try {
+              if (typeof window === 'undefined' || !window.location) return {};
+              const params = new URLSearchParams(window.location.search);
+              return {
+                utm_source: params.get('utm_source') || '',
+                utm_medium: params.get('utm_medium') || '',
+                utm_campaign: params.get('utm_campaign') || '',
+                utm_content: params.get('utm_content') || '',
+              };
+            } catch (e) {
+              // Nunca quebra - retorna objeto vazio em caso de erro
+              if (console && console.warn) {
+                console.warn('[Tracking] getUTMParams error (non-critical):', e);
+              }
+              return {};
+            }
+          };
+        } catch (error) {
+          // Fallback: função vazia se algo der errado
+          if (typeof window !== 'undefined') {
+            window.getUTMParams = window.getUTMParams || function() { return {}; };
+          }
+          if (console && console.warn) {
+            console.warn('[Tracking] Error defining getUTMParams (non-critical):', error);
+          }
+        }
+      })();
+    </script>
+    
     <!-- Google Analytics 4 -->
     {GA_MEASUREMENT_ID && (
       <>
@@ -300,6 +339,7 @@ if (import.meta.env.DEV && !FB_PIXEL_ID) {
 
     <!-- Global Event Tracking Helper -->
     <script is:inline>
+      // ⚠️ CRÍTICO: getUTMParams já foi definido no <head> - não redefinir aqui
       // Unified tracking function (usa /api/track com event_id e session_id)
       // ⚠️ CRÍTICO: Todo código de tracking está envolvido em try/catch para NUNCA quebrar a página
       (function() {

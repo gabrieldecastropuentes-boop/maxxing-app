@@ -1,12 +1,8 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '../../lib/utils';
+import { PERFECTPAY_CHECKOUT_URL, PRICE_TEXT } from '../../lib/checkout';
 import type { AnalysisResults } from './AnalyzingScreen';
-
-// ═══════════════════════════════════════════════════════════════
-// VARIÁVEL DE CHECKOUT - ALTERE AQUI SEU LINK
-// ═══════════════════════════════════════════════════════════════
-const CHECKOUT_URL = 'https://checkout.perfectpay.com.br/pay/PPU38CQ3RIM';
 
 interface PaywallScreenProps {
   results: AnalysisResults;
@@ -25,7 +21,7 @@ const CTAButton = ({
   className?: string;
 }) => (
   <motion.a
-    href={CHECKOUT_URL}
+    href={PERFECTPAY_CHECKOUT_URL}
     whileHover={{ scale: 1.02 }}
     whileTap={{ scale: 0.98 }}
     onClick={() => {
@@ -1152,9 +1148,9 @@ export function PaywallScreen({ results, userPhoto, onPurchase }: PaywallScreenP
               </motion.span>
               <span className="text-gray-500 text-sm">restantes</span>
             </div>
-            {/* Botão de Preço R$39,90 - Especificação Exata */}
+            {/* Botão de Preço R$29,90 - Especificação Exata */}
             <motion.a
-              href={CHECKOUT_URL}
+              href={PERFECTPAY_CHECKOUT_URL}
               initial={{ scale: 1 }}
               whileHover={{ 
                 scale: 1.03,
@@ -1199,7 +1195,7 @@ export function PaywallScreen({ results, userPhoto, onPurchase }: PaywallScreenP
                 "active:scale-[0.97]"
               )}
             >
-              R$39,90
+              {PRICE_TEXT}
             </motion.a>
           </div>
         </div>

@@ -3,8 +3,7 @@ import { motion } from 'framer-motion';
 import { cn } from '../../lib/utils';
 import { useInView } from '../../hooks/useInView';
 import { tracking } from '../../lib/tracking';
-
-const CHECKOUT_URL = 'https://checkout.perfectpay.com.br/pay/PPU38CQ3RIM';
+import { PERFECTPAY_CHECKOUT_URL } from '../../lib/checkout';
 
 const includedItems = [
   {
@@ -64,7 +63,7 @@ export function PreCheckoutPage() {
         content_name: 'Pre-Checkout CTA Clicked',
       });
     }
-    window.location.href = CHECKOUT_URL;
+    window.location.href = PERFECTPAY_CHECKOUT_URL;
   };
 
   return (

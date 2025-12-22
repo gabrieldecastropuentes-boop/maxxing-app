@@ -1805,6 +1805,47 @@ img[width][height] {
   }
 }
 
+/* Premium CTA Glow + Pulse Animation */
+@keyframes glow {
+  0%, 100% { 
+    opacity: 0.45; 
+    transform: scale(0.98); 
+  }
+  50% { 
+    opacity: 0.80; 
+    transform: scale(1.03); 
+  }
+}
+
+@keyframes pulseRing {
+  0%, 100% { 
+    opacity: 0.18; 
+    transform: scale(1); 
+  }
+  50% { 
+    opacity: 0.35; 
+    transform: scale(1.02); 
+  }
+}
+
+/* Premium CTA Animation Classes */
+@supports (animation-name: glow) {
+  .animate-glow-premium {
+    animation: glow 2.8s ease-in-out infinite;
+  }
+  
+  .animate-pulse-ring-premium {
+    animation: pulseRing 2.8s ease-in-out infinite;
+  }
+  
+  @media (prefers-reduced-motion: reduce) {
+    .animate-glow-premium,
+    .animate-pulse-ring-premium {
+      animation: none;
+    }
+  }
+}
+
 .animate-shimmer {
   animation: shimmer 2s infinite;
 }
